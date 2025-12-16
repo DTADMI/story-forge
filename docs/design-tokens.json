@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json.schemastore.org/design-tokens",
+  "$description": "Design tokens for StoryForge – light/dark themes with royal palette.",
+  "theme": {
+    "light": {
+      "colors": {
+        "white": "#ffffff",
+        "black": "#0b0b0f",
+        "auburn": "#b4371e",
+        "royalBlue": "#0e3fa9",
+        "royalGreen": "#16794e",
+        "royalOrange": "#d97706",
+        "gold": "#d4af37",
+        "burgundy": "#6d1320",
+        "purple": "#6d28d9",
+        "pink": "#e879f9",
+        "bg": "#ffffff",
+        "fg": "#0b0b0f",
+        "muted": "#6b7280",
+        "panel": "#f8fafc"
+      }
+    },
+    "dark": {
+      "colors": {
+        "white": "#f7f7fb",
+        "black": "#090a0d",
+        "auburn": "#ff6a3b",
+        "royalBlue": "#5b86ff",
+        "royalGreen": "#2dd4a3",
+        "royalOrange": "#f59e0b",
+        "gold": "#ffd86a",
+        "burgundy": "#a61d3a",
+        "purple": "#a78bfa",
+        "pink": "#f0abfc",
+        "bg": "#0b0f16",
+        "fg": "#f7f7fb",
+        "muted": "#9aa4b2",
+        "panel": "#111827"
+      }
+    }
+  },
+  "semantic": {
+    "brand": { "light": "{theme.light.colors.royalBlue}", "dark": "{theme.dark.colors.royalBlue}" },
+    "accent": { "light": "{theme.light.colors.auburn}", "dark": "{theme.dark.colors.auburn}" },
+    "success": { "light": "{theme.light.colors.royalGreen}", "dark": "{theme.dark.colors.royalGreen}" },
+    "warning": { "light": "{theme.light.colors.royalOrange}", "dark": "{theme.dark.colors.royalOrange}" },
+    "info": { "light": "{theme.light.colors.purple}", "dark": "{theme.dark.colors.purple}" },
+    "ring": { "light": "{theme.light.colors.gold}", "dark": "{theme.dark.colors.gold}" },
+    "background": { "light": "{theme.light.colors.bg}", "dark": "{theme.dark.colors.bg}" },
+    "foreground": { "light": "{theme.light.colors.fg}", "dark": "{theme.dark.colors.fg}" },
+    "panel": { "light": "{theme.light.colors.panel}", "dark": "{theme.dark.colors.panel}" },
+    "muted": { "light": "{theme.light.colors.muted}", "dark": "{theme.dark.colors.muted}" }
+  }
+}
