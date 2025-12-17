@@ -1,26 +1,62 @@
+import {flags} from '@/lib/flags';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+
 export default function PricingPage() {
+    const paymentsEnabled = flags.payments;
   return (
-    <section style={{ maxWidth: 960, margin: "32px auto", padding: "0 16px" }}>
-      <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12 }}>Pricing</h1>
-      <p style={{ color: "#374151", marginBottom: 12 }}>
-        Start free and upgrade anytime. Pricing reflects the roadmap documented in docs.
-      </p>
-      <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-        <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700 }}>Free</h2>
-          <p>3 active projects, basic tools, community features.</p>
-          <div style={{ fontWeight: 800, marginTop: 8 }}>$0</div>
+      <section className="mx-auto max-w-5xl px-4 py-8">
+          <h1 className="mb-3 text-3xl font-extrabold">Pricing</h1>
+          <p className="mb-6 text-fg/80">Start free and upgrade anytime. Pricing reflects the roadmap documented in
+              docs.</p>
+          {!paymentsEnabled && (
+              <div className="mb-4 rounded-md border border-warning/30 bg-warning/10 p-3 text-sm">
+                  Payments are coming soon. You can explore tiers below; subscription checkout is disabled in this
+                  build.
         </div>
-        <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700 }}>Premium</h2>
-          <p>Unlimited projects, advanced tools, PDF/EPUB export, analytics.</p>
-          <div style={{ fontWeight: 800, marginTop: 8 }}>$9.99/mo</div>
-        </div>
-        <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700 }}>Team</h2>
-          <p>Collaboration, advanced permissions, shared resources, team analytics.</p>
-          <div style={{ fontWeight: 800, marginTop: 8 }}>$24.99/mo</div>
-        </div>
+          )}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <Card>
+                  <CardHeader>
+                      <CardTitle>Free</CardTitle>
+                      <CardDescription>3 active projects, basic tools, community features.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-2xl font-extrabold">$0</div>
+                  </CardContent>
+                  <CardFooter>
+                      <Button variant="outline" className="w-full">Get Started</Button>
+                  </CardFooter>
+              </Card>
+              <Card>
+                  <CardHeader>
+                      <CardTitle>Premium</CardTitle>
+                      <CardDescription>Unlimited projects, advanced tools, PDF/EPUB export, analytics.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-2xl font-extrabold">$9.99/mo</div>
+                  </CardContent>
+                  <CardFooter>
+                      <Button className="w-full" disabled={!paymentsEnabled} aria-disabled={!paymentsEnabled}>
+                          {paymentsEnabled ? 'Subscribe' : 'Coming soon'}
+                      </Button>
+                  </CardFooter>
+              </Card>
+              <Card>
+                  <CardHeader>
+                      <CardTitle>Team</CardTitle>
+                      <CardDescription>Collaboration, advanced permissions, shared resources, team
+                          analytics.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <div className="text-2xl font-extrabold">$24.99/mo</div>
+                  </CardContent>
+                  <CardFooter>
+                      <Button className="w-full" disabled={!paymentsEnabled} aria-disabled={!paymentsEnabled}>
+                          {paymentsEnabled ? 'Contact sales' : 'Coming soon'}
+                      </Button>
+                  </CardFooter>
+              </Card>
       </div>
     </section>
   );
