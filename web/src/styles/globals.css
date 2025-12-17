@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brand tokens (light) — values inspired by docs/design-tokens.json */
+:root {
+  --fg: #0b0b0f;
+  --bg: #ffffff;
+  --brand: #0e3fa9; /* Royal Blue */
+  --accent: #b4371e; /* Auburn */
+  --success: #16794e; /* Royal Green */
+  --warning: #d97706; /* Royal Orange */
+  --info: #6d28d9; /* Purple */
+  --ring: #d4af37; /* Gold */
+
+  --radius-lg: 12px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
+}
+
+/* Dark theme */
+.dark {
+  --fg: #f4f4f5;
+  --bg: #0b0b0f;
+  --brand: #3f7cff; /* Royal Blue (brightened) */
+  --accent: #ff6a4a; /* Auburn (brightened) */
+  --success: #22c55e; /* Green */
+  --warning: #f59e0b; /* Orange */
+  --info: #8b5cf6; /* Purple */
+  --ring: #ffd166; /* Gold */
+}
+
+/* Base typography and focus styles for a11y */
+html {
+  color-scheme: light dark;
+}
+body {
+  @apply bg-bg text-fg antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Reduced motion respect */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
