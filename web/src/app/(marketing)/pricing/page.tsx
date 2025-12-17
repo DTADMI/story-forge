@@ -1,6 +1,7 @@
 import {flags} from '@/lib/flags';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
+import {SubscribeButton} from '@/components/billing/SubscribeButton';
 
 export default function PricingPage() {
     const paymentsEnabled = flags.payments;
@@ -37,9 +38,13 @@ export default function PricingPage() {
                       <div className="text-2xl font-extrabold">$9.99/mo</div>
                   </CardContent>
                   <CardFooter>
-                      <Button className="w-full" disabled={!paymentsEnabled} aria-disabled={!paymentsEnabled}>
-                          {paymentsEnabled ? 'Subscribe' : 'Coming soon'}
+                      {paymentsEnabled ? (
+                          <SubscribeButton plan="monthly"/>
+                      ) : (
+                          <Button className="w-full" disabled aria-disabled>
+                              Coming soon
                       </Button>
+                      )}
                   </CardFooter>
               </Card>
               <Card>
@@ -52,9 +57,13 @@ export default function PricingPage() {
                       <div className="text-2xl font-extrabold">$24.99/mo</div>
                   </CardContent>
                   <CardFooter>
-                      <Button className="w-full" disabled={!paymentsEnabled} aria-disabled={!paymentsEnabled}>
-                          {paymentsEnabled ? 'Contact sales' : 'Coming soon'}
+                      {paymentsEnabled ? (
+                          <SubscribeButton plan="yearly"/>
+                      ) : (
+                          <Button className="w-full" disabled aria-disabled>
+                              Coming soon
                       </Button>
+                      )}
                   </CardFooter>
               </Card>
       </div>
