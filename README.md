@@ -63,11 +63,12 @@ Public vs Authenticated Areas:
 ## Technical Stack
 
 Primary choices
-- Frontend: Next.js 14 (App Router) + React 18 + TypeScript
+
+- Frontend: Next.js 16 (App Router) + React 19.2 + TypeScript
 - Auth: NextAuth v5 (Credentials now; OAuth later) with Prisma Adapter
-- ORM/DB: Prisma + PostgreSQL
-- Backend: NestJS 10 (TypeScript) with modular DI
-- Styling (soon): Tailwind CSS + tokens from `docs/design-tokens.json`
+- ORM/DB: Prisma 7.2 + PostgreSQL
+- Backend: NestJS 11.1 (TypeScript) with modular DI
+- Styling (soon): Tailwind CSS 4.1 + tokens from `docs/design-tokens.json`
 - State: TanStack Query for server state; local state via React/Context (Zustand later)
 
 Why these choices (pros/cons)
@@ -114,8 +115,8 @@ Security Posture (early hardening)
 
 ## Prerequisites
 
-- Node.js 18+ (LTS recommended). Check with `node -v`.
-- npm 9+ (or pnpm/yarn if you prefer; docs use npm).
+- Node.js 24+ (recommend 24.12.0). Check with `node -v`.
+- pnpm 10+ (recommend 10.26.0; or npm/yarn if you prefer; examples assume pnpm).
 - PostgreSQL 14+ (local install or hosted: Supabase/Neon/Railway).
 - Git.
 - Optional: Docker (to run Postgres locally via Compose).

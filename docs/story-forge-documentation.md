@@ -20,9 +20,10 @@
 ## Technical Stack
 
 ### Primary Stack
-- **Frontend:** Next.js 14+ with TypeScript
-- **Backend:** NestJS (Node.js + TypeScript)
-- **Database:** PostgreSQL with Prisma ORM
+
+- **Frontend:** Next.js 16 (App Router) + React 19.2 + TypeScript
+- **Backend:** NestJS 11.1 (Node.js + TypeScript)
+- **Database:** PostgreSQL with Prisma ORM (Prisma 7.2)
 - **Infrastructure:** Vercel + Railway + Supabase
 
 ### Why This Stack?
@@ -94,7 +95,8 @@ We recommend **TypeScript with NestJS** for:
 ## Technical Stack
 
 ### Frontend
-- **Next.js 14+ (App Router)**
+
+- **Next.js 16 (App Router)**
   - Server-side rendering, API routes, and optimized performance
   - Alternatives: Remix, SvelteKit
   - Key Features:
@@ -103,7 +105,7 @@ We recommend **TypeScript with NestJS** for:
     - Built-in API routes
     - Image optimization
 
-- **React 18+**
+- **React 19.2**
   - Mature ecosystem, great performance, and wide adoption
   - **State Management:**
     - TanStack Query (v5) for server state
@@ -117,7 +119,7 @@ We recommend **TypeScript with NestJS** for:
   - shadcn/ui for accessible components
     - Accessible, customizable, and built on top of Radix UI
     - Alternatives: Chakra UI, Material-UI
-  - Tailwind CSS for utility-first styling
+  - Tailwind CSS 4.1 for utility-first styling
     - Utility-first CSS framework for rapid UI development
     - Alternatives: Styled Components, Emotion
   - Data Visualization
@@ -403,9 +405,9 @@ src/
 ### Recommended Tech Stack
 
 1. **Core**
-    - Next.js 14+ (App Router)
-    - TypeScript
-    - React 18+
+    - Next.js 16 (App Router)
+    - TypeScript 5.9+
+    - React 19.2
 
 2. **State Management**
     - TanStack Query (server state)
