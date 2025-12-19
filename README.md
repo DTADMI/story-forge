@@ -225,6 +225,43 @@ npm run start:dev
 
 ---
 
+## Authentication (NextAuth v5)
+
+We use NextAuth v5 with the Prisma Adapter and a Credentials provider (email/password) for MVP.
+
+Implementation
+
+- Central config: `web/src/auth.ts` exports `{ handlers, auth, signIn, signOut }`.
+- API route: `web/src/app/api/auth/[...nextauth]/route.ts` re-exports `handlers`.
+- Prisma models: `User`, `Account`, `Session`, `VerificationToken` are defined in `prisma/schema.prisma`.
+
+Environment
+
+- `web/.env.local` must include: `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, and `DATABASE_URL`.
+
+Usage
+
+- Get the current session in a Server Component/Action:
+  ```ts
+  // any server file in web/
+  import { auth } from '@/auth';
+  const session = await auth();
+  ```
+- Trigger sign-in from a client component:
+  ```ts
+  'use client'
+  import { signIn } from 'next-auth/react';
+  await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
+  ```
+- Or from a Server Action use the exported server `signIn`/`signOut` from `@/auth`.
+
+Notes
+
+- Sessions use JWT strategy and augment `session.user.id` for convenience.
+- The sign-in page lives at `/signin` and posts to the Credentials provider.
+
+---
+
 ## Testing
 
 Current status

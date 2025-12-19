@@ -33,7 +33,7 @@ Legend:
 
 - [*] Authentication (MVP)
     - [*] Sign-in page scaffold `web/src/app/(auth)/signin/page.tsx`.
-    - [ ] NextAuth v5 config with Prisma adapter (credentials provider) and session handling.
+  - [x] NextAuth v5 config with Prisma adapter (credentials provider) and session handling.
     - [ ] Auth routes (sign up, sign out) and protected routes patterns.
     - [ ] Password hashing with bcrypt and basic validation with Zod.
 

@@ -584,6 +584,16 @@ Messaging
 - CSRF protection
   - For web-only forms; NextAuth session protection
 
+#### NextAuth v5 Implementation (Web)
+
+- Centralized config at `web/src/auth.ts` using Prisma Adapter and Credentials provider.
+- API route `web/src/app/api/auth/[...nextauth]/route.ts` re-exports `{ handlers as GET, POST }` from the central
+  config.
+- Sessions use JWT strategy and we augment `session.user.id` for convenience in the UI.
+- Environment for web must include `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, and `DATABASE_URL`.
+- Server usage: `import { auth } from '@/auth'; const session = await auth();`
+- Client sign-in: `import { signIn } from 'next-auth/react'; await signIn('credentials', { email, password })`.
+
 ### Data Protection
 - Field-level encryption for sensitive data
 - Input validation and sanitization
