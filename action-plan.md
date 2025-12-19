@@ -28,14 +28,20 @@ Legend:
   postcss 8.5.6, prisma 7.2.0, tailwindcss 4.1.18, typescript 5.9.3. API: @nestjs/* 11.1.9, helmet 8.1.0, @prisma/client
   7.2.0; Dev: @nestjs/cli 11.0.14, @nestjs/schematics 11.0.9, @nestjs/testing 11.1.9, @types/node 25.0.3, typescript
   5.9.3. Updated README and docs.
+- [x] Set NextAuth to v4.24.13 (stay on pnpm) and migrate code to v4 patterns: shared `authOptions` in
+  `web/src/lib/auth.ts`, route handler uses `NextAuth(authOptions)`, README/docs updated to v4 usage. Decision: do NOT
+  switch to npm; track v5 stable and revisit later.
+- [x] Authentication (MVP)
+    - [x] Sign-in page at `web/src/app/(auth)/signin/page.tsx`.
+    - [x] NextAuth v4.24.13 with Prisma adapter (Credentials) and JWT sessions; callbacks augment `session.user.id`.
+    - [x] Password hashing with bcrypt and basic validation using Zod in the credentials flow.
+    - [x] Sign-up API `POST /api/auth/signup` with Zod validation, email uniqueness check, bcrypt hashing; client page
+      at `/signup` that auto signs in.
+    - [x] Protected route pattern via `app/(main)/layout.tsx` + example `app/(main)/dashboard/page.tsx` including Sign
+      out button.
 
 ## In Progress
 
-- [*] Authentication (MVP)
-    - [*] Sign-in page scaffold `web/src/app/(auth)/signin/page.tsx`.
-  - [x] NextAuth v5 config with Prisma adapter (credentials provider) and session handling.
-    - [ ] Auth routes (sign up, sign out) and protected routes patterns.
-    - [ ] Password hashing with bcrypt and basic validation with Zod.
 
 - [*] Design System Foundations
     - [*] Define tokens file `docs/design-tokens.json` and map into Tailwind CSS variables.
@@ -116,7 +122,8 @@ Legend:
 
 - [ ] React 19.2 review: remove legacy `use client` placement issues, verify new APIs; audit third-party libs for
   compatibility.
-- [ ] Next.js 16: check next-auth v5 configuration, middleware, and route handlers; apply codemods if needed.
+- [ ] Next.js 16 + NextAuth v4.24: verify middleware patterns and route handlers; audit any breaking changes when adding
+  OAuth providers.
 - [ ] Tailwind CSS 4.1: ensure styles compile; migrate any deprecated plugin/config usage.
 - [ ] Prisma 7.2: run `prisma generate` and verify schema compatibility; adjust client imports/usages if required.
 - [ ] NestJS 11.1 + RxJS 8: verify any Observable API changes; update interceptors/guards if signatures changed.

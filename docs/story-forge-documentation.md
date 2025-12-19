@@ -584,15 +584,20 @@ Messaging
 - CSRF protection
   - For web-only forms; NextAuth session protection
 
-#### NextAuth v5 Implementation (Web)
+#### NextAuth v4 Implementation (Web)
 
-- Centralized config at `web/src/auth.ts` using Prisma Adapter and Credentials provider.
-- API route `web/src/app/api/auth/[...nextauth]/route.ts` re-exports `{ handlers as GET, POST }` from the central
-  config.
-- Sessions use JWT strategy and we augment `session.user.id` for convenience in the UI.
+- Shared options at `web/src/lib/auth.ts` using Prisma Adapter and Credentials provider.
+- API route `web/src/app/api/auth/[...nextauth]/route.ts` creates a handler with `NextAuth(authOptions)` and exports it
+  as `{ GET, POST }`.
+- Sessions use JWT strategy and we augment `session.user.id` for convenience in the UI via callbacks.
 - Environment for web must include `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, and `DATABASE_URL`.
-- Server usage: `import { auth } from '@/auth'; const session = await auth();`
+- Server usage:
+  `import { getServerSession } from 'next-auth'; import { authOptions } from '@/lib/auth'; const session = await getServerSession(authOptions);`
 - Client sign-in: `import { signIn } from 'next-auth/react'; await signIn('credentials', { email, password })`.
+- Client sign-up: `POST /api/auth/signup` accepts `{ email, password (min 8), name? }`, validated by Zod and hashed with
+  bcrypt; example UI at `/signup` that auto signs in on success.
+- Protected routes: App Router `(main)` segment uses `app/(main)/layout.tsx` to call `getServerSession(authOptions)` and
+  `redirect('/signin')` if unauthenticated; example page `app/(main)/dashboard/page.tsx` with a sign-out button.
 
 ### Data Protection
 - Field-level encryption for sensitive data

@@ -225,14 +225,15 @@ npm run start:dev
 
 ---
 
-## Authentication (NextAuth v5)
+## Authentication (NextAuth v4)
 
-We use NextAuth v5 with the Prisma Adapter and a Credentials provider (email/password) for MVP.
+We use NextAuth v4.24.13 with the Prisma Adapter and a Credentials provider (email/password) for MVP.
 
 Implementation
 
-- Central config: `web/src/auth.ts` exports `{ handlers, auth, signIn, signOut }`.
-- API route: `web/src/app/api/auth/[...nextauth]/route.ts` re-exports `handlers`.
+- Shared options: `web/src/lib/auth.ts` exports `authOptions` (Prisma Adapter, Credentials, JWT sessions, callbacks).
+- API route: `web/src/app/api/auth/[...nextauth]/route.ts` creates a handler with `NextAuth(authOptions)` and exports it
+  as `GET`/`POST`.
 - Prisma models: `User`, `Account`, `Session`, `VerificationToken` are defined in `prisma/schema.prisma`.
 
 Environment
@@ -244,8 +245,9 @@ Usage
 - Get the current session in a Server Component/Action:
   ```ts
   // any server file in web/
-  import { auth } from '@/auth';
-  const session = await auth();
+  import { getServerSession } from 'next-auth';
+  import { authOptions } from '@/lib/auth';
+  const session = await getServerSession(authOptions);
   ```
 - Trigger sign-in from a client component:
   ```ts
@@ -253,12 +255,32 @@ Usage
   import { signIn } from 'next-auth/react';
   await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
   ```
-- Or from a Server Action use the exported server `signIn`/`signOut` from `@/auth`.
+
+- Sign-up (create account) via API route:
+  - Endpoint: `POST /api/auth/signup`
+  - Body: `{ email: string, password: string (min 8), name?: string }`
+  - Validation: Zod on server; errors return 400/409
+  - On success (201), the client may auto sign-in via credentials
+  - Example client page at `/signup`
+
+- Protected routes (App Router):
+  - We protect authenticated areas with a server layout at `app/(main)/layout.tsx` using `getServerSession(authOptions)`
+    and `redirect('/signin')` when unauthenticated.
+  - Example protected page: `app/(main)/dashboard/page.tsx` which also shows a Sign out button.
+
+- Sign out (client):
+  ```ts
+  'use client'
+  import { signOut } from 'next-auth/react';
+  signOut({ callbackUrl: '/signin' });
+  ```
 
 Notes
 
-- Sessions use JWT strategy and augment `session.user.id` for convenience.
+- Sessions use JWT strategy and we augment `session.user.id` via callbacks for convenience.
 - The sign-in page lives at `/signin` and posts to the Credentials provider.
+- The sign-up page lives at `/signup` and posts to the API route, then auto-signs-in the user.
+- We intentionally stay on pnpm and NextAuth v4 for stability until v5 reaches a stable release.
 
 ---
 
