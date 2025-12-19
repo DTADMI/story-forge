@@ -43,6 +43,55 @@ body {
   outline-offset: 2px;
 }
 
+/* Map CSS variables to utility-like classes so we can use semantic tokens
+   with Tailwind utility names without custom config. */
+.bg-bg {
+  background-color: var(--bg);
+}
+
+.text-fg {
+  color: var(--fg);
+}
+
+.bg-brand {
+  background-color: var(--brand);
+}
+
+.text-brand {
+  color: var(--brand);
+}
+
+.ring-brand {
+  --tw-ring-color: var(--ring);
+}
+
+.border-brand {
+  border-color: var(--brand);
+}
+
+/* Basic prose spacing for marketing pages */
+.prose-lite p {
+  margin: 0.75rem 0;
+}
+
+.prose-lite h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 1rem 0;
+}
+
+.prose-lite h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+
+.prose-lite ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+
 /* Reduced motion respect */
 @media (prefers-reduced-motion: reduce) {
   * {

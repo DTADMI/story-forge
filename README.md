@@ -1,104 +1,3 @@
-# StoryForge
-
-A gamified writing platform that helps writers build consistent habits, craft worlds, and share short stories with privacy controls and social features. StoryForge blends elements of Campfire (world‑building), genealogy/graph apps (character relationships), Duolingo (streaks, goals, rewards), and Discord/social networks (groups, DMs, feeds) with a strong emphasis on mental wellbeing.
-
-## Contents
-
-- Objective & core value
-- Architecture & repository structure
-- Technical stack (choices, pros/cons, rationale, alternatives)
-- Key features & product surfaces
-- Security & privacy model (scopes)
-- Prerequisites
-- Environment variables and secrets (what, where to get, and how to set)
-- Setup: install, migrate, seed, run (dev)
-- Testing (current state and plan)
-- Deployment guides (Vercel + Railway/Supabase/Neon)
-- Troubleshooting
-- Contributing & coding standards
-- References
-
----
-
-## Objective & Core Value
-
-Help writers show up regularly and enjoy the process by:
-- Reducing friction to write (fast editor, autosave, versioning later)
-- Visual tools for world‑building (characters, relationships, timelines, maps)
-- Gentle gamification (goals, streaks, gems) with mental‑health guardrails
-- Social discovery and collaboration (public feed, friends/groups/DMs)
-- Strong privacy controls per project and per item
-
-See detailed product/architecture spec: `docs/story-forge-documentation.md`.
-
----
-
-## Architecture & Repository Structure
-
-Monorepo with separate web (Next.js) and api (NestJS) apps sharing a single Prisma schema and Postgres database.
-
-```
-story-forge/
-├─ api/                    # NestJS backend (REST, health, future modules)
-├─ web/                    # Next.js (App Router) frontend
-├─ prisma/
-│  └─ schema.prisma        # Shared database schema (PostgreSQL + Prisma)
-├─ docs/
-│  └─ story-forge-documentation.md  # In‑depth system/product spec
-├─ .gitignore
-└─ README.md
-```
-
-Request flow (MVP):
-- Public users browse marketing pages and the public stories feed directly from Next.js (SSR/ISR capable).
-- Authenticated users sign in via NextAuth (Credentials for now, OAuth later) stored in Postgres via Prisma.
-- The backend (NestJS) exposes health endpoints and will gradually host API modules (users, projects, social, gamification). The web app can also read directly via Prisma where SSR is simpler; over time, move cross‑cutting logic to the API.
-
-Public vs Authenticated Areas:
-- Public: Home, Tutorial, Pricing, Public Stories Feed.
-- Authenticated: Dashboard, Projects, Writing tools, Social.
-
----
-
-## Technical Stack
-
-Primary choices
-
-- Frontend: Next.js 16 (App Router) + React 19.2 + TypeScript
-- Auth: NextAuth v5 (Credentials now; OAuth later) with Prisma Adapter
-- ORM/DB: Prisma 7.2 + PostgreSQL
-- Backend: NestJS 11.1 (TypeScript) with modular DI
-- Styling (soon): Tailwind CSS 4.1 + tokens from `docs/design-tokens.json`
-- State: TanStack Query for server state; local state via React/Context (Zustand later)
-
-Why these choices (pros/cons)
-- Next.js
-  - Pros: SSR/SSG/ISR for the public feed, great DX, edge‑ready, file‑based routing (App Router), React Server Components.
-  - Cons: Some learning curve around RSC/app router patterns.
-- NextAuth + Prisma Adapter
-  - Pros: Mature auth flows; adapters for Postgres via Prisma; easy provider expansion (Google/GitHub, etc.).
-  - Cons: Provider configuration & v5 typings can be nuanced.
-- Prisma + PostgreSQL
-  - Pros: Type‑safe DB access, great migration workflow, excellent TS DX, Postgres reliability.
-  - Cons: ORM abstractions can hide SQL details; schema drift must be managed.
-- NestJS
-  - Pros: Opinionated modular server with DI, testing patterns, guards/filters; scales from MVP to services.
-  - Cons: More boilerplate vs. minimal Express/Fastify.
-
-Alternatives (and when to consider)
-- Remix/SvelteKit for the web if team prefers fully server‑driven UX or smaller bundles.
-- Drizzle ORM if you prefer SQL‑first migrations.
-- Supabase as a BaaS (Auth, DB, Realtime, Storage) to simplify infra for very small teams.
-
-Color & Design System
-- Palette: auburn, royal blue/green/orange, gold, burgundy, purple, pink, black/white.
-- Tokens defined in `docs/design-tokens.json` and will be mapped to Tailwind CSS variables.
-
----
-
-## Key Features (MVP trajectory)
-
-- Guest browsing: public marketing + public stories feed.
 - Accounts: email/password (Credentials) with migration path to OAuth.
 - Projects: create/list with visibility controls (`private`, `friends`, `public-auth`, `public-anyone`).
 - Writing tools: TipTap‑based editor and world‑building entities (rolling out incrementally).
@@ -378,3 +277,18 @@ Alternative single‑cloud deployment
 - Nest API bootstrap: `api/src/main.ts` and `api/src/app.module.ts`
 
 If anything in this README is unclear or you encounter setup issues, please open an issue with details about your OS, Node.js version, and logs.
+
+### Public routes (unauthenticated)
+
+- `/` — Marketing home and overview
+- `/pricing` — Pricing & subscriptions explainer
+- `/feed` — Public stories feed (SSR placeholder, scoped to `public-anyone`)
+- `/components-demo` — Internal demo page for UI primitives (temporary)
+
+### Styling & Design Tokens
+
+- Tailwind CSS 4.1 configless setup with `@tailwind base; @tailwind components; @tailwind utilities;` in
+  `web/src/styles/globals.css`.
+- Design tokens are exposed as CSS variables (e.g., `--bg`, `--fg`, `--brand`) and mapped to utility-like classes (
+  `bg-bg`, `text-fg`, etc.) for ergonomic usage without a Tailwind config.
+- Dark mode uses the `.dark` class toggling token values.

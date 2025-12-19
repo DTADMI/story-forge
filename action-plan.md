@@ -45,9 +45,9 @@ Legend:
 
 - [*] Design System Foundations
     - [*] Define tokens file `docs/design-tokens.json` and map into Tailwind CSS variables.
-    - [ ] Tailwind v4.1 migration in web: adopt configless/default setup or minimal config, update `globals.css`, verify
+  - [*] Tailwind v4.1 migration in web: adopt configless/default setup or minimal config, update `globals.css`, verify
       PostCSS pipeline with PostCSS 8.5.6 and Autoprefixer 10.4.23.
-    - [ ] Build a small set of shadcn-like primitives (Button, Input, Card, Tabs) using tokens.
+  - [*] Build a small set of shadcn-like primitives (Button, Input, Card, Tabs) using tokens.
 
 - [*] Config & Flags
     - [*] Feature flags scaffolding in `api/src/config/flags.ts`.
@@ -57,9 +57,9 @@ Legend:
 
 ### Public Experience (Unauthenticated)
 
-- [ ] Home/Marketing page with tutorial/overview of StoryForge.
-- [ ] Public stories feed (SSR/ISR) showing items scoped as `public-anyone`.
-- [ ] Pricing/subscription explainer pages.
+- [*] Home/Marketing page with tutorial/overview of StoryForge.
+- [*] Public stories feed (SSR/ISR) showing items scoped as `public-anyone`.
+- [*] Pricing/subscription explainer pages.
 
 ### Accounts, Profiles, Subscription
 
@@ -105,8 +105,8 @@ Legend:
 
 ### Testing
 
-- [ ] Establish testing harnesses: unit (Jest/Vitest), component (React Testing Library), e2e (Playwright).
-- [ ] Add initial tests for auth flows and scope enforcement.
+- [*] Establish testing harnesses: unit (Jest/Vitest), component (React Testing Library), e2e (Playwright).
+- [*] Add initial tests for auth flows and scope enforcement.
 - [ ] Lint/Build verification on upgraded stack: fix ESLint 9.39 rule changes, TypeScript 5.9 typings, Next 16 build
   warnings, React 19.2 RSC constraints.
 
