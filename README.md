@@ -186,20 +186,22 @@ Notes
 ## Testing
 
 Current status
-- Unit/E2E test scaffolding has not been added yet. This will land alongside the first protected routes and project CRUD.
 
-Planned stack
-- Web: Jest + React Testing Library for components; Playwright or Cypress for E2E.
-- API: Jest + Supertest for module/route tests.
+- Web: Vitest + React Testing Library are configured with jsdom. Smoke tests cover the Home page, Button component, and
+  Public Feed page.
+- API: test harness not set up yet (planned: Jest + Supertest).
 
-Short‑term goals
-- Add smoke tests for auth (sign in redirect, invalid creds error) and a healthcheck test for the API.
-
-How to run (once added)
+How to run (web)
 ```
-cd web && npm test
-cd ../api && npm test
+cd web
+pnpm test           # watch mode
+pnpm test:run       # CI mode
 ```
+
+Stack
+
+- Web: Vitest + React Testing Library (+ jest-dom)
+- API (planned): Jest + Supertest
 
 ---
 

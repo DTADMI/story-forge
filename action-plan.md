@@ -53,6 +53,9 @@ Legend:
     - [*] Feature flags scaffolding in `api/src/config/flags.ts`.
     - [ ] Align web/api flags and create a shared types contract.
 
+- [*] Public Experience (Unauthenticated)
+  - [*] Home/Marketing page content (first pass with CTAs to Sign in, Pricing, Feed).
+
 ## Planned
 
 ### Public Experience (Unauthenticated)
@@ -106,7 +109,9 @@ Legend:
 ### Testing
 
 - [*] Establish testing harnesses: unit (Jest/Vitest), component (React Testing Library), e2e (Playwright).
-- [*] Add initial tests for auth flows and scope enforcement.
+  - [x] Web test harness configured (Vitest + RTL + jsdom) with smoke tests for Home, Button, and Feed.
+  - [ ] API harness (Jest + Supertest) scaffold.
+- [ ] Add initial tests for auth flows and scope enforcement.
 - [ ] Lint/Build verification on upgraded stack: fix ESLint 9.39 rule changes, TypeScript 5.9 typings, Next 16 build
   warnings, React 19.2 RSC constraints.
 
