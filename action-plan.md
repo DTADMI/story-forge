@@ -56,11 +56,15 @@ Legend:
   postcss 8.5.6, prisma 7.2.0, tailwindcss 4.1.18, typescript 5.9.3. API: @nestjs/* 11.1.9, helmet 8.1.0, @prisma/client
   7.2.0; Dev: @nestjs/cli 11.0.14, @nestjs/schematics 11.0.9, @nestjs/testing 11.1.9, @types/node 25.0.3, typescript
   5.9.3. Updated README and docs.
+- [x] Writing Tools (Projects) — MVP completion
+  - [x] API: Prisma-backed CRUD (list by user, create, get, patch) with DTO validation (title, defaultScope)
+  - [x] Web: `/projects` SSR list + create form using session user; `/projects/[id]` simple editor to update description
+    and defaultScope
+  - [x] Scopes: defaultScope enforced in API entity representation; public feed remains `public-anyone` only
 
 ## In Progress
 
-- [*] Writing Tools (Projects)
-  - [*] Projects scaffold: API module with GET/POST stubs and web projects page placeholder.
+<!-- Intentionally left empty for now -->
 
 ## Planned
 
@@ -82,18 +86,17 @@ Legend:
 - [ ] Implement scopes: `private`, `friends`, `public-auth`, `public-anyone` at the project and item levels.
 - [ ] Enforce scopes in queries and UI (feed visibility, share controls).
 
-### Writing Tools (Projects)
+### Writing Tools (Post‑MVP expansions)
 
-- [ ] Projects CRUD with per-project default scope.
-- [ ] Story editor (TipTap) with autosave and versioning later.
+- [ ] Story editor (TipTap) with autosave and versioning
 - [ ] Entities & world-building modules (iterative rollout):
-    - [ ] Characters (profiles with traits/quirks).
-    - [ ] Relationships graph (2D first; 3D nodes later) with editable labeled links.
-    - [ ] Locations & Maps (visual map later).
-    - [ ] Timeline of events (title, dates, characters, description, linked dialogues).
-    - [ ] Dialogues objects (participants, scripted dialogue, linkable to timeline events).
-    - [ ] Additional encyclopedic modules: Research, Calendar, Magic, Fauna, Flora, Cultures, Items, Systems, Languages,
-      Religions, Philosophies.
+  - [ ] Characters (profiles with traits/quirks)
+  - [ ] Relationships graph (2D first; 3D nodes later) with editable labeled links
+  - [ ] Locations & Maps (visual map later)
+  - [ ] Timeline of events (title, dates, characters, description, linked dialogues)
+  - [ ] Dialogues objects (participants, scripted dialogue, linkable to timeline events)
+  - [ ] Additional encyclopedic modules: Research, Calendar, Magic, Fauna, Flora, Cultures, Items, Systems, Languages,
+    Religions, Philosophies
 
 ### Social & Messaging
 
@@ -126,18 +129,6 @@ Legend:
 - [x] Add initial GitHub Actions workflow for web tests/build (Node 24.12.0, pnpm 10.26.0).
 - [x] Enhance CI: add web lint + typecheck and API tests + build. Prisma generate/migrate to be added next.
 
-### Writing Tools (Projects)
-
-- [ ] Projects CRUD with per-project default scope (Prisma-backed, replace in-memory).
-- [ ] Story editor (TipTap) with autosave and versioning later.
-- [ ] Entities & world-building modules (iterative rollout):
-  - [ ] Characters (profiles with traits/quirks).
-  - [ ] Relationships graph (2D first; 3D nodes later) with editable labeled links.
-  - [ ] Locations & Maps (visual map later).
-  - [ ] Timeline of events (title, dates, characters, description, linked dialogues).
-  - [ ] Dialogues objects (participants, scripted dialogue, linkable to timeline events).
-  - [ ] Additional encyclopedic modules: Research, Calendar, Magic, Fauna, Flora, Cultures, Items, Systems, Languages,
-    Religions, Philosophies.
 
 ### Upgrade Follow-ups (Migrations)
 
