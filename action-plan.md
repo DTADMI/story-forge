@@ -51,7 +51,8 @@ Legend:
 
 - [*] Config & Flags
     - [*] Feature flags scaffolding in `api/src/config/flags.ts`.
-    - [ ] Align web/api flags and create a shared types contract.
+  - [x] Align web/api flags and create a shared types contract (shared keys; web `src/lib/flags.ts` and api
+    `src/config/flags.ts`).
 
 - [*] Public Experience (Unauthenticated)
   - [*] Home/Marketing page content (first pass with CTAs to Sign in, Pricing, Feed).
@@ -120,8 +121,14 @@ Legend:
 - [ ] Dev database with Prisma migrations; seed scripts.
 - [ ] Deploy web to Vercel; API to Railway/Supabase/Neon Postgres.
 - [ ] Observability basics (logs/metrics) and error reporting.
+- [x] Add initial GitHub Actions workflow for web tests/build (Node 24.12.0, pnpm 10.26.0).
 - [ ] Update CI matrix to Node 24 LTS (24.12.0) and pnpm 10 (10.26.0); add `pnpm -w install`, web/api build steps, and
   prisma generate/migrate.
+
+### In Progress (New)
+
+- [*] Writing Tools (Projects)
+  - [*] Projects scaffold: API module with GET/POST stubs and web projects page placeholder.
 
 ### Upgrade Follow-ups (Migrations)
 

@@ -205,6 +205,35 @@ Stack
 
 ---
 
+## Continuous Integration (CI)
+
+We use GitHub Actions for CI. An initial workflow runs web tests and build on Node 24.12 with pnpm 10.26.
+
+Workflow: `.github/workflows/ci.yml`
+
+- Steps: checkout → setup Node (corepack pnpm) → `pnpm -w install` → `pnpm -C web test:run` → `pnpm -C web build`
+- Next enhancements (planned): add API build and `prisma generate` on the shared schema.
+
+---
+
+## Feature Flags
+
+Feature flags allow enabling/disabling areas incrementally across web and API.
+
+Web (client-visible):
+
+- Defined via `NEXT_PUBLIC_FEATURE_*` env vars (see `web/.env.example`).
+- Consumed through `web/src/lib/flags.ts` which exports `flags` and `isEnabled(key)`.
+
+API (server-only):
+
+- Defined via `API_FEATURE_*` env vars (see `api/.env.example`).
+- Read in `api/src/config/flags.ts` exporting `apiFlags` and `isApiFlagEnabled(key)`.
+
+Shared keys: `payments`, `aiAssist`, `projectsV2`, `wellbeing`, `designSystemV2`.
+
+---
+
 ## Deployment
 
 MVP recommendation: Vercel (web) + Railway (API) + Supabase/Neon (Postgres)

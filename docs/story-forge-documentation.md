@@ -223,6 +223,22 @@ src/
 - Authenticated app area (dashboard, projects, writing tools, groups, chats) uses session-based auth with SSR protection and CSRF mitigation.
 - Feature flags gate premium/subscription features without leaking UI affordances to non-eligible users.
 
+### Feature Flags
+
+Feature flags are used to progressively roll out features and gate premium functionality.
+
+- Shared keys across web and API: `payments`, `aiAssist`, `projectsV2`, `wellbeing`, `designSystemV2`.
+- Web (client-visible): provided via `NEXT_PUBLIC_FEATURE_*` env vars and read in `web/src/lib/flags.ts` (`flags`,
+  `isEnabled`).
+- API (server-only): provided via `API_FEATURE_*` env vars and read in `api/src/config/flags.ts` (`apiFlags`,
+  `isApiFlagEnabled`).
+
+Operational guidance
+
+- Keep sensitive toggles server-side only.
+- Mirror flag names between web and API for consistent behavior.
+- Default wellbeing and design-system tokens to enabled; others default disabled.
+
 ## Frontend Design & Architecture
 
 ### UI Framework Comparison
