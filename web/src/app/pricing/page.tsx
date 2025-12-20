@@ -26,9 +26,10 @@ export default function PricingPage() {
                         <li>PDF/EPUB export, 3D maps, advanced analytics</li>
                     </ul>
                     {flags.payments ? (
-                        <Button variant="outline" className="mt-4" asChild>
-                            <a href="#checkout">Subscribe</a>
-                        </Button>
+                        <form action="/api/checkout" method="post" className="mt-4">
+                            <input type="hidden" name="plan" value="monthly"/>
+                            <Button variant="outline" type="submit">Subscribe</Button>
+                        </form>
                     ) : (
                         <Button variant="outline" className="mt-4" disabled title="Payments disabled via feature flag">
                             Payments disabled

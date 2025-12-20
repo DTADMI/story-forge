@@ -588,6 +588,36 @@ Messaging
 - 1:1 DMs and multi-user rooms with message retention policies.
 - Threaded comments on posts/projects.
 
+### Accounts & Profiles (MVP additions)
+
+- Profile fields editable: `name`, `username`, `bio`, `website`.
+- API endpoints:
+    - `GET /users/:id` — returns user public profile fields (MVP: self usage from web)
+    - `PATCH /users/:id` — update basic profile fields with validation
+- Web route: `/profile` under authenticated `(main)` area; SSR with server actions for updates.
+
+### Subscription Foundations
+
+- Feature-flagged via `payments` (`NEXT_PUBLIC_FEATURE_PAYMENTS` on web, `API_FEATURE_PAYMENTS` on API).
+- Web proxy: `POST /api/checkout` forwards to API.
+- API: `POST /billing/checkout` returns `{ url }` (stub) when enabled; 404 when disabled.
+- Stripe integration planned next (Checkout + webhook to set `subscriptionStatus`).
+
+### Gamification (MVP scaffolds)
+
+Prisma models added:
+
+- `GemWallet (userId, balance)`, `GemTx (amount, reason, metadata)`, `Goal`, `ProgressLog`.
+
+API endpoints:
+
+- `GET /gamification/wallet?userId=` — returns `{ userId, balance }` (creates wallet if missing)
+- `POST /gamification/progress` — logs progress and may reward small gem amounts (stub logic)
+
+Web:
+
+- `/profile` shows a read-only Gems badge/label when available.
+
 ## Security Considerations
 
 ## Security Considerations

@@ -333,6 +333,20 @@ If anything in this README is unclear or you encounter setup issues, please open
 - `/about` — About StoryForge
 - `/faq` — Frequently Asked Questions
 
+### Authenticated routes (initial)
+
+- `/projects` — Manage your writing projects (list/create)
+- `/projects/[id]` — Project details (edit basics)
+- `/profile` — View and update profile (name, username, bio, website)
+
+### API (selected endpoints added in this iteration)
+
+- Web proxy: `POST /api/checkout` → forwards to API billing checkout when `payments` flag is enabled
+- API: `POST /billing/checkout` → returns `{ url }` (stub) when `payments` is enabled; 404 when disabled
+- API: `GET /users/:id` and `PATCH /users/:id` → fetch and update profile fields
+- API: `GET /gamification/wallet?userId=` → returns `{ userId, balance }`
+- API: `POST /gamification/progress` → logs progress and may reward gems (stub logic)
+
 ### Styling & Design Tokens
 
 - Tailwind CSS 4.1 configless setup with `@tailwind base; @tailwind components; @tailwind utilities;` in

@@ -64,7 +64,27 @@ Legend:
 
 ## In Progress
 
-<!-- Intentionally left empty for now -->
+[*] Accounts & Profiles — MVP
+
+- [ ] API: UsersController with `GET /users/:id` (self only for MVP) and `PATCH /users/:id` to update `name`,
+  `username`, `bio`, `website` with validation.
+- [ ] Web: `/app/(main)/profile` page (SSR) to view/update profile; server actions posting to API.
+- [ ] Tests/Docs: e2e smoke for `PATCH /users/:id`; README/docs sections for Accounts & Profiles.
+
+[*] Subscription — Foundations (flag-gated)
+
+- [ ] API: Extend BillingController `POST /billing/checkout` to accept `{ plan: 'monthly'|'yearly' }` and return
+  `{ url }` when `payments` is enabled; 404 when disabled.
+- [ ] Web: Add `/app/api/checkout` proxy route to call API when `payments` flag is on; wire Pricing page Subscribe
+  button.
+- [ ] Tests/Docs: Unit test for web proxy; document flag behavior in README/docs.
+
+[*] Gamification & Wellbeing — MVP scaffolds
+
+- [ ] Prisma: Add `Goal`, `ProgressLog`, `GemWallet`, `GemTx` tables and migrations.
+- [ ] API: `gamification` module with `GET /gamification/wallet?userId=` and `POST /gamification/progress` (stub).
+- [ ] Web: Show gems badge and read-only Goals section on Profile (placeholder data from API).
+- [ ] Tests/Docs: API e2e smoke for wallet; docs section for Gamification & Wellbeing.
 
 ## Planned
 

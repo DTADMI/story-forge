@@ -6,9 +6,10 @@ import {HealthModule} from './modules/health/health.module';
 import {DebugModule} from './modules/debug/debug.module';
 import {BillingModule} from './modules/billing/billing.module';
 import {ProjectsModule} from './modules/projects/projects.module';
+import {GamificationModule} from './modules/gamification/gamification.module';
 
 @Module({
-    imports: [UsersModule, AuthModule, HealthModule, DebugModule, BillingModule, ProjectsModule],
+    imports: [UsersModule, AuthModule, HealthModule, DebugModule, BillingModule, ProjectsModule, GamificationModule],
   providers: [PrismaService]
 })
 export class AppModule {}

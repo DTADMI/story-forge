@@ -36,6 +36,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   projects      Project[]
+  gemWallet     GemWallet?
+  goals         Goal[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -55,6 +57,48 @@ model Project {
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+// Gamification models
+model GemWallet {
+  id      String @id @default(cuid())
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String @unique
+  balance Int    @default(0)
+
+  transactions GemTx[]
+}
+
+model GemTx {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  amount    Int
+  reason    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  type      String   // e.g., 'words_per_day'
+  target    Int      // e.g., 500
+  cadence   String   // 'daily' | 'weekly'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  progress  ProgressLog[]
+}
+
+model ProgressLog {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  goal      Goal?    @relation(fields: [goalId], references: [id])
+  goalId    String?
+  value     Int
+  timestamp DateTime @default(now())
 }
 
 // NextAuth.js models

@@ -5,15 +5,15 @@ import {isApiFlagEnabled} from '../../config/flags';
 export class BillingController {
     @Post('checkout')
     async createCheckout(@Body() body: {
-        plan: 'monthly' | 'yearly' | 'lifetime';
+        plan: 'monthly' | 'yearly';
         successUrl?: string;
         cancelUrl?: string
     }) {
         if (!isApiFlagEnabled('payments')) {
             throw new NotFoundException();
         }
-        // Stripe integration will be implemented next: create Checkout Session, return { url }
-        // Stub for now
-        return {status: 'not_implemented', message: 'Payments disabled or not implemented yet'} as const;
+        // TODO: Integrate Stripe Checkout here and return the session URL
+        const url = body?.successUrl || '#checkout-stub';
+        return {url} as const;
     }
 }
