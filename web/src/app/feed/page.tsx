@@ -34,18 +34,28 @@ export default async function PublicFeedPage() {
                 <h1 className="text-2xl font-extrabold">Public Stories Feed</h1>
                 <p className="text-[color:var(--fg)]/70">Stories shared with scope: public-anyone</p>
             </header>
-            <ul className="grid gap-4">
-                {stories.map((s) => (
-                    <li key={s.id} className="rounded-lg border border-[color:var(--fg)]/15 p-4">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-bold">{s.title}</h2>
-                            <span className="text-xs uppercase tracking-wide text-[color:var(--fg)]/50">{s.scope}</span>
-                        </div>
-                        <p className="mt-1 text-sm text-[color:var(--fg)]/80">by {s.author}</p>
-                        <p className="mt-2 text-sm">{s.excerpt}</p>
-                    </li>
-                ))}
-            </ul>
+            {stories.length === 0 ? (
+                <div className="rounded-lg border border-[color:var(--fg)]/15 p-6 text-center">
+                    <p className="text-sm text-[color:var(--fg)]/70">No public stories yet. Be the first to share! ✨</p>
+                    <div className="mt-3 text-sm">
+                        <a href="/signin" className="underline">Sign in</a> to start a project.
+                    </div>
+                </div>
+            ) : (
+                <ul className="grid gap-4">
+                    {stories.map((s) => (
+                        <li key={s.id} className="rounded-lg border border-[color:var(--fg)]/15 p-4">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-lg font-bold">{s.title}</h2>
+                                <span
+                                    className="text-xs uppercase tracking-wide text-[color:var(--fg)]/50">{s.scope}</span>
+                            </div>
+                            <p className="mt-1 text-sm text-[color:var(--fg)]/80">by {s.author}</p>
+                            <p className="mt-2 text-sm">{s.excerpt}</p>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </main>
     );
 }

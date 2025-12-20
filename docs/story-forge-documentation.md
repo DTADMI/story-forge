@@ -814,7 +814,13 @@ Color palette inspired by classic literature and guild aesthetics, optimized for
 Palette names
 - Auburn, Royal Blue, Royal Green, Royal Orange, Gold, Burgundy, Purple, Pink, Black, White
 
-See `docs/design-tokens.json` for exact values and semantic mappings. Example (light mode):
+See `docs/design-tokens.json` for exact values and semantic mappings. Tokens are exposed as CSS variables in
+`web/src/styles/globals.css` (e.g., `--bg`, `--fg`, `--brand`, typography sizes, spacing, and elevation shadows) and
+mapped to utility-like classes (e.g., `bg-bg`, `text-fg`, `text-sm`, `shadow-elev-1`) for use without a custom Tailwind
+config. Dark mode toggles these variables via the `.dark` class; a persisted `DarkModeToggle` component is provided at
+`web/src/components/dark-mode-toggle.tsx` and respects `prefers-color-scheme`.
+
+Example (light mode):
 
 ```
 --fg: #0b0b0f;
@@ -832,6 +838,18 @@ Component tokens
 - Buttons: primary uses `brand`, secondary uses `accent`, outline uses `ring`.
 - Editor: page background off-white in light, deep graphite in dark; high-contrast ink color.
 - Relationship graphs: node colors mapped to entity types, link labels editable, colorblind-friendly variants.
+
+Public information architecture (unauthenticated)
+
+- `/` marketing home and overview
+- `/pricing` pricing & subscriptions explainer (checkout gated behind `payments` flag)
+- `/feed` public stories feed (SSR placeholder for `public-anyone`)
+- `/about` about StoryForge; `/faq` common questions
+- `/components-demo`, `/components-demo/tokens`, `/components-demo/ui` for internal demos
+
+Developer aids
+
+- Web debug flags endpoint (dev only): `GET /api/debug/flags` → `{ env, flags }` (hidden in production).
 
 Typography
 - System font stack with optional variable font (e.g., Inter/Recursive), generous line-height for long-form reading.

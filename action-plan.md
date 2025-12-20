@@ -44,18 +44,26 @@ Legend:
 
 
 - [*] Design System Foundations
-    - [*] Define tokens file `docs/design-tokens.json` and map into Tailwind CSS variables.
-  - [*] Tailwind v4.1 migration in web: adopt configless/default setup or minimal config, update `globals.css`, verify
+  - [x] Define tokens file `docs/design-tokens.json` and map into Tailwind CSS variables.
+  - [x] Tailwind v4.1 migration in web: adopt configless/default setup or minimal config, update `globals.css`, verify
       PostCSS pipeline with PostCSS 8.5.6 and Autoprefixer 10.4.23.
-  - [*] Build a small set of shadcn-like primitives (Button, Input, Card, Tabs) using tokens.
+  - [x] Build a small set of shadcn-like primitives (Button, Input, Card, Tabs) using tokens.
+  - [x] Add base primitives: Textarea, Badge; polish Button (loading), Input (a11y), Card (elevation), Tabs (a11y).
+  - [x] Dark mode toggle with persisted preference and prefers-color-scheme support.
+  - [x] Demo pages: `/components-demo/tokens` and `/components-demo/ui`.
 
 - [*] Config & Flags
-    - [*] Feature flags scaffolding in `api/src/config/flags.ts`.
+  - [x] Feature flags scaffolding in `api/src/config/flags.ts`.
   - [x] Align web/api flags and create a shared types contract (shared keys; web `src/lib/flags.ts` and api
     `src/config/flags.ts`).
+  - [x] Dev-only web flags endpoint at `web/src/app/api/debug/flags/route.ts` (hidden in production).
 
 - [*] Public Experience (Unauthenticated)
-  - [*] Home/Marketing page content (first pass with CTAs to Sign in, Pricing, Feed).
+  - [x] Home/Marketing page content (first pass with CTAs to Sign in, Pricing, Feed).
+  - [x] Site shell with Header/Footer across public pages.
+  - [x] Pricing page enhanced with payments-flag gated subscribe button.
+  - [x] Public Feed empty state and sign-in prompt.
+  - [x] Static pages: `/about`, `/faq`; nicer `/not-found` page.
 
 ## Planned
 
@@ -112,7 +120,7 @@ Legend:
 - [*] Establish testing harnesses: unit (Jest/Vitest), component (React Testing Library), e2e (Playwright).
   - [x] Web test harness configured (Vitest + RTL + jsdom) with smoke tests for Home, Button, and Feed.
   - [ ] API harness (Jest + Supertest) scaffold.
-- [ ] Add initial tests for auth flows and scope enforcement.
+  - [ ] Add initial tests for auth flows and scope enforcement.
 - [ ] Lint/Build verification on upgraded stack: fix ESLint 9.39 rule changes, TypeScript 5.9 typings, Next 16 build
   warnings, React 19.2 RSC constraints.
 
@@ -122,7 +130,7 @@ Legend:
 - [ ] Deploy web to Vercel; API to Railway/Supabase/Neon Postgres.
 - [ ] Observability basics (logs/metrics) and error reporting.
 - [x] Add initial GitHub Actions workflow for web tests/build (Node 24.12.0, pnpm 10.26.0).
-- [ ] Update CI matrix to Node 24 LTS (24.12.0) and pnpm 10 (10.26.0); add `pnpm -w install`, web/api build steps, and
+  - [ ] Update CI matrix to Node 24 LTS (24.12.0) and pnpm 10 (10.26.0); add `pnpm -w install`, web/api build steps, and
   prisma generate/migrate.
 
 ### In Progress (New)

@@ -315,11 +315,20 @@ If anything in this README is unclear or you encounter setup issues, please open
 - `/pricing` — Pricing & subscriptions explainer
 - `/feed` — Public stories feed (SSR placeholder, scoped to `public-anyone`)
 - `/components-demo` — Internal demo page for UI primitives (temporary)
+- `/components-demo/tokens` — Tokens reference page
+- `/components-demo/ui` — UI primitives showcase
+- `/about` — About StoryForge
+- `/faq` — Frequently Asked Questions
 
 ### Styling & Design Tokens
 
 - Tailwind CSS 4.1 configless setup with `@tailwind base; @tailwind components; @tailwind utilities;` in
   `web/src/styles/globals.css`.
-- Design tokens are exposed as CSS variables (e.g., `--bg`, `--fg`, `--brand`) and mapped to utility-like classes (
-  `bg-bg`, `text-fg`, etc.) for ergonomic usage without a Tailwind config.
-- Dark mode uses the `.dark` class toggling token values.
+- Design tokens are exposed as CSS variables (e.g., `--bg`, `--fg`, `--brand`) and mapped to utility-like classes
+  (`bg-bg`, `text-fg`, `text-sm`, `shadow-elev-1`, etc.) for ergonomic usage without a Tailwind config.
+- Dark mode uses the `.dark` class toggling token values. A client `DarkModeToggle` is available at
+  `web/src/components/dark-mode-toggle.tsx` and persists preference while respecting `prefers-color-scheme`.
+
+### Feature Flags (dev-only surfaces)
+
+- Web debug flags endpoint (dev only): `GET /api/debug/flags` → `{ env, flags }`. Hidden in production (404).
