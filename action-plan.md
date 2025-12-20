@@ -15,19 +15,8 @@ Legend:
 
 - [x] Monorepo scaffold with `web/` (Next.js + TS) and `api/` (NestJS + TS) with shared Prisma schema.
 - [x] Basic documentation: `README.md` and `docs/story-forge-documentation.md` in place.
-- [x] Tech stack selected: Next.js 14, React 18, TypeScript, Prisma + PostgreSQL, NestJS, TanStack Query (planned
-  usage), Tailwind (configured in dependencies), Zod.
 - [x] Environment template present for web app: `web/.env.example`.
 - [x] UI primitives: initial Button component exists `web/src/components/ui/button.tsx`.
-- [x] Dependency upgrade (round 1): bumped Node engine to >=22, React to 19, Next.js to 15, Tailwind CSS to 4, Prisma to
-  6, NextAuth to v5 stable, ESLint to 9, TypeScript to 5.7, NestJS to 11, Helmet to 8, RxJS to 8 across web/api. Updated
-  README and docs to reflect versions.
-- [x] Dependency upgrade (round 2): align to specified versions — Node >=24.12.0, pnpm >=10.26.0; Web: Next.js 16.0.10,
-  React 19.2.3, React DOM 19.2.3, @prisma/client 7.2.0, bcrypt 6.0.0, class-variance-authority 0.7.1, tailwind-merge
-  3.4.0; Dev: @types/node 25.0.3, @types/react 19.2.7, autoprefixer 10.4.23, eslint 9.39.2, eslint-config-next 16.0.10,
-  postcss 8.5.6, prisma 7.2.0, tailwindcss 4.1.18, typescript 5.9.3. API: @nestjs/* 11.1.9, helmet 8.1.0, @prisma/client
-  7.2.0; Dev: @nestjs/cli 11.0.14, @nestjs/schematics 11.0.9, @nestjs/testing 11.1.9, @types/node 25.0.3, typescript
-  5.9.3. Updated README and docs.
 - [x] Set NextAuth to v4.24.13 (stay on pnpm) and migrate code to v4 patterns: shared `authOptions` in
   `web/src/lib/auth.ts`, route handler uses `NextAuth(authOptions)`, README/docs updated to v4 usage. Decision: do NOT
   switch to npm; track v5 stable and revisit later.
@@ -39,39 +28,48 @@ Legend:
       at `/signup` that auto signs in.
     - [x] Protected route pattern via `app/(main)/layout.tsx` + example `app/(main)/dashboard/page.tsx` including Sign
       out button.
+- [x] Design System Foundations
+  - [x] Define tokens file `docs/design-tokens.json` and map into Tailwind CSS variables.
+  - [x] Tailwind v4.1 migration in web (configless/minimal), `globals.css` updated; PostCSS/Autoprefixer verified.
+  - [x] Primitives: Button, Input, Card, Tabs; plus Textarea, Badge; polish states and a11y.
+  - [x] Dark mode toggle (persisted + prefers-color-scheme).
+  - [x] Demo pages: `/components-demo/tokens` and `/components-demo/ui`.
+- [x] Config & Flags
+  - [x] Feature flags scaffolding in `api/src/config/flags.ts`.
+  - [x] Align web/api flags and shared keys (`web/src/lib/flags.ts`, `api/src/config/flags.ts`).
+  - [x] Dev-only web flags endpoint at `web/src/app/api/debug/flags/route.ts` (404 in production).
+- [x] Public Experience (Unauthenticated)
+  - [x] Home/Marketing page (first pass with CTAs to Sign in, Pricing, Feed).
+  - [x] Site shell with Header/Footer across public pages.
+  - [x] Pricing page with payments-flag gated subscribe button.
+  - [x] Public Feed empty state and sign-in prompt.
+  - [x] Static pages: `/about`, `/faq`; nicer `/not-found` page.
+- [x] CI (initial + enhancements)
+  - [x] Add initial GitHub Actions workflow for web tests/build (Node 24.12.0, pnpm 10.26.0).
+  - [x] Enhance CI: add web lint + typecheck and API tests + build.
+- [x] Testing harnesses (baseline)
+  - [x] Web: Vitest + RTL + jsdom with smoke tests (Home, Button, Feed).
+  - [x] API: Jest + Supertest scaffold with `/projects` smoke test and CI wiring.
+- [x] Dependency upgrade (round 2): align to specified versions — Node >=24.12.0, pnpm >=10.26.0; Web: Next.js 16.0.10,
+  React 19.2.3, React DOM 19.2.3, @prisma/client 7.2.0, bcrypt 6.0.0, class-variance-authority 0.7.1, tailwind-merge
+  3.4.0; Dev: @types/node 25.0.3, @types/react 19.2.7, autoprefixer 10.4.23, eslint 9.39.2, eslint-config-next 16.0.10,
+  postcss 8.5.6, prisma 7.2.0, tailwindcss 4.1.18, typescript 5.9.3. API: @nestjs/* 11.1.9, helmet 8.1.0, @prisma/client
+  7.2.0; Dev: @nestjs/cli 11.0.14, @nestjs/schematics 11.0.9, @nestjs/testing 11.1.9, @types/node 25.0.3, typescript
+  5.9.3. Updated README and docs.
 
 ## In Progress
 
-
-- [*] Design System Foundations
-  - [x] Define tokens file `docs/design-tokens.json` and map into Tailwind CSS variables.
-  - [x] Tailwind v4.1 migration in web: adopt configless/default setup or minimal config, update `globals.css`, verify
-      PostCSS pipeline with PostCSS 8.5.6 and Autoprefixer 10.4.23.
-  - [x] Build a small set of shadcn-like primitives (Button, Input, Card, Tabs) using tokens.
-  - [x] Add base primitives: Textarea, Badge; polish Button (loading), Input (a11y), Card (elevation), Tabs (a11y).
-  - [x] Dark mode toggle with persisted preference and prefers-color-scheme support.
-  - [x] Demo pages: `/components-demo/tokens` and `/components-demo/ui`.
-
-- [*] Config & Flags
-  - [x] Feature flags scaffolding in `api/src/config/flags.ts`.
-  - [x] Align web/api flags and create a shared types contract (shared keys; web `src/lib/flags.ts` and api
-    `src/config/flags.ts`).
-  - [x] Dev-only web flags endpoint at `web/src/app/api/debug/flags/route.ts` (hidden in production).
-
-- [*] Public Experience (Unauthenticated)
-  - [x] Home/Marketing page content (first pass with CTAs to Sign in, Pricing, Feed).
-  - [x] Site shell with Header/Footer across public pages.
-  - [x] Pricing page enhanced with payments-flag gated subscribe button.
-  - [x] Public Feed empty state and sign-in prompt.
-  - [x] Static pages: `/about`, `/faq`; nicer `/not-found` page.
+- [*] Writing Tools (Projects)
+  - [*] Projects scaffold: API module with GET/POST stubs and web projects page placeholder.
 
 ## Planned
 
-### Public Experience (Unauthenticated)
+### CI & Tooling
 
-- [*] Home/Marketing page with tutorial/overview of StoryForge.
-- [*] Public stories feed (SSR/ISR) showing items scoped as `public-anyone`.
-- [*] Pricing/subscription explainer pages.
+- [ ] Extend CI: add `prisma generate` on shared schema and consider migrate deploy step (safe path).
+- [ ] Lint/Build verification on upgraded stack: fix ESLint 9.39 rule changes, TypeScript 5.9 typings, Next 16 build
+  warnings, React 19.2 RSC constraints.
+- [ ] Add Prettier + formatting check and Husky pre-commit hooks (optional).
 
 ### Accounts, Profiles, Subscription
 
@@ -117,12 +115,8 @@ Legend:
 
 ### Testing
 
-- [*] Establish testing harnesses: unit (Jest/Vitest), component (React Testing Library), e2e (Playwright).
-  - [x] Web test harness configured (Vitest + RTL + jsdom) with smoke tests for Home, Button, and Feed.
-  - [ ] API harness (Jest + Supertest) scaffold.
-  - [ ] Add initial tests for auth flows and scope enforcement.
-- [ ] Lint/Build verification on upgraded stack: fix ESLint 9.39 rule changes, TypeScript 5.9 typings, Next 16 build
-  warnings, React 19.2 RSC constraints.
+- [ ] Add initial tests for auth flows and scope enforcement (web + api).
+- [ ] Add basic component a11y tests (focus-visible, ARIA) for primitives.
 
 ### Deployment & Infra
 
@@ -130,13 +124,20 @@ Legend:
 - [ ] Deploy web to Vercel; API to Railway/Supabase/Neon Postgres.
 - [ ] Observability basics (logs/metrics) and error reporting.
 - [x] Add initial GitHub Actions workflow for web tests/build (Node 24.12.0, pnpm 10.26.0).
-  - [ ] Update CI matrix to Node 24 LTS (24.12.0) and pnpm 10 (10.26.0); add `pnpm -w install`, web/api build steps, and
-  prisma generate/migrate.
+- [x] Enhance CI: add web lint + typecheck and API tests + build. Prisma generate/migrate to be added next.
 
-### In Progress (New)
+### Writing Tools (Projects)
 
-- [*] Writing Tools (Projects)
-  - [*] Projects scaffold: API module with GET/POST stubs and web projects page placeholder.
+- [ ] Projects CRUD with per-project default scope (Prisma-backed, replace in-memory).
+- [ ] Story editor (TipTap) with autosave and versioning later.
+- [ ] Entities & world-building modules (iterative rollout):
+  - [ ] Characters (profiles with traits/quirks).
+  - [ ] Relationships graph (2D first; 3D nodes later) with editable labeled links.
+  - [ ] Locations & Maps (visual map later).
+  - [ ] Timeline of events (title, dates, characters, description, linked dialogues).
+  - [ ] Dialogues objects (participants, scripted dialogue, linkable to timeline events).
+  - [ ] Additional encyclopedic modules: Research, Calendar, Magic, Fauna, Flora, Cultures, Items, Systems, Languages,
+    Religions, Philosophies.
 
 ### Upgrade Follow-ups (Migrations)
 

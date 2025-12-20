@@ -189,13 +189,21 @@ Current status
 
 - Web: Vitest + React Testing Library are configured with jsdom. Smoke tests cover the Home page, Button component, and
   Public Feed page.
-- API: test harness not set up yet (planned: Jest + Supertest).
+- API: Jest + Supertest configured with a smoke e2e test for `/projects`.
 
 How to run (web)
 ```
 cd web
 pnpm test           # watch mode
 pnpm test:run       # CI mode
+```
+
+How to run (api)
+
+```
+cd api
+pnpm test           # watch/interactive
+pnpm test:ci        # CI mode (runInBand)
 ```
 
 Stack
@@ -207,12 +215,17 @@ Stack
 
 ## Continuous Integration (CI)
 
-We use GitHub Actions for CI. An initial workflow runs web tests and build on Node 24.12 with pnpm 10.26.
+We use GitHub Actions for CI. The workflow runs on Node 24.12 with pnpm 10.26 and includes:
+
+- Web: tests (Vitest), lint, and build (typecheck)
+- API: tests (Jest + Supertest) and build
 
 Workflow: `.github/workflows/ci.yml`
 
-- Steps: checkout → setup Node (corepack pnpm) → `pnpm -w install` → `pnpm -C web test:run` → `pnpm -C web build`
-- Next enhancements (planned): add API build and `prisma generate` on the shared schema.
+- Steps: checkout → setup Node (corepack pnpm) → `pnpm -w install` →
+  - `pnpm -C web test:run` → `pnpm -C web lint` → `pnpm -C web build`
+  - `pnpm -C api test:ci` → `pnpm -C api build`
+- Next enhancements (planned): add `prisma generate` on the shared schema and migrate deploy step.
 
 ---
 
