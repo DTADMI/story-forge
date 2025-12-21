@@ -38,6 +38,8 @@ model User {
   projects      Project[]
   gemWallet     GemWallet?
   goals         Goal[]
+  followers     Follow[] @relation("followers")
+  following     Follow[] @relation("following")
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -99,6 +101,18 @@ model ProgressLog {
   goalId    String?
   value     Int
   timestamp DateTime @default(now())
+}
+
+// Social follow model
+model Follow {
+  id          String   @id @default(cuid())
+  follower    User     @relation("following", fields: [followerId], references: [id])
+  followerId  String
+  followee    User     @relation("followers", fields: [followeeId], references: [id])
+  followeeId  String
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followeeId])
 }
 
 // NextAuth.js models

@@ -1,20 +1,23 @@
-import {NextRequest, NextResponse} from 'next/server';
-import {flags} from '@/lib/flags';
+import {NextResponse} from 'next/server';
+import {apiFetch} from '@/lib/api';
 
-export async function POST(req: NextRequest) {
-    if (!flags.payments) {
-        return new NextResponse('Not found', {status: 404});
-    }
-    const api = process.env.API_URL;
-    if (!api) {
-        return NextResponse.json({error: 'API_URL not configured'}, {status: 500});
-    }
-    const body = await req.json().catch(() => ({}));
-    const res = await fetch(`${api}/billing/checkout`, {
+export async function POST(req: Request) {
+    const form = await req.formData().catch(() => null);
+    const plan = (form?.get('plan') as string) || 'monthly';
+    const successUrl = form?.get('successUrl') as string | undefined;
+    const cancelUrl = form?.get('cancelUrl') as string | undefined;
+
+    const res = await apiFetch('/billing/checkout', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(body)
+        body: JSON.stringify({plan, successUrl, cancelUrl})
     });
-    const data = await res.json().catch(() => ({}));
-    return NextResponse.json(data, {status: res.status});
+
+    if (!res.ok) {
+        const msg = await res.text();
+        return new NextResponse(msg || 'Checkout failed', {status: res.status});
+    }
+    const data = await res.json();
+    const url = data?.url as string | undefined;
+    if (!url) return new NextResponse('No checkout URL', {status: 500});
+    return NextResponse.redirect(url, {status: 303});
 }

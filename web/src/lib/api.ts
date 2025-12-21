@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import {getServerSession} from 'next-auth';
 import {authOptions} from '@/lib/auth';
+import {getWebEnv} from '@/lib/env';
 
 // Creates a short-lived API token with the current user's id.
 async function createApiToken(): Promise<string | null> {
@@ -13,7 +14,9 @@ async function createApiToken(): Promise<string | null> {
 }
 
 export async function apiFetch(input: string, init: RequestInit = {}) {
-    const api = process.env.API_URL;
+  // Validate env on first use
+  const env = getWebEnv();
+  const api = env.API_URL;
     if (!api) throw new Error('Missing API_URL');
     const token = await createApiToken();
     const headers = new Headers(init.headers as HeadersInit);
