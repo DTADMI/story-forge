@@ -81,19 +81,7 @@ Legend:
 
 ## In Progress
 
-- [*] Accounts & Profiles — Settings expansion and guards
-  - [*] Add default publication scope to profile settings (web + API `User.settings` JSON)
-  - [*] Introduce API auth guard using session/JWT verification (replace temporary userId pass-through)
-  - [*] Add rate limiting on `PATCH /users/:id`
-
-- [*] Subscription — Stripe Checkout integration (behind `payments` flag)
-  - [*] API: Integrate Stripe Checkout Session in `POST /billing/checkout`
-  - [*] API: Add `POST /billing/webhook` with signature verification (stub handler)
-  - [*] Web: Redirect to Checkout and add return page; gate premium UI via `subscriptionStatus`
-
-- [*] Gamification & Wellbeing — Goals and streaks (MVP)
-  - [*] API: Endpoints to set a daily goal and read a streak summary
-  - [*] Web: Profile > Goals section to set/view daily goal; dashboard widget shows current streak
+// Executing remaining items; moving to Completed as they land.
 
 ## Planned
 

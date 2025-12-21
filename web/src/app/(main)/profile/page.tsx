@@ -18,6 +18,26 @@ async function getWallet(userId: string) {
     return res.json();
 }
 
+async function setGoal(userId: string, formData: FormData) {
+    'use server';
+    const api = process.env.API_URL!;
+    const target = Number(String(formData.get('dailyGoal') || '0'));
+    if (!Number.isFinite(target) || target <= 0) return;
+    await fetch(`${api}/gamification/goals`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({userId, target})
+    });
+}
+
+async function getStreak(userId: string) {
+    const api = process.env.API_URL;
+    if (!api) return {streak: 0};
+    const res = await fetch(`${api}/gamification/streak?userId=${encodeURIComponent(userId)}`, {cache: 'no-store'});
+    if (!res.ok) return {streak: 0};
+    return res.json();
+}
+
 async function updateUser(userId: string, formData: FormData) {
     'use server';
     const api = process.env.API_URL!;
@@ -39,7 +59,7 @@ export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id as string | undefined;
     if (!userId) redirect('/signin');
-    const [user, wallet] = await Promise.all([getUser(userId), getWallet(userId)]);
+    const [user, wallet, streak] = await Promise.all([getUser(userId), getWallet(userId), getStreak(userId)]);
 
     return (
         <main className="mx-auto max-w-3xl px-6 py-10">
@@ -85,6 +105,20 @@ export default async function ProfilePage() {
                     {wallet?.balance != null && (
                         <span className="text-sm">Gems: <strong>{wallet.balance}</strong></span>
                     )}
+                </div>
+            </form>
+
+            <form action={setGoal.bind(null, userId)} className="mt-6 grid gap-3 rounded-lg border border-fg/15 p-4">
+                <h2 className="text-lg font-bold">Goals</h2>
+                <div>
+                    <label className="block text-sm font-medium">Daily goal (words)</label>
+                    <input name="dailyGoal" type="number" min={1} step={1}
+                           placeholder="e.g., 500"
+                           className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm"/>
+                </div>
+                <div className="flex items-center justify-between">
+                    <button className="rounded-md bg-brand px-4 py-2 text-white">Save Goal</button>
+                    <span className="text-sm">Current streak: <strong>{streak?.streak ?? 0}</strong> days</span>
                 </div>
             </form>
         </main>
