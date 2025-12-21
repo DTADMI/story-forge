@@ -1,46 +1,38 @@
 import {getServerSession} from 'next-auth';
 import {authOptions} from '@/lib/auth';
+import {apiFetch} from '@/lib/api';
 import {redirect} from 'next/navigation';
 
 async function getUser(id: string) {
-    const api = process.env.API_URL;
-    if (!api) return null;
-    const res = await fetch(`${api}/users/${encodeURIComponent(id)}`, {cache: 'no-store'});
+    const res = await apiFetch(`/users/${encodeURIComponent(id)}`, {cache: 'no-store' as any});
     if (!res.ok) return null;
     return res.json();
 }
 
 async function getWallet(userId: string) {
-    const api = process.env.API_URL;
-    if (!api) return null;
-    const res = await fetch(`${api}/gamification/wallet?userId=${encodeURIComponent(userId)}`, {cache: 'no-store'});
+    const res = await apiFetch('/gamification/wallet', {cache: 'no-store' as any});
     if (!res.ok) return null;
     return res.json();
 }
 
 async function setGoal(userId: string, formData: FormData) {
     'use server';
-    const api = process.env.API_URL!;
     const target = Number(String(formData.get('dailyGoal') || '0'));
     if (!Number.isFinite(target) || target <= 0) return;
-    await fetch(`${api}/gamification/goals`, {
+    await apiFetch('/gamification/goals', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({userId, target})
+        body: JSON.stringify({target})
     });
 }
 
 async function getStreak(userId: string) {
-    const api = process.env.API_URL;
-    if (!api) return {streak: 0};
-    const res = await fetch(`${api}/gamification/streak?userId=${encodeURIComponent(userId)}`, {cache: 'no-store'});
+    const res = await apiFetch('/gamification/streak', {cache: 'no-store' as any});
     if (!res.ok) return {streak: 0};
     return res.json();
 }
 
 async function updateUser(userId: string, formData: FormData) {
     'use server';
-    const api = process.env.API_URL!;
     const payload = {
         name: String(formData.get('name') || '').trim() || null,
         username: String(formData.get('username') || '').trim() || null,
@@ -48,9 +40,8 @@ async function updateUser(userId: string, formData: FormData) {
         website: String(formData.get('website') || '').trim() || null,
         defaultPublicationScope: String(formData.get('defaultPublicationScope') || '') || undefined
     };
-    await fetch(`${api}/users/${encodeURIComponent(userId)}`, {
+    await apiFetch(`/users/${encodeURIComponent(userId)}`, {
         method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
     });
 }

@@ -1,9 +1,12 @@
-import {BadRequestException, Body, Controller, Headers, NotFoundException, Post} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Headers, NotFoundException, Post, UseGuards} from '@nestjs/common';
 import {isApiFlagEnabled} from '../../config/flags';
+import {ApiAuthGuard} from '../../common/auth/api-auth.guard';
+import {WriteRateLimitGuard} from '../../common/guards/rate-limit.guard';
 
 @Controller('billing')
 export class BillingController {
     @Post('checkout')
+    @UseGuards(ApiAuthGuard, WriteRateLimitGuard)
     async createCheckout(@Body() body: {
         plan: 'monthly' | 'yearly';
         successUrl?: string;

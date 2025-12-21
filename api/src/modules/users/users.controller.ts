@@ -1,23 +1,31 @@
-import {BadRequestException, Body, Controller, Get, Param, Patch} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Get, Param, Patch, UseGuards} from '@nestjs/common';
 import {UsersService} from './users.service';
+import {ApiAuthGuard} from '../../common/auth/api-auth.guard';
+import {CurrentUser} from '../../common/auth/current-user.decorator';
+import {ReadRateLimitGuard, WriteRateLimitGuard} from '../../common/guards/rate-limit.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get(':id')
-  getById(@Param('id') id: string) {
+  @UseGuards(ApiAuthGuard, ReadRateLimitGuard)
+  getById(@Param('id') id: string, @CurrentUser() user?: { id: string }) {
+      // MVP: allow self-read only
+      if (!user?.id || user.id !== id) throw new BadRequestException('forbidden');
     return this.usersService.findById(id);
   }
 
     @Patch(':id')
-    async update(@Param('id') id: string, @Body() body: {
+    @UseGuards(ApiAuthGuard, WriteRateLimitGuard)
+    async update(@Param('id') id: string, @CurrentUser() user: { id: string } | undefined, @Body() body: {
         name?: string | null;
         username?: string | null;
         bio?: string | null;
         website?: string | null;
         defaultPublicationScope?: 'private' | 'friends' | 'public-auth' | 'public-anyone'
     }) {
+        if (!user?.id || user.id !== id) throw new BadRequestException('forbidden');
         if (!id) throw new BadRequestException('id is required');
         if (body && typeof body !== 'object') throw new BadRequestException('invalid body');
         if (body?.username && typeof body.username !== 'string') throw new BadRequestException('username must be string');

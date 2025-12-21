@@ -7,6 +7,9 @@ import {DebugModule} from './modules/debug/debug.module';
 import {BillingModule} from './modules/billing/billing.module';
 import {ProjectsModule} from './modules/projects/projects.module';
 import {GamificationModule} from './modules/gamification/gamification.module';
+import {assertEnv} from './config/env';
+
+assertEnv();
 
 @Module({
     imports: [UsersModule, AuthModule, HealthModule, DebugModule, BillingModule, ProjectsModule, GamificationModule],

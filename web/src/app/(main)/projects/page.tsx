@@ -1,6 +1,7 @@
 import {getServerSession} from 'next-auth';
 import {authOptions} from '@/lib/auth';
 import Link from 'next/link';
+import {apiFetch} from '@/lib/api';
 
 type Project = {
     id: string;
@@ -9,32 +10,28 @@ type Project = {
     defaultScope: 'private' | 'friends' | 'public-auth' | 'public-anyone'
 };
 
-async function getProjects(userId: string): Promise<Project[]> {
-    const api = process.env.API_URL;
-    if (!api) return [];
-    const res = await fetch(`${api}/projects?userId=${encodeURIComponent(userId)}`, {cache: 'no-store'});
-    if (!res.ok) return [];
+async function getProjects(): Promise<Project[]> {
+    const res = await apiFetch('/projects', {cache: 'no-store' as any});
+    if (!res.ok) return [] as Project[];
     return res.json();
 }
 
-async function createProject(userId: string, formData: FormData) {
+async function createProject(_userId: string, formData: FormData) {
     'use server';
-    const api = process.env.API_URL!;
     const title = String(formData.get('title') || '').trim();
     const description = String(formData.get('description') || '').trim() || undefined;
     const defaultScope = (String(formData.get('defaultScope') || 'private') as Project['defaultScope']);
     if (!title) return;
-    await fetch(`${api}/projects`, {
+    await apiFetch('/projects', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({userId, title, description, defaultScope})
+        body: JSON.stringify({title, description, defaultScope})
     });
 }
 
 export default async function ProjectsPage() {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id as string | undefined;
-    const projects = userId ? await getProjects(userId) : [];
+    const projects = userId ? await getProjects() : [];
 
     return (
         <main className="mx-auto max-w-3xl px-6 py-10">

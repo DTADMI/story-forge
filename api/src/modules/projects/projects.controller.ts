@@ -1,5 +1,8 @@
-import {BadRequestException, Body, Controller, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Get, Param, Patch, Post, Query, UseGuards} from '@nestjs/common';
 import {DefaultScope, ProjectsService} from './projects.service';
+import {ApiAuthGuard} from '../../common/auth/api-auth.guard';
+import {CurrentUser} from '../../common/auth/current-user.decorator';
+import {ReadRateLimitGuard, WriteRateLimitGuard} from '../../common/guards/rate-limit.guard';
 
 class CreateProjectDto {
     userId!: string;
@@ -20,17 +23,21 @@ export class ProjectsController {
     }
 
     @Get()
-    async list(@Query('userId') userId?: string) {
-        if (!userId) throw new BadRequestException('userId is required');
-        return this.svc.listByUser(userId);
+    @UseGuards(ApiAuthGuard, ReadRateLimitGuard)
+    async list(@CurrentUser() user?: { id: string }, @Query('userId') userId?: string) {
+        const uid = user?.id || userId;
+        if (!uid) throw new BadRequestException('userId is required');
+        return this.svc.listByUser(uid);
     }
 
     @Post()
-    async create(@Body() body: CreateProjectDto) {
-        if (!body?.userId) throw new BadRequestException('userId is required');
+    @UseGuards(ApiAuthGuard, WriteRateLimitGuard)
+    async create(@CurrentUser() user: { id: string } | undefined, @Body() body: CreateProjectDto) {
+        const uid = user?.id || body?.userId;
+        if (!uid) throw new BadRequestException('userId is required');
         if (!body?.title || typeof body.title !== 'string') throw new BadRequestException('title is required');
         return this.svc.create({
-            userId: body.userId,
+            userId: uid,
             title: body.title,
             description: body.description,
             defaultScope: body.defaultScope
@@ -38,11 +45,13 @@ export class ProjectsController {
     }
 
     @Get(':id')
+    @UseGuards(ApiAuthGuard, ReadRateLimitGuard)
     async getById(@Param('id') id: string) {
         return this.svc.findById(id);
     }
 
     @Patch(':id')
+    @UseGuards(ApiAuthGuard, WriteRateLimitGuard)
     async update(@Param('id') id: string, @Body() body: UpdateProjectDto) {
         return this.svc.update(id, body);
     }

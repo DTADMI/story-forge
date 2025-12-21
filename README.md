@@ -1,224 +1,3 @@
-- Accounts: email/password (Credentials) with migration path to OAuth.
-- Projects: create/list with visibility controls (`private`, `friends`, `public-auth`, `public-anyone`).
-- Writing tools: TipTap‑based editor and world‑building entities (rolling out incrementally).
-- Social: follow/friends, comments, groups (phased).
-- Gamification: goals, streaks, gem wallet prototype; mental health guardrails.
-
-Access Scopes & Privacy Model
-- Default scope per project + per‑item overrides; public feed only surfaces eligible content.
-
-Security Posture (early hardening)
-- Session JWTs, rate limiting on auth, input validation, CORS, secrets management, audit trails later.
-
----
-
-## Prerequisites
-
-- Node.js 24+ (recommend 24.12.0). Check with `node -v`.
-- pnpm 10+ (recommend 10.26.0; or npm/yarn if you prefer; examples assume pnpm).
-- PostgreSQL 14+ (local install or hosted: Supabase/Neon/Railway).
-- Git.
-- Optional: Docker (to run Postgres locally via Compose).
-
-Recommended accounts for deployment
-- Vercel (web), Railway (API), and Supabase/Neon (Postgres). Free tiers are sufficient for MVP.
-
----
-
-## Environment Variables & Secrets
-
-Templates
-- Root: `.env.example` (copy to `.env`)
-- Web: `web/.env.example` (copy to `web/.env.local`)
-- API: `api/.env.example` (copy to `api/.env`)
-
-Minimum required for local dev
-- DATABASE_URL: Postgres connection string. Example (local):
-  - `postgresql://postgres:postgres@localhost:5432/storyforge?schema=public`
-  - Where to get: create a local DB or a hosted instance (Supabase/Neon) and copy the connection URL.
-- NEXTAUTH_SECRET (web): a strong random string (e.g., `openssl rand -base64 32`)
-- NEXTAUTH_URL (web): `http://localhost:3000` during local dev
-- API PORT (api): optional; defaults to 3001
-- ALLOWED_ORIGINS (api): comma‑separated origins allowed by CORS, e.g. `http://localhost:3000`
-
-Optional (future features)
-- OAuth providers (web): `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GITHUB_ID`, `GITHUB_SECRET` (from provider consoles)
-- Email (web/api): `RESEND_API_KEY` or AWS SES creds for transactional mail
-- SMS (api): `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM`
-
-Notes
-- Keep secrets out of source control. Use `.env.local` for Next.js and a secrets manager in CI/CD.
-
----
-
-## Setup & Local Development
-
-1) Clone the repo
-```
-git clone https://github.com/<your-org>/story-forge.git
-cd story-forge
-```
-
-2) Create databases (local Postgres)
-- Ensure Postgres is running and create a database named `storyforge` (or use Supabase/Neon/Railway and copy the URL).
-
-3) Copy env files and fill values
-```
-cp .env.example .env
-cp web/.env.example web/.env.local
-cp api/.env.example api/.env
-```
-Set at minimum:
-- In `.env`: `DATABASE_URL=postgresql://...`
-- In `web/.env.local`: `NEXTAUTH_SECRET=...`, `NEXTAUTH_URL=http://localhost:3000`, and `DATABASE_URL=postgresql://...` (same as root)
-- In `api/.env`: `ALLOWED_ORIGINS=http://localhost:3000` and optionally `PORT=3001`
-
-4) Install dependencies
-```
-cd web && npm install
-cd ../api && npm install
-cd ..
-```
-
-5) Generate Prisma client and run migrations
-
-Because the Prisma schema lives in the repo root (`/prisma/schema.prisma`) while the web and api apps depend on `@prisma/client`, run generate from each app and point to the shared schema file:
-
-```
-# From web/
-cd web
-npx prisma generate --schema=../prisma/schema.prisma
-
-# From api/
-cd ../api
-npx prisma generate --schema=../prisma/schema.prisma
-
-# Run migrations once (from repo root or either app)
-cd ..
-npx prisma migrate dev --schema=./prisma/schema.prisma
-```
-
-Tip: web has convenience scripts, but they assume a default schema location. Prefer the explicit `--schema` flag above.
-
-6) Seed demo data (user + sample project)
-```
-cd web
-npm run seed
-```
-This creates a demo account: `demo@storyforge.app` with password `password123` and one public project.
-
-7) Start the apps
-```
-# Web (Next.js on http://localhost:3000)
-cd web
-npm run dev
-
-# API (NestJS on http://localhost:3001)
-cd ../api
-npm run start:dev
-```
-
-8) Try it out
-- Visit `http://localhost:3000/signin` and log in with the demo account.
-- Browse the marketing pages and the public feed (soon at `/feed`).
-
----
-
-## Authentication (NextAuth v4)
-
-We use NextAuth v4.24.13 with the Prisma Adapter and a Credentials provider (email/password) for MVP.
-
-Implementation
-
-- Shared options: `web/src/lib/auth.ts` exports `authOptions` (Prisma Adapter, Credentials, JWT sessions, callbacks).
-- API route: `web/src/app/api/auth/[...nextauth]/route.ts` creates a handler with `NextAuth(authOptions)` and exports it
-  as `GET`/`POST`.
-- Prisma models: `User`, `Account`, `Session`, `VerificationToken` are defined in `prisma/schema.prisma`.
-
-Environment
-
-- `web/.env.local` must include: `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, and `DATABASE_URL`.
-
-Usage
-
-- Get the current session in a Server Component/Action:
-  ```ts
-  // any server file in web/
-  import { getServerSession } from 'next-auth';
-  import { authOptions } from '@/lib/auth';
-  const session = await getServerSession(authOptions);
-  ```
-- Trigger sign-in from a client component:
-  ```ts
-  'use client'
-  import { signIn } from 'next-auth/react';
-  await signIn('credentials', { email, password, redirect: true, callbackUrl: '/' });
-  ```
-
-- Sign-up (create account) via API route:
-  - Endpoint: `POST /api/auth/signup`
-  - Body: `{ email: string, password: string (min 8), name?: string }`
-  - Validation: Zod on server; errors return 400/409
-  - On success (201), the client may auto sign-in via credentials
-  - Example client page at `/signup`
-
-- Protected routes (App Router):
-  - We protect authenticated areas with a server layout at `app/(main)/layout.tsx` using `getServerSession(authOptions)`
-    and `redirect('/signin')` when unauthenticated.
-  - Example protected page: `app/(main)/dashboard/page.tsx` which also shows a Sign out button.
-
-- Sign out (client):
-  ```ts
-  'use client'
-  import { signOut } from 'next-auth/react';
-  signOut({ callbackUrl: '/signin' });
-  ```
-
-Notes
-
-- Sessions use JWT strategy and we augment `session.user.id` via callbacks for convenience.
-- The sign-in page lives at `/signin` and posts to the Credentials provider.
-- The sign-up page lives at `/signup` and posts to the API route, then auto-signs-in the user.
-- We intentionally stay on pnpm and NextAuth v4 for stability until v5 reaches a stable release.
-
----
-
-## Testing
-
-Current status
-
-- Web: Vitest + React Testing Library are configured with jsdom. Smoke tests cover the Home page, Button component, and
-  Public Feed page.
-- API: Jest + Supertest configured with a smoke e2e test for `/projects`.
-
-How to run (web)
-```
-cd web
-pnpm test           # watch mode
-pnpm test:run       # CI mode
-```
-
-How to run (api)
-
-```
-cd api
-pnpm test           # watch/interactive
-pnpm test:ci        # CI mode (runInBand)
-```
-
-Stack
-
-- Web: Vitest + React Testing Library (+ jest-dom)
-- API (planned): Jest + Supertest
-
----
-
-## Continuous Integration (CI)
-
-We use GitHub Actions for CI. The workflow runs on Node 24.12 with pnpm 10.26 and includes:
-
-- Web: tests (Vitest), lint, and build (typecheck)
-- API: tests (Jest + Supertest) and build
 
 Workflow: `.github/workflows/ci.yml`
 
@@ -359,3 +138,30 @@ If anything in this README is unclear or you encounter setup issues, please open
 ### Feature Flags (dev-only surfaces)
 
 - Web debug flags endpoint (dev only): `GET /api/debug/flags` → `{ env, flags }`. Hidden in production (404).
+
+## API authentication from Web → API (server-side)
+
+The web app calls the API using a short‑lived API JWT that contains the current user id. This token is minted
+server‑side and sent as `Authorization: Bearer <token>`.
+
+- Secret: `API_JWT_SECRET` must be set for both web (server environment) and api.
+- Web helper: `web/src/lib/api.ts` provides `apiFetch(path, init)` which:
+    - Reads the current session (`getServerSession`)
+    - Signs `{ uid: <userId> }` using `API_JWT_SECRET` (HS256, 10m expiry)
+    - Calls the API with the `Authorization` header
+- API guard: `ApiAuthGuard` verifies the token and exposes `req.user.id` to controllers. Simple in‑memory read/write
+  rate limits are applied to sensitive endpoints.
+
+Example (server component / action):
+
+```ts
+import {apiFetch} from '@/lib/api';
+
+const res = await apiFetch('/projects', {cache: 'no-store' as any});
+const projects = await res.json();
+```
+
+Environment
+
+- `API_JWT_SECRET=...` in `web/.env.local` and `api/.env`
+- Keep this secret server‑only; do not expose to client code
