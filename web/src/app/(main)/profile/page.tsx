@@ -25,7 +25,8 @@ async function updateUser(userId: string, formData: FormData) {
         name: String(formData.get('name') || '').trim() || null,
         username: String(formData.get('username') || '').trim() || null,
         bio: String(formData.get('bio') || '').trim() || null,
-        website: String(formData.get('website') || '').trim() || null
+        website: String(formData.get('website') || '').trim() || null,
+        defaultPublicationScope: String(formData.get('defaultPublicationScope') || '') || undefined
     };
     await fetch(`${api}/users/${encodeURIComponent(userId)}`, {
         method: 'PATCH',
@@ -63,6 +64,21 @@ export default async function ProfilePage() {
                     <label className="block text-sm font-medium">Bio</label>
                     <textarea name="bio" defaultValue={user?.bio ?? ''}
                               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm"/>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium">Default publication scope</label>
+                    <select
+                        name="defaultPublicationScope"
+                        defaultValue={
+                            (user?.settings?.defaultPublicationScope as string | undefined) ?? 'private'
+                        }
+                        className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm"
+                    >
+                        <option value="private">private</option>
+                        <option value="friends">friends</option>
+                        <option value="public-auth">public-auth</option>
+                        <option value="public-anyone">public-anyone</option>
+                    </select>
                 </div>
                 <div className="flex items-center justify-between">
                     <button className="rounded-md bg-brand px-4 py-2 text-white">Save</button>

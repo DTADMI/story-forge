@@ -13,7 +13,8 @@ export class UsersService {
         name?: string | null;
         username?: string | null;
         bio?: string | null;
-        website?: string | null
+        website?: string | null;
+        settings?: Record<string, any> | null;
     }) {
         return this.prisma.user.update({
             where: {id},
@@ -21,7 +22,8 @@ export class UsersService {
                 name: data.name ?? undefined,
                 username: data.username ?? undefined,
                 bio: data.bio ?? undefined,
-                website: data.website ?? undefined
+                website: data.website ?? undefined,
+                settings: data.settings ?? undefined
             }
         });
     }

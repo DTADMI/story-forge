@@ -15,7 +15,8 @@ export class UsersController {
         name?: string | null;
         username?: string | null;
         bio?: string | null;
-        website?: string | null
+        website?: string | null;
+        defaultPublicationScope?: 'private' | 'friends' | 'public-auth' | 'public-anyone'
     }) {
         if (!id) throw new BadRequestException('id is required');
         if (body && typeof body !== 'object') throw new BadRequestException('invalid body');
@@ -23,7 +24,20 @@ export class UsersController {
         if (body?.name && typeof body.name !== 'string') throw new BadRequestException('name must be string');
         if (body?.bio && typeof body.bio !== 'string') throw new BadRequestException('bio must be string');
         if (body?.website && typeof body.website !== 'string') throw new BadRequestException('website must be string');
-        const updated = await this.usersService.updateById(id, body);
+        if (body?.defaultPublicationScope) {
+            const allowed = ['private', 'friends', 'public-auth', 'public-anyone'];
+            if (!allowed.includes(body.defaultPublicationScope)) {
+                throw new BadRequestException('invalid defaultPublicationScope');
+            }
+        }
+        const settings = body?.defaultPublicationScope ? {defaultPublicationScope: body.defaultPublicationScope} : undefined;
+        const updated = await this.usersService.updateById(id, {
+            name: body.name,
+            username: body.username,
+            bio: body.bio,
+            website: body.website,
+            settings
+        });
         const {passwordHash, ...rest} = updated as any;
         return rest;
     }

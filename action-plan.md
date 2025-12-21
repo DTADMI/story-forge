@@ -62,29 +62,38 @@ Legend:
     and defaultScope
   - [x] Scopes: defaultScope enforced in API entity representation; public feed remains `public-anyone` only
 
+- [x] Accounts & Profiles — MVP
+  - [x] API: `GET /users/:id` and `PATCH /users/:id` to update `name`, `username`, `bio`, `website` with validation
+  - [x] Web: `/profile` page (SSR) to view/update profile via server actions
+  - [x] Docs: README/docs updated with routes and usage
+
+- [x] Subscription — Foundations (flag-gated)
+  - [x] API: `POST /billing/checkout` returns `{ url }` when `payments` is enabled; 404 when disabled (stub until
+    Stripe)
+  - [x] Web: `/api/checkout` proxy route; Pricing page Subscribe posts to proxy when `payments` is on
+  - [x] Docs: README/docs updated (flag behavior and proxy)
+
+- [x] Gamification & Wellbeing — MVP scaffolds
+  - [x] Prisma: Add `Goal`, `ProgressLog`, `GemWallet`, `GemTx` models
+  - [x] API: `GET /gamification/wallet?userId=` and `POST /gamification/progress` (stubbed rewards)
+  - [x] Web: Profile shows Gems balance (read-only)
+  - [x] Docs: sections added in docs and README
+
 ## In Progress
 
-[*] Accounts & Profiles — MVP
+- [*] Accounts & Profiles — Settings expansion and guards
+  - [*] Add default publication scope to profile settings (web + API `User.settings` JSON)
+  - [*] Introduce API auth guard using session/JWT verification (replace temporary userId pass-through)
+  - [*] Add rate limiting on `PATCH /users/:id`
 
-- [ ] API: UsersController with `GET /users/:id` (self only for MVP) and `PATCH /users/:id` to update `name`,
-  `username`, `bio`, `website` with validation.
-- [ ] Web: `/app/(main)/profile` page (SSR) to view/update profile; server actions posting to API.
-- [ ] Tests/Docs: e2e smoke for `PATCH /users/:id`; README/docs sections for Accounts & Profiles.
+- [*] Subscription — Stripe Checkout integration (behind `payments` flag)
+  - [*] API: Integrate Stripe Checkout Session in `POST /billing/checkout`
+  - [*] API: Add `POST /billing/webhook` with signature verification (stub handler)
+  - [*] Web: Redirect to Checkout and add return page; gate premium UI via `subscriptionStatus`
 
-[*] Subscription — Foundations (flag-gated)
-
-- [ ] API: Extend BillingController `POST /billing/checkout` to accept `{ plan: 'monthly'|'yearly' }` and return
-  `{ url }` when `payments` is enabled; 404 when disabled.
-- [ ] Web: Add `/app/api/checkout` proxy route to call API when `payments` flag is on; wire Pricing page Subscribe
-  button.
-- [ ] Tests/Docs: Unit test for web proxy; document flag behavior in README/docs.
-
-[*] Gamification & Wellbeing — MVP scaffolds
-
-- [ ] Prisma: Add `Goal`, `ProgressLog`, `GemWallet`, `GemTx` tables and migrations.
-- [ ] API: `gamification` module with `GET /gamification/wallet?userId=` and `POST /gamification/progress` (stub).
-- [ ] Web: Show gems badge and read-only Goals section on Profile (placeholder data from API).
-- [ ] Tests/Docs: API e2e smoke for wallet; docs section for Gamification & Wellbeing.
+- [*] Gamification & Wellbeing — Goals and streaks (MVP)
+  - [*] API: Endpoints to set a daily goal and read a streak summary
+  - [*] Web: Profile > Goals section to set/view daily goal; dashboard widget shows current streak
 
 ## Planned
 
@@ -118,16 +127,17 @@ Legend:
   - [ ] Additional encyclopedic modules: Research, Calendar, Magic, Fauna, Flora, Cultures, Items, Systems, Languages,
     Religions, Philosophies
 
-### Social & Messaging
+### Social & Messaging — Foundations
 
-- [ ] Follow/friends, comments, groups, events.
-- [ ] DMs and chat rooms; notifications & messaging preferences.
+- [ ] Prisma: `Follow` and `Friend` tables
+- [ ] API: `POST /social/follow` toggle; `GET /social/followers` and `/social/following`
+- [ ] Web: Profile tabs for Followers/Following; Follow button on user profile
 
-### Gamification & Wellbeing
+### Gamification & Wellbeing (post‑MVP extensions)
 
-- [ ] Goals, streaks, gem wallet prototype; earn/redeem for customization or gifts.
-- [ ] Notification cadence controls (email/SMS/push) with wellbeing guardrails.
-- [ ] Anti-burnout mechanisms (break nudges, focus modes, caps).
+- [ ] Earn/redeem gems for customization or gifts
+- [ ] Notification cadence controls (email/SMS/push) with wellbeing guardrails
+- [ ] Anti-burnout mechanisms (break nudges, focus modes, caps)
 
 ### Security & Compliance
 
