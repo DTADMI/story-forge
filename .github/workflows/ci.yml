@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  web:
+    name: Web - test and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.12.0
+          cache: 'pnpm'
+
+      - name: Enable corepack (pnpm)
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.0 --activate
+
+      - name: Install dependencies (workspace)
+        run: pnpm -w install
+
+      - name: Prisma generate (web)
+        run: pnpm -C web exec prisma generate --schema=../prisma/schema.prisma
+
+      - name: Web tests
+        run: pnpm -C web test:run
+
+      - name: Web lint
+        run: pnpm -C web lint
+
+      - name: Web typecheck (build --no-lint)
+        env:
+          NEXTAUTH_SECRET: testsecret
+          NEXTAUTH_URL: http://localhost:3000
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/storyforge
+          API_URL: http://localhost:3001
+          API_JWT_SECRET: testsecret
+        run: pnpm -C web build
+
+  api:
+    name: API - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.12.0
+          cache: 'pnpm'
+
+      - name: Enable corepack (pnpm)
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.0 --activate
+
+      - name: Install dependencies (workspace)
+        run: pnpm -w install
+
+      - name: Prisma generate (api)
+        run: pnpm -C api exec prisma generate --schema=../prisma/schema.prisma
+
+      - name: API migrate deploy (optional/preview)
+        # Only run if DATABASE_URL is present and not on PR from fork for safety
+        if: env.DATABASE_URL != ''
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/storyforge' }}
+        run: pnpm -C api exec prisma migrate deploy --schema=../prisma/schema.prisma
+
+      - name: API tests
+        run: pnpm -C api test:ci
+
+      - name: API build
+        run: pnpm -C api build

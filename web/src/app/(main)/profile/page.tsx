@@ -52,6 +52,26 @@ export default async function ProfilePage() {
     if (!userId) redirect('/signin');
     const [user, wallet, streak] = await Promise.all([getUser(userId), getWallet(userId), getStreak(userId)]);
 
+    async function updatePreferences(formData: FormData) {
+        'use server';
+        const payload = {
+            cadence: String(formData.get('cadence') || '') || undefined,
+            quietHours: {
+                start: String(formData.get('quietStart') || '') || undefined,
+                end: String(formData.get('quietEnd') || '') || undefined
+            },
+            channels: {
+                email: String(formData.get('ch_email') || '') === 'on',
+                sms: String(formData.get('ch_sms') || '') === 'on',
+                push: String(formData.get('ch_push') || '') === 'on'
+            }
+        };
+        await apiFetch(`/users/${encodeURIComponent(userId)}/preferences`, {
+            method: 'PATCH',
+            body: JSON.stringify(payload)
+        });
+    }
+
     return (
         <main className="mx-auto max-w-3xl px-6 py-10">
             <h1 className="text-2xl font-extrabold">Your Profile</h1>
@@ -96,6 +116,53 @@ export default async function ProfilePage() {
                     {wallet?.balance != null && (
                         <span className="text-sm">Gems: <strong>{wallet.balance}</strong></span>
                     )}
+                </div>
+            </form>
+
+            <form action={updatePreferences} className="mt-6 grid gap-3 rounded-lg border border-fg/15 p-4">
+                <h2 className="text-lg font-bold">Notifications & wellbeing</h2>
+                <div>
+                    <label className="block text-sm font-medium">Cadence</label>
+                    <select name="cadence" defaultValue={(user?.settings?.preferences?.cadence as string) ?? 'daily'}
+                            className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm">
+                        <option value="immediate">Immediate</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                    </select>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-sm font-medium">Quiet hours start</label>
+                        <input name="quietStart" type="time"
+                               defaultValue={user?.settings?.preferences?.quietHours?.start ?? ''}
+                               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm"/>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium">Quiet hours end</label>
+                        <input name="quietEnd" type="time"
+                               defaultValue={user?.settings?.preferences?.quietHours?.end ?? ''}
+                               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm"/>
+                    </div>
+                </div>
+                <fieldset className="mt-1">
+                    <legend className="block text-sm font-medium">Channels</legend>
+                    <div className="mt-2 flex items-center gap-4 text-sm">
+                        <label className="inline-flex items-center gap-2">
+                            <input type="checkbox" name="ch_email"
+                                   defaultChecked={Boolean(user?.settings?.preferences?.channels?.email)}/> Email
+                        </label>
+                        <label className="inline-flex items-center gap-2">
+                            <input type="checkbox" name="ch_sms"
+                                   defaultChecked={Boolean(user?.settings?.preferences?.channels?.sms)}/> SMS
+                        </label>
+                        <label className="inline-flex items-center gap-2">
+                            <input type="checkbox" name="ch_push"
+                                   defaultChecked={Boolean(user?.settings?.preferences?.channels?.push)}/> Push
+                        </label>
+                    </div>
+                </fieldset>
+                <div className="flex items-center justify-end">
+                    <button className="rounded-md bg-brand px-4 py-2 text-white">Save Preferences</button>
                 </div>
             </form>
 

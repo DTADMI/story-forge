@@ -81,33 +81,34 @@ Legend:
 
 ## In Progress
 
-- [*] Subscription — Stripe Checkout (behind payments flag)
-  - [*] API: Integrate Stripe Checkout Session in `POST /billing/checkout` (monthly/yearly)
-  - [*] API: `POST /billing/webhook` with signature verification; set `subscriptionStatus`
-  - [*] Web: proxy `/api/checkout` redirects to Checkout; `/billing/return` page shows status; gate premium UI
-  - [*] Env/docs: Stripe envs (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_PREMIUM_MONTHLY`,
+- [x] Subscription — Stripe Checkout (behind payments flag)
+  - [x] API: Integrate Stripe Checkout Session in `POST /billing/checkout` (monthly/yearly)
+  - [x] API: `POST /billing/webhook` with signature verification; set `subscriptionStatus`
+  - [x] Web: proxy `/api/checkout` redirects to Checkout; `/billing/return` page shows status; gate premium UI
+  - [x] Env/docs: Stripe envs (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_PREMIUM_MONTHLY`,
     `STRIPE_PRICE_PREMIUM_YEARLY`) documented; Stripe CLI notes
-  - [*] Tests: API unit/e2e mocking signature + event dispatch
+  - [x] Tests: API unit/e2e mocking signature + event dispatch
 
-- [*] Social & Messaging — Follow/followers foundations
-  - [*] Prisma: `Follow (followerId, followeeId, createdAt)` with unique compound index
-  - [*] API: `POST /social/follow` toggle; `GET /social/followers` and `/social/following` (paginated)
-  - [*] Web: Profile tabs for Followers/Following; Follow/Unfollow button (disabled for self)
-  - [*] Tests: API e2e for toggle and lists
+- [x] Social & Messaging — Follow/followers foundations
+  - [x] Prisma: `Follow (followerId, followeeId, createdAt)` with unique compound index
+  - [x] API: `POST /social/follow` toggle; `GET /social/followers` and `/social/following` (paginated)
+  - [x] Web: Followers/Following pages (MVP); follow/unfollow UI added to public user profile page
+  - [x] Tests: API e2e for toggle and lists
 
-- [*] Environment validation with Zod
-  - [*] Web: `src/lib/env.ts` schema for `NEXTAUTH_*`, `API_URL`, `API_JWT_SECRET`, `NEXT_PUBLIC_FEATURE_*`
-  - [*] API: `src/config/env.ts` migrate to Zod validation for API/Stripe/flags; fail fast with clear messages
+- [x] Environment validation with Zod
+  - [x] Web: `src/lib/env.ts` schema for `NEXTAUTH_*`, `API_URL`, `API_JWT_SECRET`, `NEXT_PUBLIC_FEATURE_*`
+  - [x] API: `src/config/env.ts` migrate to Zod validation for API/Stripe/flags; fail fast with clear messages
 
-- [*] Notifications prefs & wellbeing (MVP)
-  - [*] Extend `User.preferences` JSON: quietHours, cadence, channels
-  - [*] API: `PATCH /users/:id/preferences` (guarded) with validation
-  - [*] Web: Profile > Notifications UI to edit preferences
-  - [*] Tests: unit validation + e2e happy path
+- [x] Notifications prefs & wellbeing (MVP)
+  - [x] Extend `User.preferences` JSON: quietHours, cadence, channels
+  - [x] API: `PATCH /users/:id/preferences` (guarded) with validation
+  - [x] Web: Profile > Notifications UI to edit preferences
+  - [x] Tests: unit validation + e2e happy path
 
-- [*] CI & Tooling
-  - [*] Add Prisma steps in CI: `prisma generate` and safe `migrate deploy` (preview‑gated)
-  - [*] Deployment notes (README/docs): Stripe envs, webhook setup, DB migration notes, quality gates
+- [x] CI & Tooling
+  - [x] Add Prisma generate in CI for both web and api
+  - [x] Add safe `migrate deploy` (preview‑gated)
+  - [x] Deployment notes (README/docs): Stripe envs, webhook setup, DB migration notes, quality gates
 
 ## Planned
 

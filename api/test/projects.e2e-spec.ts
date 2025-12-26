@@ -1,5 +1,5 @@
 import request from 'supertest';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import {Test} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
 import {AppModule} from '../src/app.module';

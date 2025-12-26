@@ -5,7 +5,7 @@ const config: Config = {
     testEnvironment: 'node',
     rootDir: '.',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-    testMatch: ['**/?(*.)+(spec|test).ts'],
+    testMatch: ['<rootDir>/src/**/*.spec.ts', '<rootDir>/test/**/*.e2e-spec.ts', '<rootDir>/**/?(*.)+(spec|test).ts'],
     transform: {
         '^.+\\.(t|j)s$': ['ts-jest', {tsconfig: 'tsconfig.json'}]
     },

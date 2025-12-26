@@ -10,10 +10,27 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(ApiAuthGuard, ReadRateLimitGuard)
-  getById(@Param('id') id: string, @CurrentUser() user?: { id: string }) {
-      // MVP: allow self-read only
-      if (!user?.id || user.id !== id) throw new BadRequestException('forbidden');
-    return this.usersService.findById(id);
+  async getById(@Param('id') id: string, @CurrentUser() user?: { id: string }) {
+      const target = await this.usersService.findById(id);
+      if (!target) throw new BadRequestException('User not found');
+
+      const {passwordHash, ...rest} = target as any;
+
+      // If it's the user themselves, return everything
+      if (user?.id === id) {
+          return rest;
+      }
+
+      // Otherwise, return a public-safe subset
+      return {
+          id: rest.id,
+          name: rest.name,
+          username: rest.username,
+          bio: rest.bio,
+          website: rest.website,
+          subscriptionStatus: rest.subscriptionStatus,
+          createdAt: rest.createdAt
+      };
   }
 
     @Patch(':id')

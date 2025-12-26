@@ -17,14 +17,18 @@ export class BillingController {
     }
     @Post('checkout')
     @UseGuards(ApiAuthGuard, WriteRateLimitGuard)
-    async createCheckout(@Body() body: {
-        plan: 'monthly' | 'yearly';
-        successUrl?: string;
-        cancelUrl?: string
-    }) {
+    async createCheckout(
+        @CurrentUser() user: { id: string } | undefined,
+        @Body() body: {
+            plan: 'monthly' | 'yearly';
+            successUrl?: string;
+            cancelUrl?: string
+        }
+    ) {
         if (!isApiFlagEnabled('payments')) {
             throw new NotFoundException();
         }
+        if (!user?.id) throw new BadRequestException('Unauthorized');
         if (!this.stripe) {
             throw new BadRequestException('Stripe not configured');
         }
@@ -43,7 +47,8 @@ export class BillingController {
             cancel_url,
             line_items: [{price, quantity: 1}],
             metadata: {
-                // ApiAuthGuard sets req.user.id; for simplicity we don't access it here, rely on web to provide via JWT at webhook time
+                userId: user.id,
+                plan: body.plan
             }
         });
         return {url: session.url} as const;
@@ -75,13 +80,20 @@ export class BillingController {
         if (event.type === 'checkout.session.completed') {
             const session = event.data.object as Stripe.Checkout.Session;
             const userId = (session.metadata as any)?.userId as string | undefined;
+            const plan = (session.metadata as any)?.plan as string | undefined;
             if (userId) {
+                const expiresAt = new Date();
+                if (plan === 'yearly') {
+                    expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+                } else {
+                    expiresAt.setMonth(expiresAt.getMonth() + 1);
+                }
+
                 await this.prisma.user.update({
                     where: {id: userId},
                     data: {
                         subscriptionStatus: 'active',
-                        // For simple MVP, set expires +30 days for monthly, +365 days for yearly when possible
-                        subscriptionExpiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+                        subscriptionExpiresAt: expiresAt
                     }
                 }).catch(() => void 0);
             }

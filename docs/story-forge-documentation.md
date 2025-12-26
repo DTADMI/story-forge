@@ -739,6 +739,26 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - Rollback procedures
 - Incident response plan
 
+### Deployment Infrastructure & Quality Gates
+
+#### CI/CD Pipeline (GitHub Actions)
+
+- **Quality Gates:**
+    - Linting (ESLint 9.39)
+    - Type-checking (TS 5.9)
+    - Unit/E2E Testing (Vitest/Jest)
+    - Prisma Schema Validation (`prisma generate`)
+    - DB Migration Check (`prisma migrate deploy` - preview-gated)
+- **Deployment:**
+    - Web: Vercel (Automatic preview and production deployments)
+    - API: Railway/Supabase (Triggered on main push)
+
+#### Environment Management
+
+- **Validation:** All environments validated at startup via Zod schemas.
+- **Stripe Integration:** Requires `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and Price IDs.
+- **Flags:** Feature toggles (e.g., `payments`) must be set in `API_FEATURE_*` and `NEXT_PUBLIC_FEATURE_*`.
+
 ## Development Roadmap
 
 ### Phase 1: MVP (6-8 weeks)
