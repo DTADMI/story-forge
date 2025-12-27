@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException,} from '@nestjs/common';
 import {Request} from 'express';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import {env} from '../../config/env';
 
 export interface ApiJwtPayload {
@@ -26,7 +26,7 @@ export class ApiAuthGuard implements CanActivate {
             if (!decoded?.uid) throw new UnauthorizedException('Invalid token');
             req.user = {id: decoded.uid};
             return true;
-        } catch (e) {
+        } catch (e: any) {
             throw new UnauthorizedException('Invalid or expired token');
         }
     }

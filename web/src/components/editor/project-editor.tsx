@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Editor} from '@/components/editor/editor';
 import {useRouter} from 'next/navigation';
 
@@ -12,12 +12,35 @@ interface ProjectEditorProps {
         content?: string;
         defaultScope: string;
     };
+    userPreferences?: {
+        breakReminders?: boolean;
+    };
 }
 
-export function ProjectEditor({project}: ProjectEditorProps) {
+export function ProjectEditor({project, userPreferences}: ProjectEditorProps) {
     const [content, setContent] = useState(project.content || '');
     const [saving, setSaving] = useState(false);
+    const [lastBreak, setLastBreak] = useState(Date.now());
     const router = useRouter();
+
+    useEffect(() => {
+        if (!userPreferences?.breakReminders) return;
+
+        const interval = setInterval(() => {
+            const now = Date.now();
+            const minsSinceBreak = (now - lastBreak) / 1000 / 60;
+            if (minsSinceBreak >= 45) {
+                if (confirm('You have been writing for 45 minutes. Take a short break to stay fresh!')) {
+                    setLastBreak(now);
+                } else {
+                    // SNOOZE: add 15 mins
+                    setLastBreak(now - (30 * 60 * 1000));
+                }
+            }
+        }, 60000); // Check every minute
+
+        return () => clearInterval(interval);
+    }, [lastBreak, userPreferences?.breakReminders]);
 
     const handleSave = async (newContent: string) => {
         setSaving(true);

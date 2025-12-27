@@ -1,4 +1,4 @@
-import request from 'supertest';
+import * as request from 'supertest';
 import * as jwt from 'jsonwebtoken';
 import {Test} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';

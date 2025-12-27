@@ -55,4 +55,22 @@ export class GamificationController {
     if (!user?.id) throw new BadRequestException('userId is required');
     return this.svc.getDailyStreak(user.id);
   }
+
+    @Get('badges')
+    @UseGuards(ApiAuthGuard, ReadRateLimitGuard)
+    async badges(@CurrentUser() user?: { id: string }) {
+        if (!user?.id) throw new BadRequestException('userId is required');
+        const earned = await this.svc.getUserBadges(user.id);
+        return earned.map((ub) => ({
+            id: ub.id,
+            awardedAt: ub.awardedAt,
+            badge: {
+                id: ub.badge.id,
+                name: ub.badge.name,
+                description: ub.badge.description,
+                imageUrl: ub.badge.imageUrl,
+                type: ub.badge.type,
+            },
+        }));
+    }
 }

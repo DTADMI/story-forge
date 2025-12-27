@@ -29,7 +29,7 @@ strong emphasis on mental wellbeing.
 
 - **Frontend:** Next.js 16 (App Router) + React 19.2 + TypeScript
 - **Backend:** NestJS 11.1 (Node.js + TypeScript)
-- **Database:** PostgreSQL with Prisma ORM (Prisma 7.2)
+- **Database:** PostgreSQL with Prisma ORM (Prisma 7.2 + Driver Adapters)
 - **Infrastructure:** Vercel + Railway + Supabase
 
 ### Why This Stack?
@@ -673,21 +673,20 @@ The primary goal of StoryForge gamification is not to create a complex economy, 
     - **Cosmetic Personalization:** Unlock dark mode themes, custom editor fonts, or profile badges.
     - **Social Gifting:** Use Ink to send "Cheers" or digital "Stickers" to friends to motivate them.
 - **The Ink Pot:** Ink is stored in the user's "Ink Pot" (or "Well"), keeping with the writing theme.
-- **Why Ink?** It removes the pressure of a "valuable" currency while still providing a sense of progression and a way
-  to interact with others.
+- **Milestone Badges:** Users earn badges for reaching word count milestones (1k, 5k, 10k words).
 
 #### Engagement Mechanics
 
 1. **Streaks (Habit Building):** Visible daily streaks to encourage showing up.
-2. **Milestone Badges:** Permanent rewards for cumulative word counts (e.g., "10k Club", "First Novel Draft").
+2. **Milestone Badges:** Permanent rewards for cumulative word counts.
 3. **Social Motivators:**
     - **Cheers:** A low-friction way to notify a friend that you've noticed their progress.
     - **Shared Goals:** Optional groups where members see each other's progress (anonymized if desired).
 
 #### Wellbeing & Mental Health
 
-- **Break Reminders:** Nudges to stand up and stretch after 25 or 50 minutes of writing (Pomodoro-style).
-- **Daily Caps:** Soft warnings when a user exceeds a healthy daily writing threshold to avoid burnout.
+- **Break Reminders:** Nudges in the editor to take a break every 45 minutes of active writing.
+- **Daily Caps:** Soft warnings when a user exceeds a healthy daily writing threshold.
 - **Quiet Mode:** Easy toggle to silence all social notifications during writing sessions.
 
 ## Security Considerations

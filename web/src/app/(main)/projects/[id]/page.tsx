@@ -22,11 +22,23 @@ async function updateSettings(id: string, formData: FormData) {
     });
 }
 
+async function getUserPreferences(userId: string) {
+    const res = await apiFetch(`/users/${userId}`, {cache: 'no-store'});
+    if (!res.ok) return null;
+    const user = await res.json();
+    return user?.settings?.preferences;
+}
+
 export default async function ProjectDetailPage({params}: { params: { id: string } }) {
     const session = await getServerSession(authOptions);
-    if (!session) redirect('/signin');
+    const userId = (session?.user as any)?.id as string | undefined;
+    if (!session || !userId) redirect('/signin');
 
-    const project = await getProject(params.id);
+    const [project, userPreferences] = await Promise.all([
+        getProject(params.id),
+        getUserPreferences(userId)
+    ]);
+
     if (!project) {
         return (
             <main className="mx-auto max-w-4xl px-6 py-10">
@@ -37,7 +49,7 @@ export default async function ProjectDetailPage({params}: { params: { id: string
 
     return (
         <main className="mx-auto max-w-4xl px-6 py-10">
-            <ProjectEditor project={project}/>
+            <ProjectEditor project={project} userPreferences={userPreferences}/>
 
             <div className="mt-12 border-t border-fg/10 pt-10">
                 <h2 className="text-lg font-bold">Project Settings</h2>

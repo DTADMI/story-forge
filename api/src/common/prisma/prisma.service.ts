@@ -6,9 +6,15 @@ import {Pool} from 'pg';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
     constructor() {
-        const pool = new Pool({connectionString: process.env.DATABASE_URL});
-        const adapter = new PrismaPg(pool);
-        super({adapter});
+        super({
+            adapter: new PrismaPg(
+                new Pool({
+                    connectionString:
+                        process.env.DATABASE_URL ||
+                        'postgresql://postgres:postgres@localhost:5432/storyforge',
+                })
+            ),
+        });
     }
 
   async onModuleInit() {

@@ -72,10 +72,10 @@ Public vs Authenticated Areas:
 
 Primary choices
 
-- Frontend: Next.js 14 (App Router) + React 18 + TypeScript
-- Auth: NextAuth v5 (Credentials now; OAuth later) with Prisma Adapter
-- ORM/DB: Prisma + PostgreSQL
-- Backend: NestJS 10 (TypeScript) with modular DI
+- Frontend: Next.js 16 (App Router) + React 19 + TypeScript
+- Auth: NextAuth v4 with Prisma Adapter
+- ORM/DB: Prisma 7.2 + PostgreSQL (using Driver Adapters)
+- Backend: NestJS 11 (TypeScript) with modular DI
 - Styling (soon): Tailwind CSS + tokens from `docs/design-tokens.json`
 - State: TanStack Query for server state; local state via React/Context (Zustand later)
 

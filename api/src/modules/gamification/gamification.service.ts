@@ -37,7 +37,56 @@ export class GamificationService {
                 create: {userId, balance: reward},
             });
         }
+
+        await this.checkMilestones(userId);
+        
         return {logged: true, reward} as const;
+    }
+
+    async getUserBadges(userId: string) {
+        return this.prisma.userBadge.findMany({
+            where: {userId},
+            include: {badge: true},
+            orderBy: {awardedAt: 'desc'},
+        });
+    }
+
+    private async checkMilestones(userId: string) {
+        // Total word count milestones
+        const total = await this.prisma.progressLog.aggregate({
+            where: {userId},
+            _sum: {value: true},
+        });
+        const wordCount = total._sum.value || 0;
+
+        const milestones = [
+            {name: 'Beginner Writer', threshold: 1000, description: 'Write your first 1,000 words'},
+            {name: 'Consistent Creator', threshold: 5000, description: 'Reach 5,000 words'},
+            {name: 'Wordsmith', threshold: 10000, description: '10,000 words total'},
+        ];
+
+        for (const m of milestones) {
+            if (wordCount >= m.threshold) {
+                // Ensure badge exists
+                const badge = await this.prisma.badge.upsert({
+                    where: {name: m.name},
+                    update: {},
+                    create: {
+                        name: m.name,
+                        threshold: m.threshold,
+                        description: m.description,
+                        type: 'total_words',
+                    },
+                });
+
+                // Award to user if not already awarded
+                await this.prisma.userBadge.upsert({
+                    where: {userId_badgeId: {userId, badgeId: badge.id}},
+                    update: {},
+                    create: {userId, badgeId: badge.id},
+                }).catch(() => null);
+            }
+        }
     }
 
     async upsertDailyGoal(userId: string, target: number) {

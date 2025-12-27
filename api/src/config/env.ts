@@ -16,7 +16,7 @@ type Env = z.infer<typeof EnvSchema>;
 let _env: Env | null = null;
 
 export function getEnv(): Env {
-  if (_env) return _env;
+    if (_env && process.env.NODE_ENV !== 'test') return _env;
     if (process.env.NODE_ENV === 'test' && !process.env.API_JWT_SECRET) {
         process.env.API_JWT_SECRET = 'test-secret-1234567890';
     }

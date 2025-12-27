@@ -100,6 +100,7 @@ Legend:
   - [x] API: `POST /social/follow` toggle; `GET /social/followers` and `/social/following` (paginated)
   - [x] Web: Followers/Following pages (MVP); follow/unfollow UI added to public user profile page
   - [x] Tests: API e2e for toggle and lists
+  - [x] Implement "Cheers" (Social Motivators)
 
 - [x] Environment validation with Zod
   - [x] Web: `src/lib/env.ts` schema for `NEXTAUTH_*`, `API_URL`, `API_JWT_SECRET`, `NEXT_PUBLIC_FEATURE_*`
@@ -194,12 +195,12 @@ to mitigate this.
 - [ ] Implement "Cheers" (Social Motivators):
   - [ ] API: `POST /social/cheer` sends a notification/ink to a friend.
   - [ ] Web: "Cheer" button on friend progress or profile.
-- [ ] Wellbeing Enhancements:
-  - [ ] Add "Break Reminder" setting in `User.preferences`.
-  - [ ] API: Logic to detect long writing sessions and send nudges.
-- [ ] Milestone Badges:
-  - [ ] Prisma: `Badge` model and `UserBadge` join table.
-  - [ ] API: Award badges based on total word count milestones.
+- [x] Wellbeing Enhancements:
+  - [x] Add "Break Reminder" setting in `User.preferences`.
+  - [x] Client: Logic to detect long writing sessions and show nudges in Project Editor.
+- [x] Milestone Badges:
+  - [x] Prisma: `Badge` model and `UserBadge` join table.
+  - [x] API: Award badges based on total word count milestones.
 
 ### Security & Compliance
 
@@ -228,7 +229,8 @@ to mitigate this.
 - [ ] Next.js 16 + NextAuth v4.24: verify middleware patterns and route handlers; audit any breaking changes when adding
   OAuth providers.
 - [ ] Tailwind CSS 4.1: ensure styles compile; migrate any deprecated plugin/config usage.
-- [ ] Prisma 7.2: run `prisma generate` and verify schema compatibility; adjust client imports/usages if required.
+- [x] Prisma 7.2: Upgrade to Prisma 7, move DATABASE_URL to `prisma.config.ts`, and implement Driver Adapters.
+- [x] Extend CI: add root-level `prisma generate` and `migrate deploy` compatible with Prisma 7.
 - [ ] NestJS 11.1 + RxJS 8: verify any Observable API changes; update interceptors/guards if signatures changed.
 - [ ] ESLint 9.39: migrate config to flat config (if adopting) or update extends; fix breaking rule renames.
 
