@@ -1,4 +1,10 @@
-import {CanActivate, ExecutionContext, Injectable, TooManyRequestsException} from '@nestjs/common';
+import {CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable,} from '@nestjs/common';
+
+export class TooManyRequestsException extends HttpException {
+    constructor(message?: string) {
+        super(message || 'Too Many Requests', HttpStatus.TOO_MANY_REQUESTS);
+    }
+}
 
 type Key = string;
 type Bucket = { tokens: number; lastRefill: number };
@@ -29,7 +35,9 @@ export class ReadRateLimitGuard implements CanActivate {
     private capacity = 300; // tokens per minute
     private refillPerSec = this.capacity / 60; // uniform refill
     canActivate(context: ExecutionContext): boolean {
-        const req = context.switchToHttp().getRequest<{ ip?: string; user?: { id: string } }>();
+        const req = context
+            .switchToHttp()
+            .getRequest<{ ip?: string; user?: { id: string } }>();
         const uid = req.user?.id || 'anon';
         const ip = (req as any).ip || 'unknown';
         const key = `read:${uid}:${ip}`;
@@ -46,7 +54,9 @@ export class WriteRateLimitGuard implements CanActivate {
     private refillPerSec = this.capacity / 60;
 
     canActivate(context: ExecutionContext): boolean {
-        const req = context.switchToHttp().getRequest<{ ip?: string; user?: { id: string } }>();
+        const req = context
+            .switchToHttp()
+            .getRequest<{ ip?: string; user?: { id: string } }>();
         const uid = req.user?.id || 'anon';
         const ip = (req as any).ip || 'unknown';
         const key = `write:${uid}:${ip}`;

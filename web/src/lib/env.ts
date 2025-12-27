@@ -11,7 +11,7 @@ const WebEnvSchema = z.object({
     NEXT_PUBLIC_FEATURE_AI_ASSIST: z.string().optional(),
     NEXT_PUBLIC_FEATURE_PROJECTS_V2: z.string().optional(),
     NEXT_PUBLIC_FEATURE_WELLBEING: z.string().optional(),
-    NEXT_PUBLIC_FEATURE_DESIGN_SYSTEM_V2: z.string().optional()
+    NEXT_PUBLIC_FEATURE_DESIGN_SYSTEM_V2: z.string().optional(),
 });
 
 let _env: z.infer<typeof WebEnvSchema> | null = null;

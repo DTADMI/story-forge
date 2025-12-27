@@ -4,7 +4,13 @@ import {Button} from '@/components/ui/button';
 
 type Plan = 'monthly' | 'yearly' | 'lifetime';
 
-export function SubscribeButton({plan, disabled}: { plan: Plan; disabled?: boolean }) {
+export function SubscribeButton({
+                                    plan,
+                                    disabled,
+                                }: {
+    plan: Plan;
+    disabled?: boolean;
+}) {
     const [loading, setLoading] = React.useState(false);
     return (
         <Button
@@ -18,7 +24,7 @@ export function SubscribeButton({plan, disabled}: { plan: Plan; disabled?: boole
                     const res = await fetch('/api/billing/checkout', {
                         method: 'POST',
                         headers: {'content-type': 'application/json'},
-                        body: JSON.stringify({plan})
+                        body: JSON.stringify({plan}),
                     });
                     const data = await res.json();
                     if (res.ok && data?.url) {
@@ -34,7 +40,13 @@ export function SubscribeButton({plan, disabled}: { plan: Plan; disabled?: boole
                 }
             }}
         >
-            {loading ? 'Processing…' : plan === 'lifetime' ? 'Buy lifetime' : plan === 'yearly' ? 'Subscribe yearly' : 'Subscribe monthly'}
+            {loading
+                ? 'Processing…'
+                : plan === 'lifetime'
+                    ? 'Buy lifetime'
+                    : plan === 'yearly'
+                        ? 'Subscribe yearly'
+                        : 'Subscribe monthly'}
         </Button>
     );
 }

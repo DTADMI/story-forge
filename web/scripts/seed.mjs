@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -17,7 +17,7 @@ async function main() {
       passwordHash,
       username: 'demo',
       bio: 'Demo account for StoryForge',
-    }
+    },
   });
 
   await prisma.project.upsert({
@@ -29,16 +29,18 @@ async function main() {
       title: 'The Royal Journey',
       description: 'A sample public story to populate the feed.',
       isPublic: true,
-      defaultScope: 'PUBLIC_ANYONE'
-    }
+        defaultScope: 'PUBLIC_ANYONE',
+    },
   });
 
   console.log('Seed completed. Demo login:', { email, password });
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-}).finally(async () => {
-  await prisma.$disconnect();
-});
+main()
+    .catch((e) => {
+        console.error(e);
+        process.exit(1);
+    })
+    .finally(async () => {
+        await prisma.$disconnect();
+    });

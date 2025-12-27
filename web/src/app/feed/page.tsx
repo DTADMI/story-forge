@@ -13,16 +13,18 @@ async function getMockStories(): Promise<Story[]> {
             id: '1',
             title: 'The Ember Crown',
             author: 'Aria K.',
-            excerpt: 'In the city of brass, a courier carries a message that could end a dynasty...',
-            scope: 'public-anyone'
+            excerpt:
+                'In the city of brass, a courier carries a message that could end a dynasty...',
+            scope: 'public-anyone',
         },
         {
             id: '2',
             title: 'Whispers Under Glass',
             author: 'J. Rowan',
-            excerpt: 'Every terrarium is a world, and some worlds whisper back when no one listens.',
-            scope: 'public-anyone'
-        }
+            excerpt:
+                'Every terrarium is a world, and some worlds whisper back when no one listens.',
+            scope: 'public-anyone',
+        },
     ];
 }
 
@@ -32,25 +34,38 @@ export default async function PublicFeedPage() {
         <main className="mx-auto max-w-3xl px-6 py-10">
             <header className="mb-6">
                 <h1 className="text-2xl font-extrabold">Public Stories Feed</h1>
-                <p className="text-[color:var(--fg)]/70">Stories shared with scope: public-anyone</p>
+                <p className="text-[color:var(--fg)]/70">
+                    Stories shared with scope: public-anyone
+                </p>
             </header>
             {stories.length === 0 ? (
                 <div className="rounded-lg border border-[color:var(--fg)]/15 p-6 text-center">
-                    <p className="text-sm text-[color:var(--fg)]/70">No public stories yet. Be the first to share! ✨</p>
+                    <p className="text-sm text-[color:var(--fg)]/70">
+                        No public stories yet. Be the first to share! ✨
+                    </p>
                     <div className="mt-3 text-sm">
-                        <a href="/signin" className="underline">Sign in</a> to start a project.
+                        <a href="/signin" className="underline">
+                            Sign in
+                        </a>{' '}
+                        to start a project.
                     </div>
                 </div>
             ) : (
                 <ul className="grid gap-4">
                     {stories.map((s) => (
-                        <li key={s.id} className="rounded-lg border border-[color:var(--fg)]/15 p-4">
+                        <li
+                            key={s.id}
+                            className="rounded-lg border border-[color:var(--fg)]/15 p-4"
+                        >
                             <div className="flex items-center justify-between">
                                 <h2 className="text-lg font-bold">{s.title}</h2>
-                                <span
-                                    className="text-xs uppercase tracking-wide text-[color:var(--fg)]/50">{s.scope}</span>
+                                <span className="text-xs tracking-wide text-[color:var(--fg)]/50 uppercase">
+                  {s.scope}
+                </span>
                             </div>
-                            <p className="mt-1 text-sm text-[color:var(--fg)]/80">by {s.author}</p>
+                            <p className="mt-1 text-sm text-[color:var(--fg)]/80">
+                                by {s.author}
+                            </p>
                             <p className="mt-2 text-sm">{s.excerpt}</p>
                         </li>
                     ))}

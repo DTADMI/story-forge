@@ -1,8 +1,8 @@
-import {BadRequestException, Body, Controller, Get, Post, Query, UseGuards} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Get, Post, Query, UseGuards,} from '@nestjs/common';
 import {SocialService} from './social.service';
 import {ApiAuthGuard} from '../../common/auth/api-auth.guard';
 import {CurrentUser} from '../../common/auth/current-user.decorator';
-import {ReadRateLimitGuard, WriteRateLimitGuard} from '../../common/guards/rate-limit.guard';
+import {ReadRateLimitGuard, WriteRateLimitGuard,} from '../../common/guards/rate-limit.guard';
 
 @Controller('social')
 export class SocialController {
@@ -36,7 +36,11 @@ export class SocialController {
         const rows = await this.svc.listFollowers(uid, take, skip);
         return rows.map((r) => ({
             id: r.id,
-            user: {id: r.follower.id, name: r.follower.name, username: r.follower.username}
+            user: {
+                id: r.follower.id,
+                name: r.follower.name,
+                username: r.follower.username,
+            },
         }));
     }
 
@@ -55,7 +59,11 @@ export class SocialController {
         const rows = await this.svc.listFollowing(uid, take, skip);
         return rows.map((r) => ({
             id: r.id,
-            user: {id: r.followee.id, name: r.followee.name, username: r.followee.username}
+            user: {
+                id: r.followee.id,
+                name: r.followee.name,
+                username: r.followee.username,
+            },
         }));
     }
 }

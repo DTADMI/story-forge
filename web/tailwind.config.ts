@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss';
+import type {Config} from 'tailwindcss';
 
 const config: Config = {
   darkMode: ['class'],
@@ -14,16 +14,16 @@ const config: Config = {
         success: 'var(--success)',
         warning: 'var(--warning)',
         info: 'var(--info)',
-        ring: 'var(--ring)'
+          ring: 'var(--ring)',
       },
       borderRadius: {
         lg: 'var(--radius-lg, 12px)',
         md: 'var(--radius-md, 10px)',
-        sm: 'var(--radius-sm, 8px)'
-      }
-    }
+          sm: 'var(--radius-sm, 8px)',
+      },
+    },
   },
-  plugins: [require('tailwindcss-animate')]
+    plugins: [require('tailwindcss-animate')],
 };
 
 export default config;

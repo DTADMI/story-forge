@@ -40,15 +40,45 @@
     }
   },
   "semantic": {
-    "brand": { "light": "{theme.light.colors.royalBlue}", "dark": "{theme.dark.colors.royalBlue}" },
-    "accent": { "light": "{theme.light.colors.auburn}", "dark": "{theme.dark.colors.auburn}" },
-    "success": { "light": "{theme.light.colors.royalGreen}", "dark": "{theme.dark.colors.royalGreen}" },
-    "warning": { "light": "{theme.light.colors.royalOrange}", "dark": "{theme.dark.colors.royalOrange}" },
-    "info": { "light": "{theme.light.colors.purple}", "dark": "{theme.dark.colors.purple}" },
-    "ring": { "light": "{theme.light.colors.gold}", "dark": "{theme.dark.colors.gold}" },
-    "background": { "light": "{theme.light.colors.bg}", "dark": "{theme.dark.colors.bg}" },
-    "foreground": { "light": "{theme.light.colors.fg}", "dark": "{theme.dark.colors.fg}" },
-    "panel": { "light": "{theme.light.colors.panel}", "dark": "{theme.dark.colors.panel}" },
-    "muted": { "light": "{theme.light.colors.muted}", "dark": "{theme.dark.colors.muted}" }
+    "brand": {
+      "light": "{theme.light.colors.royalBlue}",
+      "dark": "{theme.dark.colors.royalBlue}"
+    },
+    "accent": {
+      "light": "{theme.light.colors.auburn}",
+      "dark": "{theme.dark.colors.auburn}"
+    },
+    "success": {
+      "light": "{theme.light.colors.royalGreen}",
+      "dark": "{theme.dark.colors.royalGreen}"
+    },
+    "warning": {
+      "light": "{theme.light.colors.royalOrange}",
+      "dark": "{theme.dark.colors.royalOrange}"
+    },
+    "info": {
+      "light": "{theme.light.colors.purple}",
+      "dark": "{theme.dark.colors.purple}"
+    },
+    "ring": {
+      "light": "{theme.light.colors.gold}",
+      "dark": "{theme.dark.colors.gold}"
+    },
+    "background": {
+      "light": "{theme.light.colors.bg}",
+      "dark": "{theme.dark.colors.bg}"
+    },
+    "foreground": {
+      "light": "{theme.light.colors.fg}",
+      "dark": "{theme.dark.colors.fg}"
+    },
+    "panel": {
+      "light": "{theme.light.colors.panel}",
+      "dark": "{theme.dark.colors.panel}"
+    },
+    "muted": {
+      "light": "{theme.light.colors.muted}",
+      "dark": "{theme.dark.colors.muted}"
+    }
   }
 }

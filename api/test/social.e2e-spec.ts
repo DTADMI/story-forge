@@ -12,15 +12,21 @@ describe('Social (e2e)', () => {
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [AppModule]
+            imports: [AppModule],
         }).compile();
 
         app = moduleRef.createNestApplication();
         await app.init();
         server = app.getHttpServer();
         const secret = process.env.API_JWT_SECRET || 'testsecret';
-        tokenA = jwt.sign({uid: 'user-a'}, secret, {algorithm: 'HS256', expiresIn: '5m'});
-        tokenB = jwt.sign({uid: 'user-b'}, secret, {algorithm: 'HS256', expiresIn: '5m'});
+        tokenA = jwt.sign({uid: 'user-a'}, secret, {
+            algorithm: 'HS256',
+            expiresIn: '5m',
+        });
+        tokenB = jwt.sign({uid: 'user-b'}, secret, {
+            algorithm: 'HS256',
+            expiresIn: '5m',
+        });
     });
 
     afterAll(async () => {

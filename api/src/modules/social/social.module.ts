@@ -5,7 +5,8 @@ import {PrismaService} from '../../common/prisma/prisma.service';
 
 @Module({
     controllers: [SocialController],
-    providers: [SocialService, PrismaService]
+    providers: [SocialService, PrismaService],
+    exports: [SocialService],
 })
 export class SocialModule {
 }

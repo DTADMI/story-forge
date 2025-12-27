@@ -15,8 +15,17 @@ export interface TabsProps {
     children?: React.ReactNode;
 }
 
-export function Tabs({items, value, defaultValue, onValueChange, className, children}: TabsProps) {
-    const [internal, setInternal] = React.useState<string>(defaultValue ?? items[0]?.value);
+export function Tabs({
+                         items,
+                         value,
+                         defaultValue,
+                         onValueChange,
+                         className,
+                         children,
+                     }: TabsProps) {
+    const [internal, setInternal] = React.useState<string>(
+        defaultValue ?? items[0]?.value
+    );
     const active = value ?? internal;
 
     const setActive = (v: string) => {
@@ -54,9 +63,14 @@ export function Tabs({items, value, defaultValue, onValueChange, className, chil
     );
 }
 
-export function TabsContent({value, active, className, ...props}: React.HTMLAttributes<HTMLDivElement> & {
+export function TabsContent({
+                                value,
+                                active,
+                                className,
+                                ...props
+                            }: React.HTMLAttributes<HTMLDivElement> & {
     value: string;
-    active: string
+    active: string;
 }) {
     if (value !== active) return null;
     return <div className={twMerge('py-3', className)} {...props} />;

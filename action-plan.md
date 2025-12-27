@@ -53,7 +53,8 @@ Legend:
 - [x] Dependency upgrade (round 2): align to specified versions — Node >=24.12.0, pnpm >=10.26.0; Web: Next.js 16.0.10,
   React 19.2.3, React DOM 19.2.3, @prisma/client 7.2.0, bcrypt 6.0.0, class-variance-authority 0.7.1, tailwind-merge
   3.4.0; Dev: @types/node 25.0.3, @types/react 19.2.7, autoprefixer 10.4.23, eslint 9.39.2, eslint-config-next 16.0.10,
-  postcss 8.5.6, prisma 7.2.0, tailwindcss 4.1.18, typescript 5.9.3. API: @nestjs/* 11.1.9, helmet 8.1.0, @prisma/client
+  postcss 8.5.6, prisma 7.2.0, tailwindcss 4.1.18, typescript 5.9.3. API: @nestjs/\* 11.1.9, helmet 8.1.0,
+  @prisma/client
   7.2.0; Dev: @nestjs/cli 11.0.14, @nestjs/schematics 11.0.9, @nestjs/testing 11.1.9, @types/node 25.0.3, typescript
   5.9.3. Updated README and docs.
 - [x] Writing Tools (Projects) — MVP completion
@@ -173,7 +174,6 @@ Legend:
 - [ ] Observability basics (logs/metrics) and error reporting.
 - [x] Add initial GitHub Actions workflow for web tests/build (Node 24.12.0, pnpm 10.26.0).
 - [x] Enhance CI: add web lint + typecheck and API tests + build. Prisma generate/migrate to be added next.
-
 
 ### Upgrade Follow-ups (Migrations)
 

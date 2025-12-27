@@ -22,7 +22,7 @@ export const flags: Flags = {
   aiAssist: readBool('NEXT_PUBLIC_FEATURE_AI_ASSIST', false),
   projectsV2: readBool('NEXT_PUBLIC_FEATURE_PROJECTS_V2', false),
   wellbeing: readBool('NEXT_PUBLIC_FEATURE_WELLBEING', true),
-  designSystemV2: readBool('NEXT_PUBLIC_FEATURE_DESIGN_SYSTEM_V2', true)
+    designSystemV2: readBool('NEXT_PUBLIC_FEATURE_DESIGN_SYSTEM_V2', true),
 };
 
 export function isEnabled(key: keyof Flags): boolean {

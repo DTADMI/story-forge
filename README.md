@@ -1,25 +1,25 @@
-
 The web app calls the API using a short‑lived API JWT that contains the current user id. This token is minted
 server‑side and sent as `Authorization: Bearer <token>`.
 
 - Secret: `API_JWT_SECRET` must be set for both web (server environment) and api.
 - Web helper: `web/src/lib/api.ts` provides `apiFetch(path, init)` which:
-    - Reads the current session (`getServerSession`)
-    - Signs `{ uid: <userId> }` using `API_JWT_SECRET` (HS256, 10m expiry)
-    - Calls the API with the `Authorization` header
+  - Reads the current session (`getServerSession`)
+  - Signs `{ uid: <userId> }` using `API_JWT_SECRET` (HS256, 10m expiry)
+  - Calls the API with the `Authorization` header
 - API guard: `ApiAuthGuard` verifies the token and exposes `req.user.id` to controllers. Simple in‑memory read/write
   rate limits are applied to sensitive endpoints.
 
 Example (server component / action):
 
 ```ts
-import {apiFetch} from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 
-const res = await apiFetch('/projects', {cache: 'no-store' as any});
+const res = await apiFetch('/projects', { cache: 'no-store' as any });
 const projects = await res.json();
 ```
 
 Environment
+
 - `API_JWT_SECRET=...` in `web/.env.local` and `api/.env`
 - Keep this secret server‑only; do not expose to client code
 

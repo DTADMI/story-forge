@@ -5,7 +5,7 @@ import {PrismaService} from '../../common/prisma/prisma.service';
 
 @Module({
     controllers: [GamificationController],
-    providers: [GamificationService, PrismaService]
+    providers: [GamificationService, PrismaService],
 })
 export class GamificationModule {
 }

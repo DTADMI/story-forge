@@ -1,7 +1,7 @@
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 
 export default function ComponentsDemoUIPage() {
@@ -20,7 +20,10 @@ export default function ComponentsDemoUIPage() {
 
                 <div className="grid gap-2">
                     <Input placeholder="Email"/>
-                    <Textarea placeholder="Tell us more…" description="You can write markdown."/>
+                    <Textarea
+                        placeholder="Tell us more…"
+                        description="You can write markdown."
+                    />
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -36,7 +39,9 @@ export default function ComponentsDemoUIPage() {
                         <CardDescription>Short description using tokens.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-fg/80">Cards use semantic colors and elevation utilities.</p>
+                        <p className="text-fg/80 text-sm">
+                            Cards use semantic colors and elevation utilities.
+                        </p>
                     </CardContent>
                     <CardFooter>
                         <Button>Action</Button>

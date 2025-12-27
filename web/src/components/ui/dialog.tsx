@@ -10,7 +10,14 @@ type DialogProps = {
     footer?: React.ReactNode;
 };
 
-export function Dialog({open, onOpenChange, title, description, children, footer}: DialogProps) {
+export function Dialog({
+                           open,
+                           onOpenChange,
+                           title,
+                           description,
+                           children,
+                           footer,
+                       }: DialogProps) {
     if (!open) return null;
     return (
         <div
@@ -24,7 +31,7 @@ export function Dialog({open, onOpenChange, title, description, children, footer
             <div className="absolute inset-0 bg-black/40"/>
             <div
                 className={twMerge(
-                    'relative z-10 w-full max-w-lg rounded-lg border border-fg/10 bg-bg p-4 shadow-xl outline-none',
+                    'border-fg/10 bg-bg relative z-10 w-full max-w-lg rounded-lg border p-4 shadow-xl outline-none',
                     'focus-visible:ring-2 focus-visible:ring-[color:var(--ring)]'
                 )}
                 onClick={(e) => e.stopPropagation()}
@@ -37,7 +44,7 @@ export function Dialog({open, onOpenChange, title, description, children, footer
                             </h2>
                         )}
                         {description && (
-                            <p id="dialog-desc" className="text-sm text-fg/70">
+                            <p id="dialog-desc" className="text-fg/70 text-sm">
                                 {description}
                             </p>
                         )}

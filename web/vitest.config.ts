@@ -9,11 +9,11 @@ export default defineConfig({
     test: {
         environment: 'jsdom',
         setupFiles: [resolve(__dirname, './vitest.setup.ts')],
-        globals: true
+        globals: true,
     },
     resolve: {
         alias: {
-            '@/': fileURLToPath(new URL('./src/', import.meta.url))
-        }
-    }
+            '@/': fileURLToPath(new URL('./src/', import.meta.url)),
+        },
+    },
 });

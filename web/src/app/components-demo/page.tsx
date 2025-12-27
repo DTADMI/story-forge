@@ -1,6 +1,6 @@
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from '@/components/ui/card';
 import {Tabs} from '@/components/ui/tabs';
 
 export default function ComponentsDemoPage() {
@@ -29,11 +29,13 @@ export default function ComponentsDemoPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Example Card</CardTitle>
-                        <CardDescription>Use cards to group related content.</CardDescription>
+                        <CardDescription>
+                            Use cards to group related content.
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget ipsum et justo bibendum
-                        iaculis.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+                        eget ipsum et justo bibendum iaculis.
                     </CardContent>
                     <CardFooter>Footer content</CardFooter>
                 </Card>
@@ -45,10 +47,12 @@ export default function ComponentsDemoPage() {
                     items={[
                         {label: 'Overview', value: 'overview'},
                         {label: 'Details', value: 'details'},
-                        {label: 'Reviews', value: 'reviews'}
+                        {label: 'Reviews', value: 'reviews'},
                     ]}
                 >
-                    <div className="py-3 text-sm text-[color:var(--fg)]/70">Switch tabs above to change sections.</div>
+                    <div className="py-3 text-sm text-[color:var(--fg)]/70">
+                        Switch tabs above to change sections.
+                    </div>
                 </Tabs>
             </section>
         </main>

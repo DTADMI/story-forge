@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {useEffect, useState} from 'react';
 
 const STORAGE_KEY = 'sf-theme';
@@ -7,7 +7,8 @@ function getPreferredTheme(): 'light' | 'dark' {
     if (typeof window === 'undefined') return 'light';
     const stored = localStorage.getItem(STORAGE_KEY) as 'light' | 'dark' | null;
     if (stored === 'light' || stored === 'dark') return stored;
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    return window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
         : 'light';
 }
@@ -26,7 +27,7 @@ export function DarkModeToggle() {
         <button
             type="button"
             aria-label="Toggle dark mode"
-            className="inline-flex items-center gap-2 rounded-md border border-fg/20 px-3 py-1 text-sm hover:bg-fg/5"
+            className="border-fg/20 hover:bg-fg/5 inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm"
             onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
         >
             {theme === 'dark' ? (

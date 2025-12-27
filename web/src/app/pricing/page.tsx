@@ -14,7 +14,10 @@ export default function PricingPage() {
                         <li>Basic world-building tools</li>
                         <li>Community features</li>
                     </ul>
-                    <a className="mt-4 inline-block rounded-md bg-brand px-4 py-2 text-white" href="/signup">
+                    <a
+                        className="bg-brand mt-4 inline-block rounded-md px-4 py-2 text-white"
+                        href="/signup"
+                    >
                         Get Started
                     </a>
                 </div>
@@ -28,10 +31,17 @@ export default function PricingPage() {
                     {flags.payments ? (
                         <form action="/api/checkout" method="post" className="mt-4">
                             <input type="hidden" name="plan" value="monthly"/>
-                            <Button variant="outline" type="submit">Subscribe</Button>
+                            <Button variant="outline" type="submit">
+                                Subscribe
+                            </Button>
                         </form>
                     ) : (
-                        <Button variant="outline" className="mt-4" disabled title="Payments disabled via feature flag">
+                        <Button
+                            variant="outline"
+                            className="mt-4"
+                            disabled
+                            title="Payments disabled via feature flag"
+                        >
                             Payments disabled
                         </Button>
                     )}

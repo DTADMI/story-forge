@@ -13,7 +13,16 @@ import {assertEnv} from './config/env';
 assertEnv();
 
 @Module({
-    imports: [UsersModule, AuthModule, HealthModule, DebugModule, BillingModule, ProjectsModule, GamificationModule, SocialModule],
-  providers: [PrismaService]
+    imports: [
+        UsersModule,
+        AuthModule,
+        HealthModule,
+        DebugModule,
+        BillingModule,
+        ProjectsModule,
+        GamificationModule,
+        SocialModule,
+    ],
+    providers: [PrismaService],
 })
 export class AppModule {}

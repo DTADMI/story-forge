@@ -2,7 +2,7 @@ import {Module} from '@nestjs/common';
 import {BillingController} from './billing.controller';
 
 @Module({
-    controllers: [BillingController]
+    controllers: [BillingController],
 })
 export class BillingModule {
 }

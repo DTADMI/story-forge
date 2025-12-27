@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const res = await fetch(`${api}/billing/checkout`, {
         method: 'POST',
         headers: {'content-type': 'application/json'},
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
     });
     const data = await res.json().catch(() => ({}));
     return NextResponse.json(data, {status: res.status});

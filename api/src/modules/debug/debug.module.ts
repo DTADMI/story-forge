@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { DebugController } from './debug.controller';
+import {Module} from '@nestjs/common';
+import {DebugController} from './debug.controller';
 
 @Module({
-  controllers: [DebugController]
+    controllers: [DebugController],
 })
 export class DebugModule {}

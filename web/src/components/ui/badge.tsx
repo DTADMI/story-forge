@@ -10,12 +10,12 @@ const badgeVariants = cva(
                 default: 'bg-brand text-white border-transparent',
                 secondary: 'bg-accent text-white border-transparent',
                 outline: 'bg-transparent text-fg border-[color:var(--ring)]',
-                muted: 'bg-fg/10 text-fg border-transparent'
-            }
+                muted: 'bg-fg/10 text-fg border-transparent',
+            },
         },
         defaultVariants: {
-            variant: 'default'
-        }
+            variant: 'default',
+        },
     }
 );
 
@@ -25,5 +25,10 @@ export interface BadgeProps
 }
 
 export function Badge({className, variant, ...props}: BadgeProps) {
-    return <span className={twMerge(badgeVariants({variant}), className)} {...props} />;
+    return (
+        <span
+            className={twMerge(badgeVariants({variant}), className)}
+            {...props}
+        />
+    );
 }

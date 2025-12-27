@@ -8,7 +8,10 @@ interface FollowButtonProps {
     initialIsFollowing: boolean;
 }
 
-export function FollowButton({targetUserId, initialIsFollowing}: FollowButtonProps) {
+export function FollowButton({
+                                 targetUserId,
+                                 initialIsFollowing,
+                             }: FollowButtonProps) {
     const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -18,7 +21,7 @@ export function FollowButton({targetUserId, initialIsFollowing}: FollowButtonPro
             const res = await fetch('/api/social/follow', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({userId: targetUserId})
+                body: JSON.stringify({userId: targetUserId}),
             });
             if (res.ok) {
                 const data = await res.json();

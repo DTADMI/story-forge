@@ -1,6 +1,7 @@
 # StoryForge - Gamified Writing Platform
 
 ## Table of Contents
+
 1. [Technical Stack](#technical-stack)
 2. [Technology Comparison](#technology-comparison)
 3. [System Architecture](#system-architecture)
@@ -27,6 +28,7 @@
 - **Infrastructure:** Vercel + Railway + Supabase
 
 ### Why This Stack?
+
 - **Full-Stack Type Safety:** Shared types between frontend and backend
 - **Developer Experience:** Modern tooling and great TypeScript support
 - **Scalability:** Easy to scale from MVP to production
@@ -38,7 +40,9 @@
 ### Backend Options
 
 #### 1. TypeScript/Node.js (NestJS)
+
 **Pros:**
+
 - Full-stack TypeScript
 - Great for I/O-heavy apps
 - Rich npm ecosystem
@@ -46,46 +50,58 @@
 - Lower learning curve if team knows JS/TS
 
 **Cons:**
+
 - Single-threaded nature
 - Less performant for CPU-heavy tasks
 
 #### 2. Go
+
 **Pros:**
+
 - Excellent performance
 - Built-in concurrency
 - Low memory footprint
 - Single binary deployment
 
 **Cons:**
+
 - Steeper learning curve
 - More verbose than TypeScript
 - Younger ecosystem
 
 #### 3. Java (Spring Boot)
+
 **Pros:**
+
 - Enterprise-grade
 - Excellent performance
 - Strong typing
 - Large talent pool
 
 **Cons:**
+
 - More verbose
 - Slower development cycle
 - Higher memory usage
 
 #### 4. Python (FastAPI)
+
 **Pros:**
+
 - Rapid development
 - Best for AI/ML
 - Great for data processing
 
 **Cons:**
+
 - Slower performance
 - GIL limitations
 - Type system not as strong as TS/Java
 
 ### Recommendation
+
 We recommend **TypeScript with NestJS** for:
+
 1. Full-stack consistency
 2. Excellent real-time support
 3. Faster development cycles
@@ -123,12 +139,10 @@ We recommend **TypeScript with NestJS** for:
     - Utility-first CSS framework for rapid UI development
     - Alternatives: Styled Components, Emotion
   - Data Visualization
-    - Three.js 
-          - For 3D relationship graphs and interactive maps
-          - Alternatives: D3.js (for 2D), react-three-fiber
-    - React Flow 
-        - For interactive node-based relationship mapping
-        - Alternatives: Vis.js, Cytoscape.js
+      - Three.js - For 3D relationship graphs and interactive maps - Alternatives: D3.js (for 2D), react-three-fiber
+      - React Flow
+          - For interactive node-based relationship mapping
+          - Alternatives: Vis.js, Cytoscape.js
     - D3.js for interactive charts
       - Alternatives: Chart.js, Recharts
   - Framer Motion for animations
@@ -147,6 +161,7 @@ We recommend **TypeScript with NestJS** for:
   - Three.js for 3D world visualization
 
 ### Backend
+
 - **NestJS**
   - TypeScript support
   - Modular architecture
@@ -171,6 +186,7 @@ We recommend **TypeScript with NestJS** for:
   - Real-time notifications
 
 ### Optional/Adjacents (alternatives)
+
 - **tRPC** for end-to-end types instead of REST, if the team prefers RPC semantics.
 - **Drizzle ORM** as an alternative to Prisma for SQL-first migrations.
 - **Supabase** as a BaaS alternative for Auth, Postgres, Realtime, Storage.
@@ -178,6 +194,7 @@ We recommend **TypeScript with NestJS** for:
 ## System Architecture
 
 ### Frontend Architecture
+
 ```
 src/
 ├── app/                    # App router pages
@@ -201,6 +218,7 @@ src/
 ```
 
 ### Backend Architecture
+
 ```
 src/
 ├── modules/
@@ -219,6 +237,7 @@ src/
 ```
 
 ### Public vs. Authenticated Areas
+
 - Public marketing pages (home, docs/tutorials, pricing) and public reading feed are accessible without sign-in.
 - Authenticated app area (dashboard, projects, writing tools, groups, chats) uses session-based auth with SSR protection and CSRF mitigation.
 - Feature flags gate premium/subscription features without leaking UI affordances to non-eligible users.
@@ -244,7 +263,9 @@ Operational guidance
 ### UI Framework Comparison
 
 #### 1. Next.js (Recommended)
+
 **Why?** Best for content-focused applications with SSR/SSG
+
 - **Pros:**
     - Built-in routing and API routes
     - Excellent SEO capabilities
@@ -258,7 +279,9 @@ Operational guidance
 - **Best For:** Content-heavy applications needing SEO and performance
 
 #### 2. SvelteKit
+
 **Alternative for simpler applications**
+
 - **Pros:**
     - Excellent performance
     - Smaller bundle sizes
@@ -272,7 +295,9 @@ Operational guidance
 ### State Management
 
 #### 1. React Query (TanStack Query)
+
 **Recommended for server state**
+
 - **Pros:**
     - Automatic caching
     - Background updates
@@ -283,7 +308,9 @@ Operational guidance
     - Overkill for simple apps
 
 #### 2. Zustand
+
 **Recommended for client state**
+
 - **Pros:**
     - Simple API
     - No provider needed
@@ -296,6 +323,7 @@ Operational guidance
 ### Styling Solutions
 
 #### 1. Tailwind CSS (Recommended)
+
 - **Pros:**
     - Utility-first approach
     - Highly customizable
@@ -306,6 +334,7 @@ Operational guidance
     - Can make JSX verbose
 
 #### 2. Styled Components
+
 - **Pros:**
     - CSS-in-JS
     - Scoped styles
@@ -317,6 +346,7 @@ Operational guidance
 ### Component Libraries
 
 #### 1. shadcn/ui (Recommended)
+
 - **Pros:**
     - Accessible components
     - Customizable
@@ -327,6 +357,7 @@ Operational guidance
     - Smaller community
 
 #### 2. Material-UI
+
 - **Pros:**
     - Comprehensive
     - Theming support
@@ -338,6 +369,7 @@ Operational guidance
 ### Data Visualization
 
 #### 1. D3.js
+
 - **Pros:**
     - Most powerful
     - Highly customizable
@@ -347,6 +379,7 @@ Operational guidance
     - Verbose API
 
 #### 2. Recharts
+
 - **Pros:**
     - React components
     - Simpler API
@@ -358,6 +391,7 @@ Operational guidance
 ### Form Handling
 
 #### 1. React Hook Form (Recommended)
+
 - **Pros:**
     - Performance optimized
     - Small bundle size
@@ -367,6 +401,7 @@ Operational guidance
     - Less opinionated
 
 #### 2. Formik
+
 - **Pros:**
     - Popular
     - Good documentation
@@ -378,12 +413,14 @@ Operational guidance
 ### Testing Strategy
 
 #### 1. Unit Testing
+
 - **Jest + React Testing Library**
     - Component testing
     - Snapshot testing
     - Mocking
 
 #### 2. E2E Testing
+
 - **Cypress**
     - Component testing
     - Visual regression
@@ -450,6 +487,7 @@ Operational guidance
 ## Database Design
 
 ### Core Entities
+
 ```mermaid
 erDiagram
     USER ||--o{ PROJECT : creates
@@ -469,6 +507,7 @@ erDiagram
 ```
 
 ### Key Tables
+
 1. **Users**
    - id, email, username, hashed_password
    - profile_image, bio, website
@@ -521,12 +560,14 @@ erDiagram
    - GEM_TX (user_id, amount, reason, metadata)
 
 10. **Notifications**
-   - NOTIFICATION (user_id, type, payload JSON, read_at)
-   - DELIVERY_PREF (user_id, email, sms, push, cadence, quiet_hours)
+
+- NOTIFICATION (user_id, type, payload JSON, read_at)
+- DELIVERY_PREF (user_id, email, sms, push, cadence, quiet_hours)
 
 ## API Design (REST + WebSockets)
 
 ### REST Endpoints
+
 - `GET /api/projects` - List user's projects
 - `POST /api/projects` - Create new project
 - `GET /api/projects/:id` - Get project details
@@ -535,12 +576,14 @@ erDiagram
 - `POST /api/projects/:id/export` - Export project
 
 ### WebSocket Events
+
 - `project:updated` - Project content changes
 - `collaboration:update` - Real-time collaboration
 - `notification:new` - New notifications
 - `presence:update` - User presence updates
 
 ### GraphQL (Optional)
+
 If collaboration with mobile or external partners grows, expose a GraphQL gateway (NestJS GraphQL) for read-heavy queries like story feeds and search, while retaining REST for mutations requiring strict idempotency and rate limiting.
 
 ## Access Scopes & Privacy Model
@@ -553,6 +596,7 @@ Every shareable resource supports a default scope plus per-item overrides.
 - Moderation: report/flag with automated quarantine; privacy-respecting indexing rules.
 
 Implementation
+
 - Table `RESOURCE_SCOPE` stores overrides per resource.
 - Guard composables in NestJS check scope against requester context.
 - Feed queries include scope filters to ensure only eligible content is returned.
@@ -560,31 +604,38 @@ Implementation
 ## Gamification & Social
 
 Core mechanics
+
 - Streaks, daily/weekly goals (minutes written, words, elements created).
 - Gems awarded on goals and community contributions. Gems redeemable for themes, profile cosmetics, gift to friends.
 - Leaderboards with anti-cheat heuristics (e.g., min active time per word thresholds).
 
 Social
+
 - Follow users, friend requests (bi-directional), groups and events, comment threads, reactions.
 - Public reading feed for guests and authenticated users; personalized feed for logged-in.
 
 Mental Health & Wellbeing
+
 - Opt-in focus mode, scheduled breaks, quiet hours for notifications.
 - Burnout detectors (sustained high-intensity sessions) nudging rest.
 - Private journaling and mood check-ins; data stored privately and excluded from social surfaces by default.
 
 Anti-abuse
+
 - Rate limits on posting and messaging, content filters, block/mute lists.
 
 ## Notifications & Messaging
 
 Channels
+
 - In-app real-time toasts (Socket.IO), email (Resend/SES), SMS (Twilio), and optional push (Web Push/Firebase).
 
 Delivery Controls
+
 - User-set cadence (immediate, digest daily/weekly) and quiet hours; per-event type toggles.
 
 Messaging
+
 - 1:1 DMs and multi-user rooms with message retention policies.
 - Threaded comments on posts/projects.
 
@@ -623,6 +674,7 @@ Web:
 ## Security Considerations
 
 ### Authentication & Authorization
+
 - JWT with short expiration (15m)
 - Refresh tokens with rotation
 - Role-based access control (RBAC)
@@ -646,6 +698,7 @@ Web:
   `redirect('/signin')` if unauthenticated; example page `app/(main)/dashboard/page.tsx` with a sign-out button.
 
 ### Data Protection
+
 - Field-level encryption for sensitive data
 - Input validation and sanitization
 - Prepared statements
@@ -653,12 +706,14 @@ Web:
 - Rate limiting
 
 ### Monitoring & Logging
+
 - Request logging
 - Security event logging
 - Suspicious activity detection
 - Audit trails for sensitive operations
 
 Compliance & Privacy
+
 - GDPR/CCPA-ready data export and deletion.
 - Data minimization: optional PII, encrypted at rest using managed KMS.
 - Secrets via environment managers (Doppler/GitHub Encrypted Secrets).
@@ -668,6 +723,7 @@ Compliance & Privacy
 ### Recommended Setup
 
 #### MVP/Pre-Seed (0-1k users)
+
 - **Frontend:** Vercel (Hobby)
 - **Backend:** Railway (Starter)
 - **Database:** Supabase/Neon
@@ -678,6 +734,7 @@ Compliance & Privacy
 Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lower latency multi-region and predictable pricing.
 
 #### Growth (1k-100k users)
+
 - **Frontend:** Vercel (Pro)
 - **Backend:** AWS ECS Fargate
 - **Database:** AWS RDS/Aurora
@@ -687,6 +744,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - **Cost:** ~$100-300/month
 
 #### Scale (100k+ users)
+
 - **Frontend:** Vercel + Edge Network
 - **Backend:** AWS EKS (Kubernetes)
 - **Database:** Sharded PostgreSQL/CockroachDB
@@ -696,12 +754,14 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - **Cost:** $1000+/month
 
 ### Development Environment
+
 - **Local:** Docker Compose
 - **Version Control:** GitHub
 - **Code Quality:** ESLint, Prettier, Husky
 - **Testing:** Jest, Cypress, React Testing Library
 
 ### Staging Environment
+
 - Preview deployments for each PR
 - Automated E2E tests
 - Performance testing
@@ -709,17 +769,16 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - Feature flags
 
 ### Production Environment
+
 - **Frontend:**
   - Vercel (Global CDN)
   - Image optimization
   - Performance monitoring
-  
 - **Backend:**
   - Container orchestration (Kubernetes)
   - Auto-scaling
   - Load balancing
   - Service mesh (Istio/Linkerd)
-  
 - **Database:**
   - Primary + read replicas
   - Regular backups
@@ -727,6 +786,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
   - Performance monitoring
 
 ### Monitoring & Observability
+
 - **Error Tracking:** Sentry
 - **APM:** New Relic/Datadog
 - **Logging:** ELK Stack
@@ -734,6 +794,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - **Uptime:** StatusCake
 
 ### Disaster Recovery
+
 - Multi-region deployment
 - Automated backups
 - Rollback procedures
@@ -762,6 +823,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 ## Development Roadmap
 
 ### Phase 1: MVP (6-8 weeks)
+
 - Public marketing site and docs/tutorials
 - Anonymous browsing of public stories feed
 - Auth (email/password + OAuth), profiles
@@ -772,18 +834,21 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - Theming with light/dark and royal palette
 
 ### Phase 2: Core Features (6-10 weeks)
+
 - Worldbuilding modules (Locations, Maps, Research, Timeline, Calendar, Relationships, Encyclopedia, Magic, Fauna, Flora, Cultures, Items, Systems, Languages, Religions, Philosophies)
 - Relationship map (React Flow) + optional 3D view (r3f/three)
 - Timeline editor with event linking to dialogues and characters
 - Export (PDF/EPUB), Share links, Search
 
 ### Phase 3: Social & Collaboration (6-8 weeks)
+
 - Followers/friends, groups, events
 - Comments, reactions, moderation
 - Realtime presence and collaborative editing
 - DMs and rooms
 
 ### Phase 4: Advanced Features (Ongoing)
+
 - AI-assisted writing tools
 - Mobile app (React Native/Expo)
 - Advanced analytics and wellbeing insights
@@ -792,6 +857,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 ## Monetization Strategy
 
 ### Freemium Model
+
 - **Free Tier**
   - 3 active projects
   - Basic world-building tools
@@ -817,6 +883,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 ## Future Considerations
 
 ### Technical Debt Management
+
 - Regular code reviews
 - Comprehensive test coverage
 - Documentation standards
@@ -824,6 +891,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - Regular dependency updates
 
 ### Scaling
+
 - Database sharding
 - Microservices architecture
 - Edge computing
@@ -831,6 +899,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - Caching strategies
 
 ### Community Building
+
 - Writing challenges
 - Featured authors
 - Integration with writing communities
@@ -838,6 +907,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - Beta testing program
 
 ### AI Integration
+
 - Writing suggestions
 - Character development
 - Plot analysis
@@ -845,12 +915,14 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 - Research assistance
 
 ### Mobile Experience
+
 - Progressive Web App (PWA)
 - Native mobile apps
 - Offline functionality
 - Mobile-optimized UI
 
 ### Analytics & Insights
+
 - Writing habits
 - Productivity metrics
 - Reader engagement
@@ -862,6 +934,7 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
 Color palette inspired by classic literature and guild aesthetics, optimized for light/dark themes and WCAG AA contrast.
 
 Palette names
+
 - Auburn, Royal Blue, Royal Green, Royal Orange, Gold, Burgundy, Purple, Pink, Black, White
 
 See `docs/design-tokens.json` for exact values and semantic mappings. Tokens are exposed as CSS variables in
@@ -885,6 +958,7 @@ Example (light mode):
 ```
 
 Component tokens
+
 - Buttons: primary uses `brand`, secondary uses `accent`, outline uses `ring`.
 - Editor: page background off-white in light, deep graphite in dark; high-contrast ink color.
 - Relationship graphs: node colors mapped to entity types, link labels editable, colorblind-friendly variants.
@@ -902,12 +976,15 @@ Developer aids
 - Web debug flags endpoint (dev only): `GET /api/debug/flags` → `{ env, flags }` (hidden in production).
 
 Typography
+
 - System font stack with optional variable font (e.g., Inter/Recursive), generous line-height for long-form reading.
 
 Iconography
+
 - Lucide/Radix icons; solid outline variants for state toggles.
 
 Illustrations
+
 - Low-noise geometric motifs, subtle gold accents.
 
 This documentation provides a comprehensive overview of the StoryForge platform. The architecture is designed to be scalable, maintainable, and provide an excellent user experience for writers of all levels.

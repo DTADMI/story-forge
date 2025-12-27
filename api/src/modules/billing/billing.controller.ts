@@ -1,6 +1,7 @@
-import {BadRequestException, Body, Controller, Headers, NotFoundException, Post, Req, UseGuards} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Headers, NotFoundException, Post, Req, UseGuards,} from '@nestjs/common';
 import {isApiFlagEnabled} from '../../config/flags';
 import {ApiAuthGuard} from '../../common/auth/api-auth.guard';
+import {CurrentUser} from '../../common/auth/current-user.decorator';
 import {WriteRateLimitGuard} from '../../common/guards/rate-limit.guard';
 import Stripe from 'stripe';
 import {getEnv} from '../../config/env';
@@ -13,16 +14,20 @@ export class BillingController {
 
     constructor(private readonly prisma: PrismaService) {
         const e = getEnv();
-        this.stripe = e.STRIPE_SECRET_KEY ? new Stripe(e.STRIPE_SECRET_KEY, {apiVersion: '2024-06-20'}) : null;
+        this.stripe = e.STRIPE_SECRET_KEY
+            ? new Stripe(e.STRIPE_SECRET_KEY, {apiVersion: '2024-06-20'})
+            : null;
     }
+
     @Post('checkout')
     @UseGuards(ApiAuthGuard, WriteRateLimitGuard)
     async createCheckout(
         @CurrentUser() user: { id: string } | undefined,
-        @Body() body: {
+        @Body()
+        body: {
             plan: 'monthly' | 'yearly';
             successUrl?: string;
-            cancelUrl?: string
+            cancelUrl?: string;
         }
     ) {
         if (!isApiFlagEnabled('payments')) {
@@ -33,12 +38,19 @@ export class BillingController {
             throw new BadRequestException('Stripe not configured');
         }
         const e = getEnv();
-        const price = body.plan === 'yearly' ? e.STRIPE_PRICE_PREMIUM_YEARLY : e.STRIPE_PRICE_PREMIUM_MONTHLY;
+        const price =
+            body.plan === 'yearly'
+                ? e.STRIPE_PRICE_PREMIUM_YEARLY
+                : e.STRIPE_PRICE_PREMIUM_MONTHLY;
         if (!price) throw new BadRequestException('Price not configured');
 
         // Success/Cancel URLs must be absolute; expect client to pass them
-        const success_url = body.successUrl ?? `${process.env.ALLOWED_ORIGINS?.split(',')[0] ?? ''}/billing/return?status=success`;
-        const cancel_url = body.cancelUrl ?? `${process.env.ALLOWED_ORIGINS?.split(',')[0] ?? ''}/billing/return?status=canceled`;
+        const success_url =
+            body.successUrl ??
+            `${process.env.ALLOWED_ORIGINS?.split(',')[0] ?? ''}/billing/return?status=success`;
+        const cancel_url =
+            body.cancelUrl ??
+            `${process.env.ALLOWED_ORIGINS?.split(',')[0] ?? ''}/billing/return?status=canceled`;
 
         // Attach userId in metadata for webhook to update subscription status
         const session = await this.stripe.checkout.sessions.create({
@@ -48,8 +60,8 @@ export class BillingController {
             line_items: [{price, quantity: 1}],
             metadata: {
                 userId: user.id,
-                plan: body.plan
-            }
+                plan: body.plan,
+            },
         });
         return {url: session.url} as const;
     }
@@ -65,14 +77,22 @@ export class BillingController {
         }
         if (!this.stripe) throw new BadRequestException('Stripe not configured');
         const e = getEnv();
-        if (!e.STRIPE_WEBHOOK_SECRET) throw new BadRequestException('Webhook secret not configured');
-        if (!signature) throw new BadRequestException('Missing Stripe-Signature header');
+        if (!e.STRIPE_WEBHOOK_SECRET)
+            throw new BadRequestException('Webhook secret not configured');
+        if (!signature)
+            throw new BadRequestException('Missing Stripe-Signature header');
 
         // Attempt to verify using raw body when available
         let event: Stripe.Event;
         try {
-            const raw = (req as any).rawBody ? (req as any).rawBody : Buffer.from(JSON.stringify(payload));
-            event = this.stripe.webhooks.constructEvent(raw, signature, e.STRIPE_WEBHOOK_SECRET);
+            const raw = (req as any).rawBody
+                ? (req as any).rawBody
+                : Buffer.from(JSON.stringify(payload));
+            event = this.stripe.webhooks.constructEvent(
+                raw,
+                signature,
+                e.STRIPE_WEBHOOK_SECRET
+            );
         } catch (err) {
             throw new BadRequestException('Invalid webhook signature');
         }
@@ -89,13 +109,15 @@ export class BillingController {
                     expiresAt.setMonth(expiresAt.getMonth() + 1);
                 }
 
-                await this.prisma.user.update({
-                    where: {id: userId},
-                    data: {
-                        subscriptionStatus: 'active',
-                        subscriptionExpiresAt: expiresAt
-                    }
-                }).catch(() => void 0);
+                await this.prisma.user
+                    .update({
+                        where: {id: userId},
+                        data: {
+                            subscriptionStatus: 'active',
+                            subscriptionExpiresAt: expiresAt,
+                        },
+                    })
+                    .catch(() => void 0);
             }
         }
         return {received: true};

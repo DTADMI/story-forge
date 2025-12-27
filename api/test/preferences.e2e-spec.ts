@@ -12,14 +12,17 @@ describe('Preferences (e2e)', () => {
 
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [AppModule]
+            imports: [AppModule],
         }).compile();
 
         app = moduleRef.createNestApplication();
         await app.init();
         server = app.getHttpServer();
         const secret = process.env.API_JWT_SECRET || 'testsecret';
-        token = jwt.sign({uid: userId}, secret, {algorithm: 'HS256', expiresIn: '5m'});
+        token = jwt.sign({uid: userId}, secret, {
+            algorithm: 'HS256',
+            expiresIn: '5m',
+        });
     });
 
     afterAll(async () => {
@@ -35,7 +38,7 @@ describe('Preferences (e2e)', () => {
         const payload = {
             cadence: 'weekly',
             quietHours: {start: '22:00', end: '08:00'},
-            channels: {email: true, sms: false, push: true}
+            channels: {email: true, sms: false, push: true},
         };
 
         await request(server)
@@ -45,7 +48,7 @@ describe('Preferences (e2e)', () => {
             // It might fail if user doesn't exist in DB, but we check if it reaches the handler logic
             // If it fails with 500/400 due to DB, we know it passed the guard.
             // A better test would seed the user.
-            .then(res => {
+            .then((res) => {
                 if (res.status === 200) {
                     expect(res.body.settings.preferences.cadence).toBe('weekly');
                 } else {
@@ -58,7 +61,11 @@ describe('Preferences (e2e)', () => {
     });
 
     it('PATCH /users/:id/preferences rejects other users', async () => {
-        const otherToken = jwt.sign({uid: 'other-user'}, process.env.API_JWT_SECRET || 'testsecret', {algorithm: 'HS256'});
+        const otherToken = jwt.sign(
+            {uid: 'other-user'},
+            process.env.API_JWT_SECRET || 'testsecret',
+            {algorithm: 'HS256'}
+        );
         await request(server)
             .patch(`/users/${userId}/preferences`)
             .set('Authorization', `Bearer ${otherToken}`)

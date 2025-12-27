@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const res = await apiFetch('/social/follow', {
         method: 'POST',
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
     });
 
     if (!res.ok) {

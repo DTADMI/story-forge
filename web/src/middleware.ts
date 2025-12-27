@@ -15,12 +15,12 @@ export function middleware(req: NextRequest) {
         "script-src 'self' 'strict-dynamic' 'unsafe-inline'",
         "connect-src 'self'",
         "font-src 'self' data:",
-        "frame-ancestors 'none'"
+        "frame-ancestors 'none'",
     ].join('; ');
     res.headers.set('Content-Security-Policy', csp);
     return res;
 }
 
 export const config = {
-    matcher: ['/((?!_next/static|_next/image|favicon.ico).*)']
+    matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };

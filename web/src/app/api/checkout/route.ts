@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
     const res = await apiFetch('/billing/checkout', {
         method: 'POST',
-        body: JSON.stringify({plan, successUrl, cancelUrl})
+        body: JSON.stringify({plan, successUrl, cancelUrl}),
     });
 
     if (!res.ok) {

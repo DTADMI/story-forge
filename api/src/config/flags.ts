@@ -22,7 +22,7 @@ export const apiFlags: ApiFlags = {
   aiAssist: readBool('API_FEATURE_AI_ASSIST', false),
   projectsV2: readBool('API_FEATURE_PROJECTS_V2', false),
   wellbeing: readBool('API_FEATURE_WELLBEING', true),
-  designSystemV2: readBool('API_FEATURE_DESIGN_SYSTEM_V2', true)
+  designSystemV2: readBool('API_FEATURE_DESIGN_SYSTEM_V2', true),
 };
 
 export function isApiFlagEnabled(key: keyof ApiFlags): boolean {

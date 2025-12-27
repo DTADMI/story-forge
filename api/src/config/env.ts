@@ -8,7 +8,7 @@ const EnvSchema = z.object({
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
   STRIPE_PRICE_PREMIUM_MONTHLY: z.string().optional(),
-  STRIPE_PRICE_PREMIUM_YEARLY: z.string().optional()
+    STRIPE_PRICE_PREMIUM_YEARLY: z.string().optional(),
 });
 
 type Env = z.infer<typeof EnvSchema>;
@@ -17,6 +17,9 @@ let _env: Env | null = null;
 
 export function getEnv(): Env {
   if (_env) return _env;
+    if (process.env.NODE_ENV === 'test' && !process.env.API_JWT_SECRET) {
+        process.env.API_JWT_SECRET = 'test-secret-1234567890';
+    }
   _env = EnvSchema.parse(process.env);
   return _env;
 }
@@ -27,7 +30,7 @@ export const env = new Proxy({} as any, {
     if (prop === 'nodeEnv') return e.NODE_ENV;
     if (prop === 'apiJwtSecret') return e.API_JWT_SECRET;
     return (e as any)[prop];
-  }
+  },
 });
 
 export function assertEnv() {

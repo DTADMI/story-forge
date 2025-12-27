@@ -9,13 +9,16 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-    async updateById(id: string, data: {
-        name?: string | null;
-        username?: string | null;
-        bio?: string | null;
-        website?: string | null;
-        settings?: Record<string, any> | null;
-    }) {
+    async updateById(
+        id: string,
+        data: {
+            name?: string | null;
+            username?: string | null;
+            bio?: string | null;
+            website?: string | null;
+            settings?: Record<string, any> | null;
+        }
+    ) {
         return this.prisma.user.update({
             where: {id},
             data: {
@@ -23,8 +26,8 @@ export class UsersService {
                 username: data.username ?? undefined,
                 bio: data.bio ?? undefined,
                 website: data.website ?? undefined,
-                settings: data.settings ?? undefined
-            }
+                settings: data.settings ?? undefined,
+            },
         });
     }
 }
