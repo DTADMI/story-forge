@@ -20,6 +20,12 @@ async function isFollowing(targetId: string) {
     return following.some((f: any) => f.user.id === targetId);
 }
 
+async function getUserProjects(userId: string) {
+    const res = await apiFetch(`/projects?userId=${encodeURIComponent(userId)}`, {cache: 'no-store' as any});
+    if (!res.ok) return [];
+    return res.json();
+}
+
 export default async function UserProfilePage({
                                                   params,
                                               }: {
@@ -32,13 +38,16 @@ export default async function UserProfilePage({
     // If viewing own profile, redirect to /profile
     if (currentUserId === params.id) redirect('/profile');
 
-    const user = await getUser(params.id);
+    const [user, projects] = await Promise.all([
+        getUser(params.id),
+        getUserProjects(params.id)
+    ]);
     if (!user) notFound();
 
     const initialFollowing = await isFollowing(params.id);
 
     return (
-        <main className="mx-auto max-w-3xl px-6 py-10">
+        <main className="mx-auto max-w-3xl px-6 py-10 space-y-10">
             <Card className="p-6">
                 <div className="flex items-start justify-between">
                     <div>
@@ -92,6 +101,27 @@ export default async function UserProfilePage({
                     </div>
                 </div>
             </Card>
+
+            <section>
+                <h2 className="text-xl font-bold mb-4">Public Projects</h2>
+                {projects.length === 0 ? (
+                    <p className="text-fg/50 text-sm">No public projects to show.</p>
+                ) : (
+                    <div className="grid gap-4">
+                        {projects.map((p: any) => (
+                            <Link key={p.id} href={`/projects/${p.id}`}>
+                                <Card className="p-4 hover:border-brand transition-colors">
+                                    <h3 className="font-bold">{p.title}</h3>
+                                    {p.description && <p className="text-sm text-fg/60 mt-1">{p.description}</p>}
+                                    <div className="mt-2 text-xs font-medium text-brand uppercase tracking-wider">
+                                        {p.defaultScope}
+                                    </div>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+                )}
+            </section>
         </main>
     );
 }

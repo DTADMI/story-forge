@@ -1,5 +1,5 @@
 import {Module} from '@nestjs/common';
-import {PrismaService} from './common/prisma/prisma.service';
+import {PrismaModule} from './common/prisma/prisma.module';
 import {UsersModule} from './modules/users/users.module';
 import {AuthModule} from './modules/auth/auth.module';
 import {HealthModule} from './modules/health/health.module';
@@ -14,6 +14,7 @@ assertEnv();
 
 @Module({
     imports: [
+        PrismaModule,
         UsersModule,
         AuthModule,
         HealthModule,
@@ -23,6 +24,5 @@ assertEnv();
         GamificationModule,
         SocialModule,
     ],
-    providers: [PrismaService],
 })
 export class AppModule {}

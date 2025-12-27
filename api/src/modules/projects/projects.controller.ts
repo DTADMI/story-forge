@@ -14,6 +14,7 @@ class CreateProjectDto {
 class UpdateProjectDto {
   title?: string;
   description?: string;
+  content?: string;
   defaultScope?: DefaultScope;
 }
 
@@ -43,6 +44,10 @@ export class ProjectsController {
     if (!uid) throw new BadRequestException('Unauthorized');
     if (!body?.title || typeof body.title !== 'string')
       throw new BadRequestException('title is required');
+    if (body.title.length > 255) throw new BadRequestException('title too long');
+    if (body.description && body.description.length > 2000)
+      throw new BadRequestException('description too long');
+
     return this.svc.create({
       userId: uid,
       title: body.title,
@@ -57,6 +62,7 @@ export class ProjectsController {
       @Param('id') id: string,
       @CurrentUser() user: { id: string } | undefined
   ) {
+    if (!id || id.length > 50) throw new BadRequestException('invalid id');
     return this.svc.findById(id, user?.id);
   }
 
@@ -68,6 +74,12 @@ export class ProjectsController {
       @Body() body: UpdateProjectDto
   ) {
     if (!user?.id) throw new BadRequestException('Unauthorized');
+    if (!id || id.length > 50) throw new BadRequestException('invalid id');
+    if (body.title && (typeof body.title !== 'string' || body.title.length > 255))
+      throw new BadRequestException('invalid title');
+    if (body.content && typeof body.content !== 'string')
+      throw new BadRequestException('invalid content');
+
     return this.svc.update(id, user.id, body);
   }
 }

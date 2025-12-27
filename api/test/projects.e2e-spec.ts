@@ -8,6 +8,9 @@ describe('Projects (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
+    process.env.DATABASE_URL =
+        process.env.DATABASE_URL ||
+        'postgresql://postgres:postgres@localhost:5432/storyforge';
     process.env.API_JWT_SECRET = 'testsecret123';
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],

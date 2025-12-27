@@ -118,6 +118,7 @@ export class ProjectsService {
             userId: p.userId,
             title: p.title,
             description: p.description ?? undefined,
+            content: p.content ?? undefined,
             defaultScope: fromPrismaScope(p.defaultScope),
         } as const;
     }
@@ -125,7 +126,12 @@ export class ProjectsService {
     async update(
         id: string,
         viewerId: string,
-        data: { title?: string; description?: string; defaultScope?: DefaultScope }
+        data: {
+            title?: string;
+            description?: string;
+            content?: string;
+            defaultScope?: DefaultScope;
+        }
     ) {
         const p = await this.prisma.project.findUnique({where: {id}});
         if (!p) return null;
@@ -136,6 +142,7 @@ export class ProjectsService {
             data: {
                 title: data.title,
                 description: data.description,
+                content: data.content,
                 defaultScope: toPrismaScope(data.defaultScope),
             },
         });
@@ -143,6 +150,7 @@ export class ProjectsService {
             id: updated.id,
             title: updated.title,
             description: updated.description ?? undefined,
+            content: updated.content ?? undefined,
             defaultScope: fromPrismaScope(updated.defaultScope),
         } as const;
     }

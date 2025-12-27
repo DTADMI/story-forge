@@ -25,7 +25,7 @@ export class BillingController {
         @CurrentUser() user: { id: string } | undefined,
         @Body()
         body: {
-            plan: 'monthly' | 'yearly';
+            plan?: 'monthly' | 'yearly';
             successUrl?: string;
             cancelUrl?: string;
         }
@@ -34,12 +34,18 @@ export class BillingController {
             throw new NotFoundException();
         }
         if (!user?.id) throw new BadRequestException('Unauthorized');
+
+        const plan = body.plan || 'monthly';
+        if (plan !== 'monthly' && plan !== 'yearly') {
+            throw new BadRequestException('Invalid plan');
+        }
+
         if (!this.stripe) {
             throw new BadRequestException('Stripe not configured');
         }
         const e = getEnv();
         const price =
-            body.plan === 'yearly'
+            plan === 'yearly'
                 ? e.STRIPE_PRICE_PREMIUM_YEARLY
                 : e.STRIPE_PRICE_PREMIUM_MONTHLY;
         if (!price) throw new BadRequestException('Price not configured');
@@ -60,7 +66,7 @@ export class BillingController {
             line_items: [{price, quantity: 1}],
             metadata: {
                 userId: user.id,
-                plan: body.plan,
+                plan,
             },
         });
         return {url: session.url} as const;

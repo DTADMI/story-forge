@@ -110,6 +110,41 @@ Legend:
   - [x] Add Prisma generate in CI for both web and api
   - [x] Add safe `migrate deploy` (preview‑gated)
   - [x] Deployment notes (README/docs): Stripe envs, webhook setup, DB migration notes, quality gates
+  - [x] Initial monorepo workspace setup with `pnpm-workspace.yaml`.
+
+---
+
+## Security Advisory (December 2025)
+
+### CVE-2025-66478 / CVE-2025-55182 (React2Shell)
+
+A critical vulnerability in React Server Components (RSC) was identified. StoryForge has been updated to Next.js 16.0.10
+to mitigate this.
+
+- [x] Upgrade Next.js to 16.0.10+ (Current: 16.0.10).
+- [ ] **Action Required:** Rotate all environment secrets (API_JWT_SECRET, STRIPE_SECRET_KEY, NEXTAUTH_SECRET, etc.) in
+  production environments.
+
+## Completed (New)
+
+### Writing Tools (Post‑MVP)
+
+- [x] Story editor (TipTap) with autosave and versioning (MVP).
+- [x] Extended Project model with `content` field.
+- [x] API: PATCH `/projects/:id` supports `content` updates.
+
+### Social & Messaging (Expansion)
+
+- [x] "Friends" logic: reciprocal follow check in `SocialService`.
+- [x] Web: Followers and Following list pages at `/social/followers` and `/social/following`.
+- [x] Web: Public user profiles show accessible projects based on relationship (Friend/Public).
+
+### Privacy & Security
+
+- [x] Enforce `private`, `friends`, `public-auth`, `public-anyone` scopes in `ProjectsService`.
+- [x] Input validation for Projects and Billing endpoints (max lengths, type checks).
+- [x] Rate limiting (Read/Write) applied to all core API endpoints.
+- [x] Centralized Prisma provider via `PrismaModule`.
 
 ## Planned
 
@@ -133,7 +168,6 @@ Legend:
 
 ### Writing Tools (Post‑MVP expansions)
 
-- [ ] Story editor (TipTap) with autosave and versioning
 - [ ] Entities & world-building modules (iterative rollout):
   - [ ] Characters (profiles with traits/quirks)
   - [ ] Relationships graph (2D first; 3D nodes later) with editable labeled links

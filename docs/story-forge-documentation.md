@@ -814,6 +814,12 @@ Optional alternative single-cloud: Fly.io (frontend + backend + Postgres) for lo
     - Web: Vercel (Automatic preview and production deployments)
     - API: Railway/Supabase (Triggered on main push)
 
+#### Security & Compliance
+
+- **Next.js Security:** Following CVE-2025-66478, Next.js must be kept at 16.0.7+ or 15.0.5+. Current version: 16.0.10.
+- **Secret Rotation:** It is strongly recommended to rotate all critical secrets (JWT, Stripe, Auth) if the application
+  was unpatched as of Dec 4, 2025.
+
 #### Environment Management
 
 - **Validation:** All environments validated at startup via Zod schemas.
