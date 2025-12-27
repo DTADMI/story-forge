@@ -66,4 +66,20 @@ export class SocialController {
             },
         }));
     }
+
+    @Post('cheer')
+    @UseGuards(ApiAuthGuard, WriteRateLimitGuard)
+    async cheer(
+        @CurrentUser() user: { id: string } | undefined,
+        @Body() body: { userId?: string }
+    ) {
+        if (!user?.id) throw new BadRequestException('unauthorized');
+        const target = body?.userId;
+        if (!target) throw new BadRequestException('userId required');
+        try {
+            return await this.svc.cheer(user.id, target);
+        } catch (e: any) {
+            throw new BadRequestException(e.message);
+        }
+    }
 }

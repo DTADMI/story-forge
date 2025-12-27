@@ -3,7 +3,9 @@ import {authOptions} from '@/lib/auth';
 import {apiFetch} from '@/lib/api';
 import {notFound, redirect} from 'next/navigation';
 import {FollowButton} from '@/components/social/follow-button';
+import {CheerButton} from '@/components/social/cheer-button';
 import {Card} from '@/components/ui/card';
+import Link from 'next/link';
 
 async function getUser(id: string) {
     const res = await apiFetch(`/users/${encodeURIComponent(id)}`, {
@@ -56,10 +58,13 @@ export default async function UserProfilePage({
                         </h1>
                         <p className="text-fg/60">@{user.username || 'user'}</p>
                     </div>
-                    <FollowButton
-                        targetUserId={user.id}
-                        initialIsFollowing={initialFollowing}
-                    />
+                    <div className="flex items-center gap-2">
+                        <CheerButton targetUserId={user.id}/>
+                        <FollowButton
+                            targetUserId={user.id}
+                            initialIsFollowing={initialFollowing}
+                        />
+                    </div>
                 </div>
 
                 {user.bio && (

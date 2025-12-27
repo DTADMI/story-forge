@@ -62,4 +62,36 @@ export class SocialService {
         ]);
         return !!(aFollowsB && bFollowsA);
     }
+
+    async cheer(senderId: string, receiverId: string) {
+        if (senderId === receiverId) throw new Error('Cannot cheer yourself');
+
+        const senderPot = await this.prisma.inkPot.findUnique({where: {userId: senderId}});
+        if (!senderPot || senderPot.balance < 1) {
+            throw new Error('Not enough Ink');
+        }
+
+        return this.prisma.$transaction(async (tx) => {
+            // Deduct 1 from sender
+            await tx.inkPot.update({
+                where: {userId: senderId},
+                data: {balance: {decrement: 1}},
+            });
+            await tx.inkTx.create({
+                data: {userId: senderId, amount: -1, reason: 'sent_cheer', metadata: {to: receiverId}},
+            });
+
+            // Add 1 to receiver
+            await tx.inkPot.upsert({
+                where: {userId: receiverId},
+                update: {balance: {increment: 1}},
+                create: {userId: receiverId, balance: 1},
+            });
+            await tx.inkTx.create({
+                data: {userId: receiverId, amount: 1, reason: 'received_cheer', metadata: {from: senderId}},
+            });
+
+            return {success: true};
+        });
+    }
 }

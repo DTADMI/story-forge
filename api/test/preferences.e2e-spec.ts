@@ -39,6 +39,7 @@ describe('Preferences (e2e)', () => {
             cadence: 'weekly',
             quietHours: {start: '22:00', end: '08:00'},
             channels: {email: true, sms: false, push: true},
+            breakReminders: true,
         };
 
         await request(server)

@@ -57,7 +57,7 @@ export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id as string | undefined;
     if (!userId) redirect('/signin');
-    const [user, wallet, streak] = await Promise.all([
+    const [user, pot, streak] = await Promise.all([
         getUser(userId),
         getWallet(userId),
         getStreak(userId),
@@ -76,6 +76,7 @@ export default async function ProfilePage() {
                 sms: String(formData.get('ch_sms') || '') === 'on',
                 push: String(formData.get('ch_push') || '') === 'on',
             },
+            breakReminders: String(formData.get('breakReminders') || '') === 'on',
         };
         await apiFetch(`/users/${encodeURIComponent(userId)}/preferences`, {
             method: 'PATCH',
@@ -144,9 +145,9 @@ export default async function ProfilePage() {
                     <button className="bg-brand rounded-md px-4 py-2 text-white">
                         Save
                     </button>
-                    {wallet?.balance != null && (
+                    {pot?.balance != null && (
                         <span className="text-sm">
-              Gems: <strong>{wallet.balance}</strong>
+              Ink: <strong>{pot.balance}</strong>
             </span>
                     )}
                 </div>
@@ -195,6 +196,21 @@ export default async function ProfilePage() {
                         />
                     </div>
                 </div>
+                <fieldset className="mt-1">
+                    <legend className="block text-sm font-medium">Wellbeing & Focus</legend>
+                    <div className="mt-2 flex flex-col gap-2 text-sm">
+                        <label className="inline-flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                name="breakReminders"
+                                defaultChecked={Boolean(
+                                    user?.settings?.preferences?.breakReminders
+                                )}
+                            />{' '}
+                            Enable Break Reminders (nudge every 45 mins of writing)
+                        </label>
+                    </div>
+                </fieldset>
                 <fieldset className="mt-1">
                     <legend className="block text-sm font-medium">Channels</legend>
                     <div className="mt-2 flex items-center gap-4 text-sm">

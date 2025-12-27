@@ -93,6 +93,8 @@ export class UsersController {
             quietHours?: { start?: string; end?: string };
             cadence?: 'immediate' | 'daily' | 'weekly';
             channels?: { email?: boolean; sms?: boolean; push?: boolean };
+            breakReminders?: boolean;
+            writingCap?: number;
         }
     ) {
         if (!user?.id || user.id !== id) throw new BadRequestException('forbidden');
@@ -103,6 +105,10 @@ export class UsersController {
         if (body.quietHours) settings.preferences.quietHours = body.quietHours;
         if (body.cadence) settings.preferences.cadence = body.cadence;
         if (body.channels) settings.preferences.channels = body.channels;
+        if (body.breakReminders !== undefined)
+            settings.preferences.breakReminders = body.breakReminders;
+        if (body.writingCap) settings.preferences.writingCap = body.writingCap;
+
         const updated = await this.usersService.updateById(id, {settings});
         const {passwordHash, ...rest} = updated as any;
         return rest;

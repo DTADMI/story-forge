@@ -36,8 +36,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   projects      Project[]
-  gemWallet     GemWallet?
-  gemTx         GemTx[]
+  inkPot        InkPot?
+  inkTx         InkTx[]
   goals         Goal[]
   progressLog   ProgressLog[]
   followers     Follow[] @relation("followers")
@@ -65,21 +65,21 @@ model Project {
 }
 
 // Gamification models
-model GemWallet {
+model InkPot {
   id      String @id @default(cuid())
   user    User   @relation(fields: [userId], references: [id])
   userId  String @unique
   balance Int    @default(0)
 
-  transactions GemTx[]
+  transactions InkTx[]
 }
 
-model GemTx {
+model InkTx {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  wallet    GemWallet? @relation(fields: [walletId], references: [id])
-  walletId  String?
+  pot       InkPot?  @relation(fields: [potId], references: [id])
+  potId     String?
   amount    Int
   reason    String
   metadata  Json?

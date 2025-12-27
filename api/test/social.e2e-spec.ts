@@ -69,4 +69,28 @@ describe('Social (e2e)', () => {
             .expect(200);
         expect(Array.isArray(following.body)).toBe(true);
     });
+
+    it('POST /social/cheer transfers Ink', async () => {
+        // 1. Give User A some Ink
+        const {PrismaService} = await import('../src/common/prisma/prisma.service');
+        const prisma = app.get(PrismaService);
+        await prisma.inkPot.upsert({
+            where: {userId: 'user-a'},
+            update: {balance: 10},
+            create: {userId: 'user-a', balance: 10},
+        });
+
+        // 2. Cheer User B
+        await request(server)
+            .post('/social/cheer')
+            .set('Authorization', `Bearer ${tokenA}`)
+            .send({userId: 'user-b'})
+            .expect(201);
+
+        // 3. Check balances
+        const potA = await prisma.inkPot.findUnique({where: {userId: 'user-a'}});
+        const potB = await prisma.inkPot.findUnique({where: {userId: 'user-b'}});
+        expect(potA?.balance).toBe(9);
+        expect(potB?.balance).toBe(1);
+    });
 });

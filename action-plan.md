@@ -1,5 +1,10 @@
 # StoryForge — Action Plan
 
+A gamified writing platform that helps writers build consistent habits, craft worlds, and share short stories with
+privacy controls and social features. StoryForge blends elements of Campfire (world‑building), genealogy/graph apps (
+character relationships), Duolingo (streaks, goals, rewards), and Discord/social networks (groups, DMs, feeds) with a
+strong emphasis on mental wellbeing.
+
 This file tracks the actionable work for StoryForge, kept up to date based on the product objectives defined in
 `README.md` and the detailed spec in `docs/story-forge-documentation.md`.
 
@@ -75,10 +80,10 @@ Legend:
   - [x] Docs: README/docs updated (flag behavior and proxy)
 
 - [x] Gamification & Wellbeing — MVP scaffolds
-  - [x] Prisma: Add `Goal`, `ProgressLog`, `GemWallet`, `GemTx` models
-  - [x] API: `GET /gamification/wallet?userId=` and `POST /gamification/progress` (stubbed rewards)
-  - [x] Web: Profile shows Gems balance (read-only)
-  - [x] Docs: sections added in docs and README
+  - [x] Prisma: Add `Goal`, `ProgressLog`, `InkPot`, `InkTx` models (Renamed from Gem/InkWallet)
+  - [x] API: `GET /gamification/wallet` and `POST /gamification/progress`
+  - [x] Web: Profile shows Ink balance
+  - [x] Strategy: Pivot to cosmetic-only "Ink" system for habit building and social cheers. Stored in "Ink Pot".
 
 ## In Progress
 
@@ -183,11 +188,18 @@ to mitigate this.
 - [ ] API: `POST /social/follow` toggle; `GET /social/followers` and `/social/following`
 - [ ] Web: Profile tabs for Followers/Following; Follow button on user profile
 
-### Gamification & Wellbeing (post‑MVP extensions)
+### Gamification & Wellbeing (Habit Building)
 
-- [ ] Earn/redeem gems for customization or gifts
-- [ ] Notification cadence controls (email/SMS/push) with wellbeing guardrails
-- [ ] Anti-burnout mechanisms (break nudges, focus modes, caps)
+- [x] Rename "Gems" to "Ink" (stored in "Ink Pot") in Prisma and codebase.
+- [ ] Implement "Cheers" (Social Motivators):
+  - [ ] API: `POST /social/cheer` sends a notification/ink to a friend.
+  - [ ] Web: "Cheer" button on friend progress or profile.
+- [ ] Wellbeing Enhancements:
+  - [ ] Add "Break Reminder" setting in `User.preferences`.
+  - [ ] API: Logic to detect long writing sessions and send nudges.
+- [ ] Milestone Badges:
+  - [ ] Prisma: `Badge` model and `UserBadge` join table.
+  - [ ] API: Award badges based on total word count milestones.
 
 ### Security & Compliance
 

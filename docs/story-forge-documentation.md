@@ -1,5 +1,10 @@
 # StoryForge - Gamified Writing Platform
 
+A gamified writing platform that helps writers build consistent habits, craft worlds, and share short stories with
+privacy controls and social features. StoryForge blends elements of Campfire (world‑building), genealogy/graph apps (
+character relationships), Duolingo (streaks, goals, rewards), and Discord/social networks (groups, DMs, feeds) with a
+strong emphasis on mental wellbeing.
+
 ## Table of Contents
 
 1. [Technical Stack](#technical-stack)
@@ -654,20 +659,36 @@ Messaging
 - API: `POST /billing/checkout` returns `{ url }` (stub) when enabled; 404 when disabled.
 - Stripe integration planned next (Checkout + webhook to set `subscriptionStatus`).
 
-### Gamification (MVP scaffolds)
+### Gamification & Engagement (Engagement Strategy)
 
-Prisma models added:
+The primary goal of StoryForge gamification is not to create a complex economy, but to foster **productive habits** and
+**meaningful social connections**.
 
-- `GemWallet (userId, balance)`, `GemTx (amount, reason, metadata)`, `Goal`, `ProgressLog`.
+#### The "Ink" System (formerly Gems)
 
-API endpoints:
+"Ink" (or Inspiration) serves as a non-monetary, cosmetic-only reward system.
 
-- `GET /gamification/wallet?userId=` — returns `{ userId, balance }` (creates wallet if missing)
-- `POST /gamification/progress` — logs progress and may reward small gem amounts (stub logic)
+- **Earning Ink:** Users earn Ink by meeting their daily writing goals or receiving "Cheers" from other writers.
+- **Spending Ink:**
+    - **Cosmetic Personalization:** Unlock dark mode themes, custom editor fonts, or profile badges.
+    - **Social Gifting:** Use Ink to send "Cheers" or digital "Stickers" to friends to motivate them.
+- **The Ink Pot:** Ink is stored in the user's "Ink Pot" (or "Well"), keeping with the writing theme.
+- **Why Ink?** It removes the pressure of a "valuable" currency while still providing a sense of progression and a way
+  to interact with others.
 
-Web:
+#### Engagement Mechanics
 
-- `/profile` shows a read-only Gems badge/label when available.
+1. **Streaks (Habit Building):** Visible daily streaks to encourage showing up.
+2. **Milestone Badges:** Permanent rewards for cumulative word counts (e.g., "10k Club", "First Novel Draft").
+3. **Social Motivators:**
+    - **Cheers:** A low-friction way to notify a friend that you've noticed their progress.
+    - **Shared Goals:** Optional groups where members see each other's progress (anonymized if desired).
+
+#### Wellbeing & Mental Health
+
+- **Break Reminders:** Nudges to stand up and stretch after 25 or 50 minutes of writing (Pomodoro-style).
+- **Daily Caps:** Soft warnings when a user exceeds a healthy daily writing threshold to avoid burnout.
+- **Quiet Mode:** Easy toggle to silence all social notifications during writing sessions.
 
 ## Security Considerations
 
