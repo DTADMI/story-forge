@@ -43,6 +43,10 @@ model User {
   badges        UserBadge[]
   followers     Follow[] @relation("followers")
   following     Follow[] @relation("following")
+  groups        GroupMember[]
+  characters    Character[]
+  locations     Location[]
+  timelineEvents TimelineEvent[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -60,6 +64,10 @@ model Project {
   wordCount     Int      @default(0)
   defaultScope  VisibilityScope @default(PRIVATE)
   settings      Json?
+
+  characters    Character[]
+  locations     Location[]
+  timelineEvents TimelineEvent[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -130,6 +138,73 @@ model UserBadge {
   @@unique([userId, badgeId])
 }
 
+model Character {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  name        String
+  bio         String?
+  traits      String?
+  quirks      String?
+  imageUrl    String?
+  metadata    Json?    // For flexible properties
+
+  timelineEvents TimelineEvent[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  name        String
+  description String?
+  mapUrl      String?
+  metadata    Json?
+
+  timelineEvents TimelineEvent[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TimelineEvent {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  title       String
+  date        String?  // Flexible date format
+  description String?
+  
+  characters  Character[]
+  locations   Location[]
+  
+  dialogue    Dialogue? @relation(fields: [dialogueId], references: [id])
+  dialogueId  String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Dialogue {
+  id          String   @id @default(cuid())
+  projectId   String?
+  content     Json     // Structured list of speakers and lines
+  
+  timelineEvents TimelineEvent[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 // Social follow model
 model Follow {
   id          String   @id @default(cuid())
@@ -140,6 +215,31 @@ model Follow {
   createdAt   DateTime @default(now())
 
   @@unique([followerId, followeeId])
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isPrivate   Boolean  @default(false)
+  
+  members     GroupMember[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GroupMember {
+  id        String   @id @default(cuid())
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  role      String   @default("member") // "admin" | "member"
+  
+  joinedAt  DateTime @default(now())
+
+  @@unique([groupId, userId])
 }
 
 // NextAuth.js models

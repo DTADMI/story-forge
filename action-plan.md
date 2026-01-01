@@ -174,20 +174,21 @@ to mitigate this.
 
 ### Writing Tools (Post‑MVP expansions)
 
-- [ ] Entities & world-building modules (iterative rollout):
-  - [ ] Characters (profiles with traits/quirks)
-  - [ ] Relationships graph (2D first; 3D nodes later) with editable labeled links
-  - [ ] Locations & Maps (visual map later)
-  - [ ] Timeline of events (title, dates, characters, description, linked dialogues)
+- [x] Entities & world-building modules:
+  - [x] Characters (profiles with traits/quirks)
+  - [x] Locations & Maps
+  - [x] Timeline of events foundation
+  - [ ] Relationships graph (2D first; 3D nodes later)
   - [ ] Dialogues objects (participants, scripted dialogue, linkable to timeline events)
   - [ ] Additional encyclopedic modules: Research, Calendar, Magic, Fauna, Flora, Cultures, Items, Systems, Languages,
     Religions, Philosophies
 
 ### Social & Messaging — Foundations
 
-- [ ] Prisma: `Follow` and `Friend` tables
-- [ ] API: `POST /social/follow` toggle; `GET /social/followers` and `/social/following`
-- [ ] Web: Profile tabs for Followers/Following; Follow button on user profile
+- [x] Prisma: `Follow` and `Friend` tables
+- [x] API: `POST /social/follow` toggle; `GET /social/followers` and `/social/following`
+- [x] Web: Profile tabs for Followers/Following; Follow button on user profile
+- [x] Groups foundation (Shared Goals)
 
 ### Gamification & Wellbeing (Habit Building)
 

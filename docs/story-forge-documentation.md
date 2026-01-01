@@ -675,6 +675,13 @@ The primary goal of StoryForge gamification is not to create a complex economy, 
 - **The Ink Pot:** Ink is stored in the user's "Ink Pot" (or "Well"), keeping with the writing theme.
 - **Milestone Badges:** Users earn badges for reaching word count milestones (1k, 5k, 10k words).
 
+#### World Building Entities
+
+- **Characters:** Detailed profiles with traits, quirks, and bio.
+- **Locations:** Descriptions and map associations.
+- **Timeline:** Temporal mapping of story events, linked to characters and locations.
+- **Groups:** Collaborative "Shared Goals" for communities of writers.
+
 #### Engagement Mechanics
 
 1. **Streaks (Habit Building):** Visible daily streaks to encourage showing up.

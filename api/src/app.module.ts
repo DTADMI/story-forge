@@ -8,6 +8,7 @@ import {BillingModule} from './modules/billing/billing.module';
 import {ProjectsModule} from './modules/projects/projects.module';
 import {GamificationModule} from './modules/gamification/gamification.module';
 import {SocialModule} from './modules/social/social.module';
+import {WorldModule} from './modules/world/world.module';
 import {assertEnv} from './config/env';
 
 assertEnv();
@@ -23,6 +24,7 @@ assertEnv();
         ProjectsModule,
         GamificationModule,
         SocialModule,
+        WorldModule,
     ],
 })
 export class AppModule {}
