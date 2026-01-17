@@ -1,9 +1,12 @@
 # StoryForge
 
-A gamified writing platform that helps writers build consistent habits, craft worlds, and share short stories with
-privacy controls and social features. StoryForge blends elements of Campfire (world‑building), genealogy/graph apps (
-character relationships), Duolingo (streaks, goals, rewards), and Discord/social networks (groups, DMs, feeds) with a
-strong emphasis on mental wellbeing.
+A gamified creative writing platform for novelists, screenwriters, comic creators, and visual storytellers. StoryForge
+helps writers build consistent habits, craft immersive worlds, and share stories with granular privacy controls.
+
+Whether you're writing novels, short stories, screenplays, comics, graphic novels, or webtoons, StoryForge provides
+TipTap rich-text editing, comprehensive world-building tools (characters, locations, timelines, dialogue scenes), visual
+asset management, Duolingo-style gamification (Ink currency, goals, streaks, milestone badges), and social features (
+follow/followers, groups, public feed) with mental wellbeing safeguards and break reminders.
 
 ## Contents
 
@@ -25,13 +28,20 @@ strong emphasis on mental wellbeing.
 
 ## Objective & Core Value
 
-Help writers show up regularly and enjoy the process by:
+Help writers and visual storytellers show up regularly and enjoy the creative process by:
 
-- Reducing friction to write (fast editor, autosave, versioning later)
-- Visual tools for world‑building (characters, relationships, timelines, maps)
-- Gentle gamification (goals, streaks, gems) with mental‑health guardrails
-- Social discovery and collaboration (public feed, friends/groups/DMs)
-- Strong privacy controls per project and per item
+- **Reducing friction to create:** TipTap rich-text editor with autosave, word count tracking, project versioning, and
+  visual asset organization
+- **Comprehensive world-building tools:** Characters with visual references, locations, timeline events, dialogue/script
+  scenes, and flexible metadata—perfect for novels, comics, graphic novels, screenplays, and webtoons
+- **Visual storytelling support:** Character design galleries, location reference boards, scene scripting with
+  dialogue/panel breakdowns, and image metadata for sequential art
+- **Gentle gamification:** Ink currency system, daily/weekly goals (words or panels), streak tracking, milestone badges,
+  and break reminders for mental wellbeing
+- **Social discovery & collaboration:** Follow/followers system, public story/comic feed, groups, and granular
+  per-project visibility controls
+- **Strong privacy model:** Four-tier visibility scopes (Private, Friends, Public-Auth, Public-Anyone) at project and
+  entity levels
 
 See detailed product/architecture spec: `docs/story-forge-documentation.md`.
 
@@ -43,13 +53,67 @@ Monorepo with separate web (Next.js) and api (NestJS) apps sharing a single Pris
 
 ```
 story-forge/
-├─ api/                    # NestJS backend (REST, health, future modules)
+├─ api/                    # NestJS backend
+│  ├─ src/
+│  │  ├─ modules/
+│  │  │  ├─ auth/          # API authentication (JWT verification)
+│  │  │  ├─ billing/       # Stripe integration (behind feature flag)
+│  │  │  ├─ debug/         # Debug endpoints (dev only)
+│  │  │  ├─ gamification/  # Ink, goals, badges, progress
+│  │  │  ├─ health/        # Health check endpoints
+│  │  │  ├─ projects/      # Project CRUD operations
+│  │  │  ├─ social/        # Follow/followers, groups
+│  │  │  ├─ users/         # User management
+│  │  │  └─ world/         # Characters, locations, timelines, dialogue
+│  │  ├─ common/           # Shared guards, decorators, filters
+│  │  ├─ config/           # Environment validation (Zod)
+│  │  ├─ app.module.ts
+│  │  └─ main.ts
+│  ├─ .env.example
+│  └─ package.json
 ├─ web/                    # Next.js (App Router) frontend
+│  ├─ src/
+│  │  ├─ app/
+│  │  │  ├─ (auth)/        # Sign in, sign up
+│  │  │  ├─ (main)/        # Authenticated routes
+│  │  │  │  ├─ dashboard/
+│  │  │  │  ├─ profile/
+│  │  │  │  ├─ projects/   # Project list, editor
+│  │  │  │  ├─ social/     # Followers, following
+│  │  │  │  ├─ users/      # User discovery
+│  │  │  │  └─ world/      # World-building tools
+│  │  │  ├─ (marketing)/   # Public pages
+│  │  │  │  ├─ feed/       # Public stories feed
+│  │  │  │  ├─ pricing/
+│  │  │  │  └─ tutorial/
+│  │  │  ├─ api/           # Next.js API routes
+│  │  │  │  ├─ auth/       # NextAuth handlers
+│  │  │  │  ├─ billing/    # Stripe proxy
+│  │  │  │  ├─ checkout/
+│  │  │  │  ├─ projects/
+│  │  │  │  ├─ public/
+│  │  │  │  └─ social/
+│  │  │  ├─ about/
+│  │  │  ├─ billing/
+│  │  │  ├─ components-demo/
+│  │  │  ├─ faq/
+│  │  │  ├─ feed/
+│  │  │  ├─ pricing/
+│  │  │  └─ page.tsx       # Landing page
+│  │  ├─ components/       # React components
+│  │  ├─ lib/              # Utilities, API client, env validation
+│  │  └─ styles/
+│  ├─ .env.example
+│  └─ package.json
 ├─ prisma/
-│  └─ schema.prisma        # Shared database schema (PostgreSQL + Prisma)
+│  ├─ schema.prisma        # Shared database schema (PostgreSQL + Prisma)
+│  └─ migrations/          # Database migrations
 ├─ docs/
-│  └─ story-forge-documentation.md  # In‑depth system/product spec
+│  ├─ story-forge-documentation.md  # In‑depth system/product spec
+│  └─ design-tokens.json   # Color palette and design system
+├─ .env.example
 ├─ .gitignore
+├─ package.json
 └─ README.md
 ```
 
@@ -73,11 +137,13 @@ Public vs Authenticated Areas:
 Primary choices
 
 - Frontend: Next.js 16 (App Router) + React 19 + TypeScript
-- Auth: NextAuth v4 with Prisma Adapter
+- Auth: NextAuth v4 with Prisma Adapter (Credentials provider, OAuth ready)
 - ORM/DB: Prisma 7.2 + PostgreSQL (using Driver Adapters)
-- Backend: NestJS 11 (TypeScript) with modular DI
-- Styling (soon): Tailwind CSS + tokens from `docs/design-tokens.json`
-- State: TanStack Query for server state; local state via React/Context (Zustand later)
+- Backend: NestJS 11 (TypeScript) with modular DI, JWT-based API auth
+- Editor: TipTap (rich-text WYSIWYG editor)
+- Styling: Tailwind CSS + design tokens from `docs/design-tokens.json`
+- State: TanStack Query for server state; React Context/hooks for local state
+- Payments: Stripe Checkout (behind feature flag)
 
 Why these choices (pros/cons)
 
@@ -108,22 +174,130 @@ Color & Design System
 
 ---
 
-## Key Features (MVP trajectory)
+## Key Features
 
-- Guest browsing: public marketing + public stories feed.
-- Accounts: email/password (Credentials) with migration path to OAuth.
-- Projects: create/list with visibility controls (`private`, `friends`, `public-auth`, `public-anyone`).
-- Writing tools: TipTap‑based editor and world‑building entities (rolling out incrementally).
-- Social: follow/friends, comments, groups (phased).
-- Gamification: goals, streaks, gem wallet prototype; mental health guardrails.
+### ✅ Implemented
+
+**Authentication & Users**
+
+- Email/password authentication (NextAuth Credentials provider)
+- User profiles with username, bio, website
+- Session management with JWT tokens
+- API authentication using short-lived API JWTs (HS256, 10m expiry)
+
+**Writing & Projects**
+
+- TipTap rich-text editor with formatting tools
+- Project CRUD with title, description, genre, content
+- Word count tracking and automatic updates
+- Four-tier visibility scopes: `PRIVATE`, `FRIENDS`, `PUBLIC_AUTHENTICATED`, `PUBLIC_ANYONE`
+- Project settings and metadata (JSON)
+
+**World-Building Entities**
+
+- **Characters:** Name, bio, traits, quirks, character design images, flexible metadata (supports reference sheets for
+  comics/graphic novels)
+- **Locations:** Name, description, map/location reference images, metadata (environment design for visual storytelling)
+- **Timeline Events:** Title, flexible date format, description, linked characters/locations (story beats or comic issue
+  planning)
+- **Dialogue Scenes:** Structured speaker/line content (JSON) perfect for comic scripts, screenplays, and visual
+  dialogue planning
+- All entities linkable to projects and each other
+- Image URL support across entities for visual reference boards
+
+**Gamification System**
+
+- **Ink Currency:** Virtual currency system with InkPot wallets and transaction history
+- **Goals:** Daily/weekly targets (word count for writers, panel/page count for comic creators) with progress tracking
+- **Badges:** Milestone achievements (total words, pages completed, streaks, etc.) with award tracking
+- **Progress Logging:** Timestamped activity tracking per goal—track writing sessions or comic production milestones
+
+**Social Features**
+
+- Follow/follower system with bidirectional relationships
+- Public story feed (projects with appropriate visibility)
+- Groups with admin/member roles
+- User discovery and profile viewing
+- Social endpoints: `/social/follow`, `/social/followers`, `/social/following`
+
+**Payments (Feature Flag)**
+
+- Stripe Checkout integration
+- Webhook handling for subscription events
+- Premium monthly/yearly pricing tiers
+- Subscription status tracking on user model
+
+**Developer Experience**
+
+- Environment validation with Zod (API and Web)
+- Shared Prisma schema across monorepo
+- Health check endpoints
+- CORS configuration
+- Debug endpoints (development only)
+
+### 🚧 Planned
+
+**Writing Enhancements**
+
+- Version history and rollback
+- Autosave with conflict resolution
+- Export to PDF/EPUB/Markdown
+- Writing statistics and analytics dashboard
+
+**World-Building Expansion**
+
+- Character relationship graphs (family trees, social networks)
+- Interactive timeline visualization
+- World map integration with pinnable locations
+- Cross-project entity sharing/templates
+- Panel/page layout templates for comics
+- Storyboard view for visual sequence planning
+- Image gallery management for character designs and location references
+
+**Gamification Enhancements**
+
+- Daily streak system with recovery mechanics
+- Break reminders and creative session timers
+- Achievement unlocking animations
+- Leaderboards (opt-in, friends-only)
+- Customizable goal types: word count, panel count, page count, scene completion, character designs finished
+
+**Social & Collaboration**
+
+- Direct messaging (DMs)
+- Comments on projects and entities
+- Group projects with co-author permissions
+- Activity feed (friends' writing updates)
+- In-app notifications
+
+**Mental Wellbeing**
+
+- Configurable break reminders
+- Anti-burnout detection
+- Compassionate streak recovery
+- Writing reflection prompts
+
+**Technical Improvements**
+
+- OAuth providers (Google, GitHub, Discord)
+- Email verification and password reset
+- Rate limiting on API endpoints
+- Audit trails for sensitive actions
+- Real-time collaboration with WebSockets
 
 Access Scopes & Privacy Model
 
-- Default scope per project + per‑item overrides; public feed only surfaces eligible content.
+- Default scope per project with per-entity overrides
+- Public feed surfaces only `PUBLIC_ANYONE` or `PUBLIC_AUTHENTICATED` content
+- Friends-only content requires bidirectional follow relationship
 
-Security Posture (early hardening)
+Security Posture
 
-- Session JWTs, rate limiting on auth, input validation, CORS, secrets management, audit trails later.
+- Session JWTs with NextAuth, API JWTs with 10m expiry
+- Environment secrets validated with Zod
+- CORS origin whitelisting
+- Input validation on API endpoints
+- Planned: rate limiting, audit trails, 2FA
 
 ---
 

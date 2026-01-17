@@ -1,9 +1,12 @@
 # StoryForge — Action Plan
 
-A gamified writing platform that helps writers build consistent habits, craft worlds, and share short stories with
-privacy controls and social features. StoryForge blends elements of Campfire (world‑building), genealogy/graph apps (
-character relationships), Duolingo (streaks, goals, rewards), and Discord/social networks (groups, DMs, feeds) with a
-strong emphasis on mental wellbeing.
+A gamified creative writing platform for novelists, screenwriters, comic creators, and visual storytellers. StoryForge
+helps writers build consistent habits, craft immersive worlds, and share stories with granular privacy controls.
+
+Whether you're writing novels, screenplays, comics, graphic novels, or webtoons, StoryForge provides comprehensive
+world-building tools (characters with visual references, locations, timelines, dialogue/script scenes), visual asset
+management, Duolingo-style gamification (goals, streaks, badges), and social features (groups, public feed) with mental
+wellbeing safeguards.
 
 This file tracks the actionable work for StoryForge, kept up to date based on the product objectives defined in
 `README.md` and the detailed spec in `docs/story-forge-documentation.md`.
@@ -175,13 +178,19 @@ to mitigate this.
 ### Writing Tools (Post‑MVP expansions)
 
 - [x] Entities & world-building modules:
-  - [x] Characters (profiles with traits/quirks)
-  - [x] Locations & Maps
-  - [x] Timeline of events foundation
+  - [x] Characters (profiles with traits/quirks, image URLs for character design references)
+  - [x] Locations & Maps (with image URLs for location/environment references)
+  - [x] Timeline of events foundation (story beats, comic issue planning)
+  - [x] Dialogue objects (participants, scripted dialogue, linkable to timeline events—perfect for comic scripts and
+    screenplays)
   - [ ] Relationships graph (2D first; 3D nodes later)
-  - [ ] Dialogues objects (participants, scripted dialogue, linkable to timeline events)
   - [ ] Additional encyclopedic modules: Research, Calendar, Magic, Fauna, Flora, Cultures, Items, Systems, Languages,
     Religions, Philosophies
+  - [ ] Visual storytelling enhancements:
+    - [ ] Panel/page layout templates for comics
+    - [ ] Storyboard view for sequential art planning
+    - [ ] Image gallery management for character designs and reference boards
+    - [ ] Panel count tracking (alongside word count) for comic creators
 
 ### Social & Messaging — Foundations
 
@@ -198,10 +207,15 @@ to mitigate this.
   - [ ] Web: "Cheer" button on friend progress or profile.
 - [x] Wellbeing Enhancements:
   - [x] Add "Break Reminder" setting in `User.preferences`.
-  - [x] Client: Logic to detect long writing sessions and show nudges in Project Editor.
+  - [x] Client: Logic to detect long creative sessions and show nudges in Project Editor.
 - [x] Milestone Badges:
   - [x] Prisma: `Badge` model and `UserBadge` join table.
   - [x] API: Award badges based on total word count milestones.
+- [ ] Multi-format Goal Support:
+  - [ ] Extend `Goal` model to support different types: `words_per_day`, `panels_per_day`, `pages_per_week`,
+    `scenes_completed`
+  - [ ] API: Track progress for different goal types (word count, panel count, page count)
+  - [ ] Web: UI to select goal type when creating goals (writers vs. comic creators)
 
 ### Security & Compliance
 

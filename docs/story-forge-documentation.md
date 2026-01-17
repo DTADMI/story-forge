@@ -1,9 +1,12 @@
-# StoryForge - Gamified Writing Platform
+# StoryForge - Gamified Creative Writing Platform
 
-A gamified writing platform that helps writers build consistent habits, craft worlds, and share short stories with
-privacy controls and social features. StoryForge blends elements of Campfire (world‑building), genealogy/graph apps (
-character relationships), Duolingo (streaks, goals, rewards), and Discord/social networks (groups, DMs, feeds) with a
-strong emphasis on mental wellbeing.
+A gamified creative writing platform for novelists, screenwriters, comic creators, and visual storytellers. StoryForge
+helps writers build consistent habits, craft immersive worlds, and share stories with granular privacy controls.
+
+Whether you're writing novels, short stories, screenplays, comics, graphic novels, or webtoons, StoryForge provides
+comprehensive world-building tools (characters with visual references, locations, timelines, dialogue/script scenes),
+visual asset management, Duolingo-style gamification (Ink currency, goals, streaks, milestone badges), and social
+features (follow/followers, groups, public feed) with mental wellbeing safeguards and break reminders.
 
 ## Table of Contents
 
@@ -531,13 +534,14 @@ erDiagram
    - id, project_id, name, bio
    - appearance, personality (JSONB)
    - relationships (JSONB for dynamic fields)
-   - images (array of URLs)
+   - images (array of URLs) — for character design sheets, visual references (comics/graphic novels)
    - tags (array)
 
 4. **WorldBuilding**
-   - locations, maps, items, etc.
+    - locations (with image URLs for environment/location references), maps, items, etc.
    - Each with appropriate relationships
    - Support for custom fields
+    - Image metadata for visual storytelling (comics, graphic novels, storyboards)
 
 5. **Timelines / Events**
    - id, project_id, title, description, start_at, end_at, characters_involved (array)
@@ -545,8 +549,9 @@ erDiagram
 
 6. **Dialogues**
    - id, project_id, title, participants (array of character_ids)
-   - content (structured; TipTap JSON)
+   - content (structured; JSON) — supports comic scripts, screenplays, and sequential dialogue
    - optional timeline_event_id
+   - Perfect for comic panel scripts and screenplay formatting
 
 7. **Scopes & ACL**
    - VISIBILITY_SCOPE (id, name, rules JSON)
@@ -559,10 +564,11 @@ erDiagram
    - GROUP_MEMBER (group_id, user_id, role)
 
 9. **Gamification**
-   - GOAL (user_id, type, target, cadence)
-   - PROGRESS_LOG (user_id, goal_id, value, timestamp)
-   - GEM_WALLET (user_id, balance)
-   - GEM_TX (user_id, amount, reason, metadata)
+    - GOAL (user_id, type, target, cadence) — supports multiple goal types: word_count, panel_count, page_count,
+      scenes_completed
+    - PROGRESS_LOG (user_id, goal_id, value, timestamp) — tracks writing or comic production progress
+    - INK_POT (user_id, balance) — renamed from GEM_WALLET
+    - INK_TX (user_id, amount, reason, metadata) — renamed from GEM_TX
 
 10. **Notifications**
 
@@ -610,8 +616,10 @@ Implementation
 
 Core mechanics
 
-- Streaks, daily/weekly goals (minutes written, words, elements created).
-- Gems awarded on goals and community contributions. Gems redeemable for themes, profile cosmetics, gift to friends.
+- Streaks, daily/weekly goals (minutes written, words, panels/pages drawn, elements created).
+- Ink awarded on goals and community contributions. Ink redeemable for themes, profile cosmetics, gift to friends.
+- Flexible goal types for different creative formats: word count (novels), panel count (comics/webtoons), page count (
+  graphic novels), scene completion (screenplays).
 - Leaderboards with anti-cheat heuristics (e.g., min active time per word thresholds).
 
 Social
@@ -677,10 +685,14 @@ The primary goal of StoryForge gamification is not to create a complex economy, 
 
 #### World Building Entities
 
-- **Characters:** Detailed profiles with traits, quirks, and bio.
-- **Locations:** Descriptions and map associations.
-- **Timeline:** Temporal mapping of story events, linked to characters and locations.
-- **Groups:** Collaborative "Shared Goals" for communities of writers.
+- **Characters:** Detailed profiles with traits, quirks, bio, and image URLs for character design references (essential
+  for comics/graphic novels).
+- **Locations:** Descriptions, map associations, and environment reference images (for visual storytelling).
+- **Timeline:** Temporal mapping of story events, linked to characters and locations (perfect for planning comic issues
+  or screenplay beats).
+- **Dialogue Scenes:** Structured script format supporting comic panel dialogue, screenplay formatting, and sequential
+  storytelling.
+- **Groups:** Collaborative "Shared Goals" for communities of writers and visual storytellers.
 
 #### Engagement Mechanics
 
