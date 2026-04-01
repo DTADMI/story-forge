@@ -13,7 +13,7 @@
   "scripts": {
     "build": "pnpm -C web build",
     "test": "pnpm -C web test:run",
-    "vercel-build": "pnpm -C web install --frozen-lockfile && pnpm -C web exec prisma generate --schema ../prisma/schema.prisma && pnpm -C web build"
+    "vercel-build": "pnpm -C web install --frozen-lockfile && pnpm -C web exec prisma generate --schema ../prisma/schema.prisma && pnpm -C web build && node ./scripts/vercel-output-compat.mjs"
   },
   "devDependencies": {
     "@prisma/client": "^7.2.0",
