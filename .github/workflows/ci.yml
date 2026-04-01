@@ -18,20 +18,16 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 10.26.0
+          run_install: false
 
       - name: Setup Node.js 24.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 24.12.0
+          node-version: 24
           cache: 'pnpm'
 
-      - name: Enable corepack (pnpm)
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.26.0 --activate
-
       - name: Install dependencies (workspace)
-        run: pnpm -w install
+        run: pnpm install
 
       - name: Prisma generate (web)
         run: pnpm exec prisma generate
@@ -62,20 +58,16 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 10.26.0
+          run_install: false
 
       - name: Setup Node.js 24.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 24.12.0
+          node-version: 24
           cache: 'pnpm'
 
-      - name: Enable corepack (pnpm)
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.26.0 --activate
-
       - name: Install dependencies (workspace)
-        run: pnpm -w install
+        run: pnpm install
 
       - name: Prisma generate (api)
         run: pnpm exec prisma generate
