@@ -616,6 +616,7 @@ Web pages:
 ## References
 
 - Full product/architecture spec: `docs/story-forge-documentation.md`
+- Supabase Postgres migration plan: `docs/supabase-postgres-migration-plan.md`
 - Design tokens & palette: `docs/design-tokens.json`
 - Prisma schema: `prisma/schema.prisma`
 - NextAuth route handler: `web/src/app/api/auth/[...nextauth]/route.ts`
