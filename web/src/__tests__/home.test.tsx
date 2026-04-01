@@ -15,9 +15,10 @@ describe('HomePage', () => {
             'href',
             '/pricing'
         );
-        expect(screen.getByRole('link', {name: /public feed/i})).toHaveAttribute(
-            'href',
-            '/feed'
-        );
+        const publicFeedLinks = screen.getAllByRole('link', {name: /public feed/i});
+        expect(publicFeedLinks.length).toBeGreaterThan(0);
+        for (const link of publicFeedLinks) {
+            expect(link).toHaveAttribute('href', '/feed');
+        }
     });
 });

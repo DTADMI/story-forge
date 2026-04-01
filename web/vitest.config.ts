@@ -11,9 +11,12 @@ export default defineConfig({
         setupFiles: [resolve(__dirname, './vitest.setup.ts')],
         globals: true,
     },
+    esbuild: {
+        jsx: 'automatic',
+    },
     resolve: {
         alias: {
-            '@/': fileURLToPath(new URL('./src/', import.meta.url)),
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
 });
