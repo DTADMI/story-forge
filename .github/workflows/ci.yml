@@ -53,6 +53,8 @@ jobs:
   api:
     name: API - dependency sanity
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -79,9 +81,7 @@ jobs:
 
       - name: API migrate deploy (optional/preview)
         # Only run if DATABASE_URL secret is configured.
-        if: ${{ secrets.DATABASE_URL != '' }}
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        if: ${{ env.DATABASE_URL != '' }}
         run: pnpm exec prisma migrate deploy
 
       - name: API sanity check
