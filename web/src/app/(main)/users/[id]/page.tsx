@@ -31,22 +31,23 @@ async function getUserProjects(userId: string) {
 export default async function UserProfilePage({
                                                   params,
                                               }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     const currentUserId = (session?.user as any)?.id as string | undefined;
     if (!currentUserId) redirect('/signin');
 
     // If viewing own profile, redirect to /profile
-    if (currentUserId === params.id) redirect('/profile');
+    if (currentUserId === id) redirect('/profile');
 
     const [user, projects] = await Promise.all([
-        getUser(params.id),
-        getUserProjects(params.id)
+        getUser(id),
+        getUserProjects(id)
     ]);
     if (!user) notFound();
 
-    const initialFollowing = await isFollowing(params.id);
+    const initialFollowing = await isFollowing(id);
 
     return (
         <main className="mx-auto max-w-3xl px-6 py-10 space-y-10">

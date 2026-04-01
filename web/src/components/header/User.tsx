@@ -3,7 +3,9 @@ import {signOut, useSession} from 'next-auth/react';
 import Link from 'next/link';
 
 export default function HeaderUser() {
-  const { data, status } = useSession();
+  const session = useSession();
+  const data = session?.data;
+  const status = session?.status ?? 'unauthenticated';
     if (status === 'loading') return <span/>;
   const user = data?.user;
   if (!user) {

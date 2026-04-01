@@ -19,10 +19,9 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.26.0
-          run_install: false
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.0 --activate
 
       - name: Setup Node.js 24.x
         uses: actions/setup-node@v5
@@ -59,10 +58,9 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.26.0
-          run_install: false
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.26.0 --activate
 
       - name: Setup Node.js 24.x
         uses: actions/setup-node@v5
@@ -80,10 +78,10 @@ jobs:
         run: pnpm exec prisma generate
 
       - name: API migrate deploy (optional/preview)
-        # Only run if DATABASE_URL is present and not on PR from fork for safety
-        if: env.DATABASE_URL != ''
+        # Only run if DATABASE_URL secret is configured.
+        if: ${{ secrets.DATABASE_URL != '' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/storyforge' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: pnpm exec prisma migrate deploy
 
       - name: API sanity check

@@ -1,6 +1,6 @@
 import {type NextRequest, NextResponse} from 'next/server';
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
     // Basic security headers for all routes
     const res = NextResponse.next();
     res.headers.set('X-Frame-Options', 'DENY');

@@ -3,10 +3,11 @@ import {apiFetch} from '@/lib/api';
 
 export async function PATCH(
     req: Request,
-    {params}: { params: { id: string } }
+    {params}: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     const body = await req.json().catch(() => ({}));
-    const res = await apiFetch(`/projects/${params.id}`, {
+    const res = await apiFetch(`/projects/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(body),
     });

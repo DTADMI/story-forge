@@ -36,7 +36,7 @@ export function FollowButton({
         <Button
             onClick={toggle}
             disabled={isLoading}
-            variant={isFollowing ? 'outline' : 'default'}
+            variant={isFollowing ? 'outline' : 'primary'}
         >
             {isFollowing ? 'Unfollow' : 'Follow'}
         </Button>

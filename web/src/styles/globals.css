@@ -60,7 +60,10 @@ html {
   color-scheme: light dark;
 }
 body {
-  @apply bg-bg text-fg antialiased;
+  background-color: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-family: var(--font-sans);
 }
 

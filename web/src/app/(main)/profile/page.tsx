@@ -57,10 +57,11 @@ export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id as string | undefined;
     if (!userId) redirect('/signin');
+    const safeUserId = userId;
     const [user, pot, streak] = await Promise.all([
-        getUser(userId),
-        getWallet(userId),
-        getStreak(userId),
+        getUser(safeUserId),
+        getWallet(safeUserId),
+        getStreak(safeUserId),
     ]);
 
     async function updatePreferences(formData: FormData) {
@@ -78,7 +79,7 @@ export default async function ProfilePage() {
             },
             breakReminders: String(formData.get('breakReminders') || '') === 'on',
         };
-        await apiFetch(`/users/${encodeURIComponent(userId)}/preferences`, {
+        await apiFetch(`/users/${encodeURIComponent(safeUserId)}/preferences`, {
             method: 'PATCH',
             body: JSON.stringify(payload),
         });
@@ -88,7 +89,7 @@ export default async function ProfilePage() {
         <main className="mx-auto max-w-3xl px-6 py-10">
             <h1 className="text-2xl font-extrabold">Your Profile</h1>
             <form
-                action={updateUser.bind(null, userId)}
+                action={updateUser.bind(null, safeUserId)}
                 className="border-fg/15 mt-6 grid gap-3 rounded-lg border p-4"
             >
                 <div>
@@ -254,7 +255,7 @@ export default async function ProfilePage() {
             </form>
 
             <form
-                action={setGoal.bind(null, userId)}
+                action={setGoal.bind(null, safeUserId)}
                 className="border-fg/15 mt-6 grid gap-3 rounded-lg border p-4"
             >
                 <h2 className="text-lg font-bold">Goals</h2>

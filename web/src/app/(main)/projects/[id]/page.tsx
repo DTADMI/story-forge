@@ -29,13 +29,14 @@ async function getUserPreferences(userId: string) {
     return user?.settings?.preferences;
 }
 
-export default async function ProjectDetailPage({params}: { params: { id: string } }) {
+export default async function ProjectDetailPage({params}: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id as string | undefined;
     if (!session || !userId) redirect('/signin');
 
     const [project, userPreferences] = await Promise.all([
-        getProject(params.id),
+        getProject(id),
         getUserPreferences(userId)
     ]);
 

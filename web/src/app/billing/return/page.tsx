@@ -1,9 +1,10 @@
-export default function BillingReturnPage({
-                                              searchParams,
-                                          }: {
-    searchParams: { status?: string };
+export default async function BillingReturnPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
 }) {
-    const status = (searchParams?.status ?? '').toLowerCase();
+    const resolvedSearchParams = await searchParams;
+    const status = (resolvedSearchParams?.status ?? '').toLowerCase();
     return (
         <main className="mx-auto max-w-2xl px-6 py-16 text-center">
             {status === 'success' ? (

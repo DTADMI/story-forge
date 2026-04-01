@@ -1,9 +1,9 @@
 'use client';
-import {useState} from 'react';
+import {Suspense, useState} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {signIn} from 'next-auth/react';
 
-export default function SignUpPage() {
+function SignUpPageContent() {
     const router = useRouter();
     const params = useSearchParams();
     const callbackUrl = params.get('callbackUrl') || '/';
@@ -120,5 +120,13 @@ export default function SignUpPage() {
                 </button>
             </form>
         </div>
+    );
+}
+
+export default function SignUpPage() {
+    return (
+        <Suspense fallback={null}>
+            <SignUpPageContent />
+        </Suspense>
     );
 }
