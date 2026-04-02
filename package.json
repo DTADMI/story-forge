@@ -1,13 +1,22 @@
 {
   "packageManager": "pnpm@10.26.0",
   "engines": {
-    "node": ">=24.0.0 <25.0.0",
+    "node": ">=24.0.0 <25.3.0",
     "pnpm": ">=10.26.0"
   },
   "pnpm": {
+    "overrides": {
+      "@prisma/client": "7.2.0",
+      "@prisma/adapter-pg": "7.2.0",
+      "@prisma/internals": "7.2.0",
+      "prisma": "7.2.0"
+    },
     "ignoredBuiltDependencies": [
       "@prisma/engines",
       "prisma"
+    ],
+    "onlyBuiltDependencies": [
+      "sharp"
     ]
   },
   "scripts": {
@@ -15,12 +24,14 @@
     "test": "pnpm -C web test:run",
     "vercel-build": "pnpm -C web install --frozen-lockfile && pnpm -C web exec prisma generate --schema ../prisma/schema.prisma && pnpm -C web build && node ./scripts/vercel-output-compat.mjs"
   },
+  "dependencies": {
+    "next": "^16.2.2"
+  },
   "devDependencies": {
     "@prisma/client": "^7.2.0",
     "@prisma/internals": "^7.2.0",
-    "@types/node": "^25.0.3",
-    "next": "^16.0.10",
-    "prisma": "7.2.0",
+    "@types/node": "^25.5.0",
+    "prisma": "^7.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
