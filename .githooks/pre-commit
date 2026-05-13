@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pnpm -C web lint
+pnpm build
+pnpm test

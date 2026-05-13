@@ -1,0 +1,22 @@
+{
+  "name": "storyforge-integrations",
+  "version": "0.1.0",
+  "description": "Story Forge repo-local MCP bundle for GitHub.",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Story Forge Integrations",
+    "shortDescription": "GitHub MCP bundle.",
+    "longDescription": "Repo-local plugin metadata for the GitHub MCP server used during Story Forge work.",
+    "developerName": "Story Forge Engineering",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Integrations"
+    ],
+    "defaultPrompt": [
+      "Inspect the Story Forge GitHub work items.",
+      "Use the Story Forge MCP target for context."
+    ],
+    "brandColor": "#059669"
+  }
+}
