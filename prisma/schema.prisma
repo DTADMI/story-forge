@@ -49,6 +49,10 @@ model User {
   timelineEvents TimelineEvent[]
   dialogues     Dialogue[]
   encyclopediaEntries EncyclopediaEntry[]
+  organizations Organization[]
+  species      Species[]
+  calendars    Calendar[]
+  eras         Era[]
   comments      Comment[]
   versions      ProjectVersion[]
   activities    Activity[]
@@ -78,6 +82,10 @@ model Project {
   timelineEvents TimelineEvent[]
   dialogues     Dialogue[]
   encyclopediaEntries EncyclopediaEntry[]
+  organizations Organization[]
+  species      Species[]
+  calendars    Calendar[]
+  eras         Era[]
   comments      Comment[]
   versions      ProjectVersion[]
 
@@ -164,6 +172,8 @@ model Character {
   metadata    Json?    // For flexible properties
 
   timelineEvents TimelineEvent[]
+  sourceRelationships CharacterRelationship[] @relation("SourceRelationships")
+  targetRelationships CharacterRelationship[] @relation("TargetRelationships")
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -202,6 +212,10 @@ model TimelineEvent {
   dialogue    Dialogue? @relation(fields: [dialogueId], references: [id])
   dialogueId  String?
 
+  era         Era?     @relation(fields: [eraId], references: [id])
+  eraId       String?
+  sortOrder   Int      @default(0)
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -231,10 +245,116 @@ model EncyclopediaEntry {
   title       String
   content     String   @db.Text
   metadata    Json?
+  imageUrl    String?
+  references  String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([userId, category])
+}
+
+// Organizations / Factions
+model Organization {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  name        String
+  type        String?
+  description String?  @db.Text
+  goals       String?  @db.Text
+  imageUrl    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// Species / Races
+model Species {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  name        String
+  description String?  @db.Text
+  appearance  String?  @db.Text
+  traits      String?
+  lifespan    String?
+  homeland    String?
+  imageUrl    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// Character relationships (manual, typed)
+model CharacterRelationship {
+  id           String   @id @default(cuid())
+  character    Character @relation("SourceRelationships", fields: [characterId], references: [id])
+  characterId  String
+  related      Character @relation("TargetRelationships", fields: [relatedId], references: [id])
+  relatedId    String
+  type         String
+  description  String?
+  createdAt    DateTime @default(now())
+
+  @@unique([characterId, relatedId, type])
+  @@index([characterId])
+  @@index([relatedId])
+}
+
+// Eras / Periods for timeline grouping
+model Era {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  name        String
+  description String?  @db.Text
+  startDate   String?
+  endDate     String?
+  color       String?
+  sortOrder   Int      @default(0)
+  events      TimelineEvent[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, sortOrder])
+}
+
+// Calendar system
+model Calendar {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  name        String
+  weekLength  Int      @default(7)
+  months      CalendarMonth[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model CalendarMonth {
+  id          String   @id @default(cuid())
+  calendar    Calendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  calendarId  String
+  name        String
+  days        Int      @default(30)
+  orderIndex  Int      @default(0)
+  description String?
+
+  @@index([calendarId])
 }
 
 // Activity feed

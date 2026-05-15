@@ -8,14 +8,21 @@ export default async function TimelineVizPage() {
   const user = await getUser();
   if (!user) redirect("/signin");
 
-  const events = await prisma.timelineEvent.findMany({
-    where: { userId: user.id },
-    orderBy: { date: "asc" },
-    include: {
-      characters: { select: { id: true, name: true } },
-      locations: { select: { id: true, name: true } },
-    },
-  });
+  const [events, eras] = await Promise.all([
+    prisma.timelineEvent.findMany({
+      where: { userId: user.id },
+      orderBy: { date: "asc" },
+      include: {
+        characters: { select: { id: true, name: true } },
+        locations: { select: { id: true, name: true } },
+      },
+    }),
+    prisma.era.findMany({
+      where: { userId: user.id },
+      orderBy: { startDate: "asc" },
+      select: { id: true, name: true, color: true, startDate: true, endDate: true },
+    }),
+  ]);
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-6">
@@ -31,7 +38,7 @@ export default async function TimelineVizPage() {
         </Link>
       </div>
 
-      <TimelineViz events={events} />
+      <TimelineViz events={events} eras={eras} />
     </main>
   );
 }

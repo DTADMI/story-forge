@@ -3,6 +3,9 @@ import { apiFetch } from "@/lib/api";
 import { redirect, notFound } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { RelationshipManager } from "@/components/world/relationship-manager";
+import { CharacterProfileBuilder } from "@/components/world/character-profile-builder";
+import { PrivateNotes } from "@/components/world/private-notes";
 
 async function getCharacter(id: string) {
   const res = await apiFetch(`/api/world/characters/${id}`, { cache: "no-store" });
@@ -27,8 +30,7 @@ async function updateCharacter(id: string, formData: FormData) {
   redirect("/world");
 }
 
-async function deleteCharacter(id: string, formData: FormData) {
-  "use server";
+async function deleteCharacter(id: string, _formData: FormData) {
   "use server";
   await apiFetch(`/api/world/characters/${id}`, { method: "DELETE" });
   redirect("/world");
@@ -43,7 +45,7 @@ export default async function CharacterDetailPage({ params }: { params: Promise<
   if (!character) notFound();
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-10">
+    <main className="mx-auto max-w-2xl px-6 py-10 space-y-8">
       <div className="flex items-center gap-3 mb-6">
         <Link href="/world" className="text-sm text-fg/40 hover:text-brand">
           ← World
@@ -119,6 +121,17 @@ export default async function CharacterDetailPage({ params }: { params: Promise<
           </div>
         </form>
       </Card>
+
+      {/* Character Profile Builder */}
+      <CharacterProfileBuilder character={character} />
+
+      {/* Relationship Manager */}
+      <Card className="p-6">
+        <RelationshipManager characterId={character.id} />
+      </Card>
+
+      {/* Private Notes */}
+      <PrivateNotes entityType="characters" entityId={character.id} initialNotes={(character.metadata as any)?.privateNotes || ""} />
     </main>
   );
 }

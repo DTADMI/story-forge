@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/components/toast";
 import { ArrowUp, ArrowDown, Plus, Trash2 } from "lucide-react";
 
@@ -31,7 +31,22 @@ interface StoryboardProps {
 export function Storyboard({ projectId, initialPanels, characters, locations }: StoryboardProps) {
   const [panels, setPanels] = useState<Panel[]>(initialPanels);
   const [saving, setSaving] = useState(false);
+  const [linkedCharIds, setLinkedCharIds] = useState<string[]>([]);
+  const [linkedLocIds, setLinkedLocIds] = useState<string[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetch(`/api/projects/${projectId}`)
+      .then((r) => r.json())
+      .then((proj) => {
+        setLinkedCharIds(proj.settings?.linkedEntities?.characters || []);
+        setLinkedLocIds(proj.settings?.linkedEntities?.locations || []);
+      })
+      .catch(() => {});
+  }, [projectId]);
+
+  const linkedChars = characters.filter((c) => linkedCharIds.includes(c.id));
+  const linkedLocs = locations.filter((l) => linkedLocIds.includes(l.id));
 
   const savePanels = useCallback(
     async (updated: Panel[]) => {
@@ -105,13 +120,20 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Storyboard Panels</h2>
-        <button
-          onClick={addPanel}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-brand text-white rounded-md hover:bg-brand/90"
-        >
-          <Plus className="h-4 w-4" />
-          Add Panel
-        </button>
+        <div className="flex items-center gap-2">
+          {(linkedChars.length > 0 || linkedLocs.length > 0) && (
+            <span className="text-[10px] text-fg/40">
+              {linkedChars.length} Linked | {linkedLocs.length} Linked
+            </span>
+          )}
+          <button
+            onClick={addPanel}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-brand text-white rounded-md hover:bg-brand/90"
+          >
+            <Plus className="h-4 w-4" />
+            Add Panel
+          </button>
+        </div>
       </div>
 
       {panels.length === 0 ? (
@@ -171,11 +193,20 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                     className="w-full rounded-md border border-fg/20 px-2 py-1.5 text-sm bg-bg"
                   >
                     <option value="">None</option>
-                    {characters.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
+                    {linkedChars.length > 0 && (
+                      <optgroup label="Linked Characters">
+                        {linkedChars.map((c) => (
+                          <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {characters
+                      .filter((c) => !linkedCharIds.includes(c.id))
+                      .map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div>
@@ -187,11 +218,20 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                     className="w-full rounded-md border border-fg/20 px-2 py-1.5 text-sm bg-bg"
                   >
                     <option value="">None</option>
-                    {locations.map((l) => (
-                      <option key={l.id} value={l.id}>
-                        {l.name}
-                      </option>
-                    ))}
+                    {linkedLocs.length > 0 && (
+                      <optgroup label="Linked Locations">
+                        {linkedLocs.map((l) => (
+                          <option key={l.id} value={l.id}>{l.name}</option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {locations
+                      .filter((l) => !linkedLocIds.includes(l.id))
+                      .map((l) => (
+                        <option key={l.id} value={l.id}>
+                          {l.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>

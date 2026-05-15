@@ -3,6 +3,7 @@ import { apiFetch } from "@/lib/api";
 import { redirect, notFound } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { TimelineEditForm } from "./form";
 
 async function getTimelineEvent(id: string) {
   const res = await apiFetch(`/api/world/timeline/${id}`, { cache: "no-store" });
@@ -16,12 +17,23 @@ async function updateTimelineEvent(id: string, formData: FormData) {
   const date = String(formData.get("date") || "").trim();
   const description = String(formData.get("description") || "").trim();
   const projectId = String(formData.get("projectId") || "").trim() || undefined;
+  const characterIdsStr = String(formData.get("characterIds") || "").trim();
+  const locationIdsStr = String(formData.get("locationIds") || "").trim();
+  const characterIds = characterIdsStr ? characterIdsStr.split(",").filter(Boolean) : [];
+  const locationIds = locationIdsStr ? locationIdsStr.split(",").filter(Boolean) : [];
 
   if (!title) return;
 
   await apiFetch(`/api/world/timeline/${id}`, {
     method: "PATCH",
-    body: JSON.stringify({ title, date: date || undefined, description, projectId }),
+    body: JSON.stringify({
+      title,
+      date: date || undefined,
+      description,
+      projectId,
+      characterIds,
+      locationIds,
+    }),
   });
   redirect("/world/timeline");
 }
@@ -44,6 +56,9 @@ export default async function TimelineEventDetailPage({
   const event = await getTimelineEvent(id);
   if (!event) notFound();
 
+  const existingChars = (event.characters || []).map((c: any) => c.id);
+  const existingLocs = (event.locations || []).map((l: any) => l.id);
+
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex items-center gap-3 mb-6">
@@ -55,61 +70,13 @@ export default async function TimelineEventDetailPage({
       </div>
 
       <Card className="p-6">
-        <form action={updateTimelineEvent.bind(null, id)} className="grid gap-4">
-          <div>
-            <label className="block text-sm font-medium">Title</label>
-            <input
-              name="title"
-              required
-              defaultValue={event.title}
-              className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Date (flexible format)</label>
-            <input
-              name="date"
-              defaultValue={event.date ?? ""}
-              className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Description</label>
-            <textarea
-              name="description"
-              rows={4}
-              defaultValue={event.description ?? ""}
-              className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Project (optional)</label>
-            <input
-              name="projectId"
-              defaultValue={event.projectId ?? ""}
-              className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-            />
-          </div>
-
-          <div className="flex justify-between gap-3 mt-4">
-            <form action={deleteTimelineEvent.bind(null, id)}>
-              <button className="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-md hover:bg-red-50">
-                Delete Event
-              </button>
-            </form>
-            <div className="flex gap-3">
-              <Link
-                href="/world/timeline"
-                className="px-4 py-2 text-sm font-medium border border-fg/20 rounded-md hover:bg-fg/5"
-              >
-                Cancel
-              </Link>
-              <button className="bg-brand text-white px-4 py-2 rounded-md text-sm font-medium">
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </form>
+        <TimelineEditForm
+          event={event}
+          existingCharacterIds={existingChars}
+          existingLocationIds={existingLocs}
+          action={updateTimelineEvent.bind(null, id)}
+          deleteAction={deleteTimelineEvent.bind(null, id)}
+        />
       </Card>
     </main>
   );

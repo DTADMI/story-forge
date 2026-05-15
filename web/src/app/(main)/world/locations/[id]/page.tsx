@@ -3,6 +3,7 @@ import { apiFetch } from "@/lib/api";
 import { redirect, notFound } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { PrivateNotes } from "@/components/world/private-notes";
 
 async function getLocation(id: string) {
   const res = await apiFetch(`/api/world/locations/${id}`, { cache: "no-store" });
@@ -108,6 +109,9 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
           </div>
         </form>
       </Card>
+
+      {/* Private Notes */}
+      <PrivateNotes entityType="locations" entityId={location.id} initialNotes={(location.metadata as any)?.privateNotes || ""} />
     </main>
   );
 }

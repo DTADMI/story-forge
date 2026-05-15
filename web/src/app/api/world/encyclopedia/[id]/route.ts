@@ -30,6 +30,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       category: body.category,
       projectId: body.projectId,
       metadata: body.metadata,
+      imageUrl: body.imageUrl,
+      references: body.references,
     },
   });
 

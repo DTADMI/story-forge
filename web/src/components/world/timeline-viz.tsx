@@ -22,6 +22,14 @@ interface TimelineEvent {
   locations: TimelineLocation[];
 }
 
+interface Era {
+  id: string;
+  name: string;
+  color: string;
+  startDate: string | null;
+  endDate: string | null;
+}
+
 function getInitials(name: string): string {
   return name
     .split(/\s+/)
@@ -41,7 +49,13 @@ const CHIP_COLORS = [
   "bg-indigo-500",
 ];
 
-export function TimelineViz({ events }: { events: TimelineEvent[] }) {
+export function TimelineViz({
+  events,
+  eras = [],
+}: {
+  events: TimelineEvent[];
+  eras?: Era[];
+}) {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -107,6 +121,43 @@ export function TimelineViz({ events }: { events: TimelineEvent[] }) {
           height: totalHeight,
         }}
       >
+        {/* Era bands */}
+        {eras.map((era) => {
+          // Era bands span the full height behind events
+          return (
+            <div
+              key={era.id}
+              className="absolute left-0 right-0"
+              style={{
+                top: 0,
+                height: totalHeight,
+              }}
+            >
+              {/* Color strip on the left edge */}
+              <div
+                className="absolute left-0 top-0 h-full w-6 flex items-start justify-center pt-2"
+                style={{ backgroundColor: (era.color || "#3b82f6") + "18" }}
+              >
+                <span
+                  className="text-[9px] font-semibold whitespace-nowrap px-1"
+                  style={{
+                    color: era.color,
+                    writingMode: "vertical-rl",
+                    textOrientation: "mixed",
+                  }}
+                >
+                  {era.name}
+                </span>
+              </div>
+              {/* Subtle background band */}
+              <div
+                className="absolute left-6 right-0 h-full"
+                style={{ backgroundColor: (era.color || "#3b82f6") + "08" }}
+              />
+            </div>
+          );
+        })}
+
         {/* Central timeline line */}
         <div
           className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-brand/30 -translate-x-1/2"
@@ -123,7 +174,6 @@ export function TimelineViz({ events }: { events: TimelineEvent[] }) {
               className="absolute left-0 right-0 flex items-start"
               style={{ top: y, height: lineHeight - 20 }}
             >
-              {/* Left side card (even indices) */}
               {isLeft && (
                 <EventCard
                   event={event}
@@ -132,7 +182,6 @@ export function TimelineViz({ events }: { events: TimelineEvent[] }) {
                 />
               )}
 
-              {/* Center dot */}
               <div className="absolute left-1/2 -translate-x-1/2 z-10">
                 <div className="h-4 w-4 rounded-full bg-brand border-2 border-bg shadow-md" />
                 {event.date && (
@@ -146,7 +195,6 @@ export function TimelineViz({ events }: { events: TimelineEvent[] }) {
                 )}
               </div>
 
-              {/* Right side card (odd indices) */}
               {!isLeft && (
                 <EventCard
                   event={event}
