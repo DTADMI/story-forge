@@ -3,13 +3,7 @@
 import { useState } from "react";
 import { useToast } from "@/components/toast";
 
-export function ScopeSelector({
-  userId,
-  currentScope,
-}: {
-  userId: string;
-  currentScope: string;
-}) {
+export function ScopeSelector({ userId, currentScope }: { userId: string; currentScope: string }) {
   const [scope, setScope] = useState(currentScope);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();

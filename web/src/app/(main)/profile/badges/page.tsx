@@ -64,9 +64,7 @@ export default async function BadgesPage() {
               <div
                 key={badge.id}
                 className={`flex flex-col items-center gap-2 rounded-xl border p-4 text-center transition-colors ${
-                  isEarned
-                    ? "border-brand/20 bg-brand/5"
-                    : "border-fg/10 bg-fg/5 opacity-40"
+                  isEarned ? "border-brand/20 bg-brand/5" : "border-fg/10 bg-fg/5 opacity-40"
                 }`}
               >
                 {BadgeIcon ? (
@@ -76,23 +74,17 @@ export default async function BadgesPage() {
                     <Award className={`h-6 w-6 ${isEarned ? "text-brand" : "text-fg/20"}`} />
                   </div>
                 )}
-                <p
-                  className={`text-xs font-semibold ${
-                    isEarned ? "text-brand" : "text-fg/30"
-                  }`}
-                >
+                <p className={`text-xs font-semibold ${isEarned ? "text-brand" : "text-fg/30"}`}>
                   {badge.name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                 </p>
-                {badge.description && (
-                  <p className="text-xs text-fg/40">{badge.description}</p>
-                )}
+                {badge.description && <p className="text-xs text-fg/40">{badge.description}</p>}
                 {!isEarned && badge.threshold > 0 && (
                   <p className="text-xs text-fg/20">
                     {badge.type === "total_words"
                       ? `${badge.threshold.toLocaleString()} words`
                       : badge.type === "streak"
-                      ? `${badge.threshold} day streak`
-                      : `Threshold: ${badge.threshold}`}
+                        ? `${badge.threshold} day streak`
+                        : `Threshold: ${badge.threshold}`}
                   </p>
                 )}
                 {earnedEntry && (

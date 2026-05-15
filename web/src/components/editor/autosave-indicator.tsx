@@ -29,9 +29,7 @@ export function AutosaveIndicator({
     async (contentToSave: string) => {
       setStatus("saving");
       try {
-        const wc = contentToSave.trim()
-          ? contentToSave.trim().split(/\s+/).length
-          : 0;
+        const wc = contentToSave.trim() ? contentToSave.trim().split(/\s+/).length : 0;
 
         const res = await fetch(`/api/projects/${projectId}`, {
           method: "PATCH",
@@ -106,8 +104,8 @@ export function AutosaveIndicator({
         status === "saved"
           ? "Saved"
           : status === "saving"
-          ? "Saving..."
-          : "Unsaved changes — click to save now"
+            ? "Saving..."
+            : "Unsaved changes — click to save now"
       }
     >
       {status === "saved" && (
@@ -125,9 +123,7 @@ export function AutosaveIndicator({
       {status === "unsaved" && (
         <>
           <div className="h-2 w-2 rounded-full bg-yellow-500" />
-          <span className="text-yellow-600 dark:text-yellow-400">
-            Unsaved changes
-          </span>
+          <span className="text-yellow-600 dark:text-yellow-400">Unsaved changes</span>
         </>
       )}
     </button>

@@ -6,7 +6,9 @@ export async function GET() {
   const user = await requireUser();
   const groups = await prisma.group.findMany({
     where: { OR: [{ isPrivate: false }, { members: { some: { userId: user.id } } }] },
-    include: { members: { include: { user: { select: { id: true, name: true, username: true } } } } },
+    include: {
+      members: { include: { user: { select: { id: true, name: true, username: true } } } },
+    },
   });
   return NextResponse.json(groups);
 }

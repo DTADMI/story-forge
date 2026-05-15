@@ -36,9 +36,7 @@ export default async function AdminUsersPage() {
               {users.map((u) => (
                 <tr key={u.id} className="border-b border-fg/5 hover:bg-fg/3">
                   <td className="p-3">
-                    <div className="font-medium">
-                      {u.username || u.name || "—"}
-                    </div>
+                    <div className="font-medium">{u.username || u.name || "—"}</div>
                     <div className="text-xs text-fg/40">{u.email || u.id.slice(0, 12)}</div>
                   </td>
                   <td className="p-3">
@@ -52,9 +50,7 @@ export default async function AdminUsersPage() {
                   </td>
                   <td className="p-3">{u._count.projects}</td>
                   <td className="p-3">{u._count.characters}</td>
-                  <td className="p-3 text-fg/40">
-                    {new Date(u.created_at).toLocaleDateString()}
-                  </td>
+                  <td className="p-3 text-fg/40">{new Date(u.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>

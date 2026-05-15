@@ -6,7 +6,10 @@ import { EmptyState } from "@/components/empty-state";
 import { GoalForm } from "./goal-form";
 import { Target, BookOpen, FileText, Layout } from "lucide-react";
 
-const TYPE_META: Record<string, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
+const TYPE_META: Record<
+  string,
+  { label: string; icon: React.ComponentType<{ className?: string }> }
+> = {
   words_per_day: { label: "Words per day", icon: BookOpen },
   pages_per_week: { label: "Pages per week", icon: FileText },
   scenes_completed: { label: "Scenes completed", icon: Layout },
@@ -63,9 +66,7 @@ export default async function GoalsPage() {
                   <p className="text-xs text-fg/40 capitalize">{goal.cadence}</p>
                 </div>
               </div>
-              <span className="text-lg font-bold text-brand">
-                {goal.target.toLocaleString()}
-              </span>
+              <span className="text-lg font-bold text-brand">{goal.target.toLocaleString()}</span>
             </Card>
           ))}
         </div>

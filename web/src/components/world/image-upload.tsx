@@ -123,9 +123,7 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
         className={`relative flex aspect-square w-full max-w-64 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors ${
-          isDragging
-            ? "border-brand bg-brand/5"
-            : "border-fg/20 hover:border-fg/40"
+          isDragging ? "border-brand bg-brand/5" : "border-fg/20 hover:border-fg/40"
         } ${isUploading ? "pointer-events-none opacity-50" : ""}`}
       >
         {preview ? (
@@ -152,9 +150,7 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
         ) : (
           <>
             <Upload className="h-8 w-8 text-fg/30" />
-            <p className="text-sm text-fg/40 text-center px-4">
-              Drag & drop or click to upload
-            </p>
+            <p className="text-sm text-fg/40 text-center px-4">Drag & drop or click to upload</p>
             <p className="text-xs text-fg/20">JPEG, PNG, WebP, GIF (max 5MB)</p>
           </>
         )}

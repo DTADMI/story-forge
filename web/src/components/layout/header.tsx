@@ -34,7 +34,11 @@ export async function Header() {
           {user ? (
             <div className="flex items-center gap-3">
               <NotificationBell />
-              <Link href="/feed/activity" className="text-xs hover:text-brand" title="Activity Feed">
+              <Link
+                href="/feed/activity"
+                className="text-xs hover:text-brand"
+                title="Activity Feed"
+              >
                 <Activity className="h-4 w-4" />
               </Link>
               <Link href="/stats" className="text-xs hover:text-brand" title="Writing Stats">

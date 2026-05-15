@@ -1,109 +1,101 @@
 import { getUser } from "@/lib/supabase/server";
-import Link from 'next/link';
-import {apiFetch} from '@/lib/api';
+import Link from "next/link";
+import { apiFetch } from "@/lib/api";
 
 type Project = {
-    id: string;
-    title: string;
-    description?: string;
-    defaultScope: 'private' | 'friends' | 'public-auth' | 'public-anyone';
+  id: string;
+  title: string;
+  description?: string;
+  defaultScope: "private" | "friends" | "public-auth" | "public-anyone";
 };
 
 async function getProjects(): Promise<Project[]> {
-    const res = await apiFetch('/api/projects', {cache: 'no-store' as any});
-    if (!res.ok) return [] as Project[];
-    return res.json();
+  const res = await apiFetch("/api/projects", { cache: "no-store" as any });
+  if (!res.ok) return [] as Project[];
+  return res.json();
 }
 
 async function createProject(_userId: string, formData: FormData) {
-    'use server';
-    const title = String(formData.get('title') || '').trim();
-    const description =
-        String(formData.get('description') || '').trim() || undefined;
-    const defaultScope = String(
-        formData.get('defaultScope') || 'private'
-    ) as Project['defaultScope'];
-    if (!title) return;
-    await apiFetch('/api/projects', {
-        method: 'POST',
-        body: JSON.stringify({title, description, defaultScope}),
-    });
+  "use server";
+  const title = String(formData.get("title") || "").trim();
+  const description = String(formData.get("description") || "").trim() || undefined;
+  const defaultScope = String(formData.get("defaultScope") || "private") as Project["defaultScope"];
+  if (!title) return;
+  await apiFetch("/api/projects", {
+    method: "POST",
+    body: JSON.stringify({ title, description, defaultScope }),
+  });
 }
 
 export default async function ProjectsPage() {
-    const user = await getUser();
-    const userId = user?.id as string | undefined;
-    const projects = userId ? await getProjects() : [];
+  const user = await getUser();
+  const userId = user?.id as string | undefined;
+  const projects = userId ? await getProjects() : [];
 
-    return (
-        <main className="mx-auto max-w-3xl px-6 py-10">
-            <header className="mb-6">
-                <h1 className="text-2xl font-extrabold">Your Projects</h1>
-                <p className="text-[color:var(--fg)]/70">
-                    Manage your writing projects and their privacy scopes.
-                </p>
-            </header>
+  return (
+    <main className="mx-auto max-w-3xl px-6 py-10">
+      <header className="mb-6">
+        <h1 className="text-2xl font-extrabold">Your Projects</h1>
+        <p className="text-[color:var(--fg)]/70">
+          Manage your writing projects and their privacy scopes.
+        </p>
+      </header>
 
-            {userId && (
-                <form
-                    action={createProject.bind(null, userId)}
-                    className="border-fg/15 mb-6 grid gap-3 rounded-lg border p-4"
-                >
-                    <div>
-                        <label className="block text-sm font-medium">Title</label>
-                        <input
-                            name="title"
-                            required
-                            className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">Description</label>
-                        <textarea
-                            name="description"
-                            className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">Default scope</label>
-                        <select
-                            name="defaultScope"
-                            className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                        >
-                            <option value="private">private</option>
-                            <option value="friends">friends</option>
-                            <option value="public-auth">public-auth</option>
-                            <option value="public-anyone">public-anyone</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button className="bg-brand rounded-md px-4 py-2 text-white">
-                            Create Project
-                        </button>
-                    </div>
-                </form>
-            )}
+      {userId && (
+        <form
+          action={createProject.bind(null, userId)}
+          className="border-fg/15 mb-6 grid gap-3 rounded-lg border p-4"
+        >
+          <div>
+            <label className="block text-sm font-medium">Title</label>
+            <input
+              name="title"
+              required
+              className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Description</label>
+            <textarea
+              name="description"
+              className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Default scope</label>
+            <select
+              name="defaultScope"
+              className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
+            >
+              <option value="private">private</option>
+              <option value="friends">friends</option>
+              <option value="public-auth">public-auth</option>
+              <option value="public-anyone">public-anyone</option>
+            </select>
+          </div>
+          <div>
+            <button className="bg-brand rounded-md px-4 py-2 text-white">Create Project</button>
+          </div>
+        </form>
+      )}
 
-            <ul className="grid gap-4">
-                {projects.map((p) => (
-                    <li
-                        key={p.id}
-                        className="rounded-lg border border-[color:var(--fg)]/15 p-4"
-                    >
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-bold">
-                                <Link className="hover:underline" href={`/projects/${p.id}`}>
-                                    {p.title}
-                                </Link>
-                            </h2>
-                            <span className="text-xs tracking-wide text-[color:var(--fg)]/50 uppercase">
+      <ul className="grid gap-4">
+        {projects.map((p) => (
+          <li key={p.id} className="rounded-lg border border-[color:var(--fg)]/15 p-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold">
+                <Link className="hover:underline" href={`/projects/${p.id}`}>
+                  {p.title}
+                </Link>
+              </h2>
+              <span className="text-xs tracking-wide text-[color:var(--fg)]/50 uppercase">
                 {p.defaultScope}
               </span>
-                        </div>
-                        {p.description && <p className="mt-2 text-sm">{p.description}</p>}
-                    </li>
-                ))}
-            </ul>
-        </main>
-    );
+            </div>
+            {p.description && <p className="mt-2 text-sm">{p.description}</p>}
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
 }

@@ -3,11 +3,7 @@ import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 
-export default async function AdminUserDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await prisma.user.findUnique({
     where: { id },
@@ -85,7 +81,10 @@ export default async function AdminUserDetailPage({
           <Detail label="Admin" value={settings.is_admin ? "Yes" : "No"} />
           <Detail label="Moderator" value={settings.is_moderator ? "Yes" : "No"} />
           <Detail label="Break Reminders" value={settings.breakReminders ? "On" : "Off"} />
-          <Detail label="Writing Cap" value={settings.writingCap ? String(settings.writingCap) : "None"} />
+          <Detail
+            label="Writing Cap"
+            value={settings.writingCap ? String(settings.writingCap) : "None"}
+          />
         </div>
       </Card>
 
@@ -105,7 +104,9 @@ export default async function AdminUserDetailPage({
         <Card className="p-4 space-y-2">
           <h2 className="font-bold">Recent Characters</h2>
           {user.characters.map((c) => (
-            <div key={c.id} className="text-sm">{c.name}</div>
+            <div key={c.id} className="text-sm">
+              {c.name}
+            </div>
           ))}
         </Card>
       )}

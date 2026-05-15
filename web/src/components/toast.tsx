@@ -23,7 +23,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const toast = useCallback(
-    ({ title, description, variant = "default" }: { title: string; description?: string; variant?: ToastVariant }) => {
+    ({
+      title,
+      description,
+      variant = "default",
+    }: {
+      title: string;
+      description?: string;
+      variant?: ToastVariant;
+    }) => {
       const id = Math.random().toString(36).slice(2, 9);
       setToasts((prev) => [...prev, { id, title, description, variant }]);
       setTimeout(() => {
@@ -60,9 +68,7 @@ function ToastContainer() {
         <div
           key={t.id}
           className={`rounded-lg p-3 shadow-lg text-sm cursor-pointer transition-all animate-in slide-in-from-right ${
-            t.variant === "destructive"
-              ? "bg-red-600 text-white"
-              : "bg-fg text-bg"
+            t.variant === "destructive" ? "bg-red-600 text-white" : "bg-fg text-bg"
           }`}
           onClick={() => dismiss(t.id)}
         >

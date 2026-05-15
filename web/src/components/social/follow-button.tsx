@@ -1,44 +1,37 @@
-'use client';
+"use client";
 
-import {useState} from 'react';
-import {Button} from '../ui/button';
+import { useState } from "react";
+import { Button } from "../ui/button";
 
 interface FollowButtonProps {
-    targetUserId: string;
-    initialIsFollowing: boolean;
+  targetUserId: string;
+  initialIsFollowing: boolean;
 }
 
-export function FollowButton({
-                                 targetUserId,
-                                 initialIsFollowing,
-                             }: FollowButtonProps) {
-    const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
-    const [isLoading, setIsLoading] = useState(false);
+export function FollowButton({ targetUserId, initialIsFollowing }: FollowButtonProps) {
+  const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
+  const [isLoading, setIsLoading] = useState(false);
 
-    async function toggle() {
-        setIsLoading(true);
-        try {
-            const res = await fetch('/api/social/follow', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({userId: targetUserId}),
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setIsFollowing(data.following);
-            }
-        } finally {
-            setIsLoading(false);
-        }
+  async function toggle() {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/social/follow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: targetUserId }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setIsFollowing(data.following);
+      }
+    } finally {
+      setIsLoading(false);
     }
+  }
 
-    return (
-        <Button
-            onClick={toggle}
-            disabled={isLoading}
-            variant={isFollowing ? 'outline' : 'primary'}
-        >
-            {isFollowing ? 'Unfollow' : 'Follow'}
-        </Button>
-    );
+  return (
+    <Button onClick={toggle} disabled={isLoading} variant={isFollowing ? "outline" : "primary"}>
+      {isFollowing ? "Unfollow" : "Follow"}
+    </Button>
+  );
 }

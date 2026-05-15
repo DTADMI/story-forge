@@ -40,7 +40,12 @@ async function LeaderboardContent({ userId }: { userId: string }) {
   const leaderboard = logs
     .map((l) => {
       const u = users.find((u) => u.id === l.userId);
-      return { userId: l.userId, name: u?.name || u?.username || "Anonymous", username: u?.username, words: l._sum.value || 0 };
+      return {
+        userId: l.userId,
+        name: u?.name || u?.username || "Anonymous",
+        username: u?.username,
+        words: l._sum.value || 0,
+      };
     })
     .filter((e) => e.words > 0)
     .sort((a, b) => b.words - a.words)
@@ -50,7 +55,10 @@ async function LeaderboardContent({ userId }: { userId: string }) {
   if (leaderboard.length === 0) {
     return (
       <Card className="p-8">
-        <EmptyState title="No entries yet" description="Start writing to appear on the leaderboard! Weekly rankings reset every Monday." />
+        <EmptyState
+          title="No entries yet"
+          description="Start writing to appear on the leaderboard! Weekly rankings reset every Monday."
+        />
       </Card>
     );
   }
@@ -60,7 +68,9 @@ async function LeaderboardContent({ userId }: { userId: string }) {
   return (
     <Card className="overflow-hidden">
       <div className="p-3 border-b border-fg/10 bg-fg/3">
-        <span className="text-xs font-medium text-fg/50 uppercase tracking-wide">Weekly Top Writers</span>
+        <span className="text-xs font-medium text-fg/50 uppercase tracking-wide">
+          Weekly Top Writers
+        </span>
       </div>
       <div className="divide-y divide-fg/5">
         {leaderboard.map((entry) => {
@@ -75,7 +85,9 @@ async function LeaderboardContent({ userId }: { userId: string }) {
             >
               <span className="w-8 text-center font-mono font-bold text-fg/30">
                 {entry.rank <= 3 && Icon ? (
-                  <Icon className={`h-4 w-4 mx-auto ${entry.rank === 1 ? "text-yellow-500" : entry.rank === 2 ? "text-gray-400" : "text-orange-400"}`} />
+                  <Icon
+                    className={`h-4 w-4 mx-auto ${entry.rank === 1 ? "text-yellow-500" : entry.rank === 2 ? "text-gray-400" : "text-orange-400"}`}
+                  />
                 ) : (
                   entry.rank
                 )}
@@ -84,7 +96,9 @@ async function LeaderboardContent({ userId }: { userId: string }) {
                 {entry.name}
                 {isMe && <span className="text-xs text-fg/40 ml-1">(you)</span>}
               </span>
-              <span className="font-mono text-fg/50 shrink-0">{entry.words.toLocaleString()} words</span>
+              <span className="font-mono text-fg/50 shrink-0">
+                {entry.words.toLocaleString()} words
+              </span>
             </Link>
           );
         })}

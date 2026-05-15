@@ -8,7 +8,15 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params;
   const user = await prisma.user.findUnique({
     where: { id },
-    select: { id: true, name: true, username: true, bio: true, website: true, image: true, created_at: true },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      bio: true,
+      website: true,
+      image: true,
+      created_at: true,
+    },
   });
   if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(user);
@@ -27,12 +35,21 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (body.website !== undefined) profileData.website = body.website;
 
   // Handle settings fields — merge with existing settings
-  const settingsFields = ["defaultPublicationScope", "breakReminders", "writingCap", "preferences", "cadence", "quietHours", "channels"];
+  const settingsFields = [
+    "defaultPublicationScope",
+    "breakReminders",
+    "writingCap",
+    "preferences",
+    "cadence",
+    "quietHours",
+    "channels",
+  ];
   const hasSettingsUpdate = settingsFields.some((f) => f in body);
   if (hasSettingsUpdate) {
     const existing = await prisma.user.findUnique({ where: { id }, select: { settings: true } });
     const currentSettings = (existing?.settings as Record<string, unknown>) ?? {};
-    if (body.defaultPublicationScope !== undefined) currentSettings.defaultPublicationScope = body.defaultPublicationScope;
+    if (body.defaultPublicationScope !== undefined)
+      currentSettings.defaultPublicationScope = body.defaultPublicationScope;
     if (body.breakReminders !== undefined) currentSettings.breakReminders = body.breakReminders;
     if (body.writingCap !== undefined) currentSettings.writingCap = body.writingCap;
     if (body.preferences) currentSettings.preferences = body.preferences;

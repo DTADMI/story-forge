@@ -12,10 +12,7 @@ export default async function GroupsPage() {
 
   const groups = await prisma.group.findMany({
     where: {
-      OR: [
-        { isPrivate: false },
-        { members: { some: { userId: user.id } } },
-      ],
+      OR: [{ isPrivate: false }, { members: { some: { userId: user.id } } }],
     },
     include: {
       members: {
@@ -59,16 +56,12 @@ export default async function GroupsPage() {
                   <div>
                     <h3 className="font-bold">{group.name}</h3>
                     {group.description && (
-                      <p className="text-sm text-fg/60 mt-0.5 line-clamp-1">
-                        {group.description}
-                      </p>
+                      <p className="text-sm text-fg/60 mt-0.5 line-clamp-1">{group.description}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-fg/40 shrink-0">
                     {group.isPrivate && (
-                      <span className="border border-fg/20 rounded px-1.5 py-0.5">
-                        Private
-                      </span>
+                      <span className="border border-fg/20 rounded px-1.5 py-0.5">Private</span>
                     )}
                     <span className="inline-flex items-center gap-1">
                       <Users className="h-3.5 w-3.5" />

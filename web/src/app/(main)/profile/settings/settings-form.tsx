@@ -32,9 +32,7 @@ export function SettingsForm({
   const [website, setWebsite] = useState(initialWebsite);
   const [defaultScope, setDefaultScope] = useState(initialDefaultScope);
   const [breakReminders, setBreakReminders] = useState(initialBreakReminders);
-  const [writingCap, setWritingCap] = useState(
-    initialWritingCap?.toString() ?? ""
-  );
+  const [writingCap, setWritingCap] = useState(initialWritingCap?.toString() ?? "");
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -111,9 +109,7 @@ export function SettingsForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium">
-            Default Publication Scope
-          </label>
+          <label className="block text-sm font-medium">Default Publication Scope</label>
           <select
             value={defaultScope}
             onChange={(e) => setDefaultScope(e.target.value)}
@@ -141,9 +137,7 @@ export function SettingsForm({
         </label>
 
         <div>
-          <label className="block text-sm font-medium">
-            Daily Writing Cap (words)
-          </label>
+          <label className="block text-sm font-medium">Daily Writing Cap (words)</label>
           <input
             type="number"
             min={0}

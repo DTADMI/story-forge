@@ -3,10 +3,7 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "@/lib/error-response";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
 
@@ -42,10 +39,7 @@ export async function GET(
   return NextResponse.json(versions);
 }
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
   const { versionId } = await request.json();

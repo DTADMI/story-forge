@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
 
@@ -27,10 +24,7 @@ export async function GET(
   return NextResponse.json(comments);
 }
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
   const { content, parentId } = await request.json();
@@ -52,7 +46,10 @@ export async function POST(
   });
 
   // Create activity for the project author
-  const project = await prisma.project.findUnique({ where: { id }, select: { userId: true, title: true } });
+  const project = await prisma.project.findUnique({
+    where: { id },
+    select: { userId: true, title: true },
+  });
   if (project && project.userId !== user.id) {
     await prisma.activity.create({
       data: {

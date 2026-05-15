@@ -1,4 +1,4 @@
-import type {MetadataRoute} from "next";
+import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -13,8 +13,8 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     lang: "en",
     icons: [
-      {src: "/pwa/icon.svg", sizes: "any", type: "image/svg+xml"},
-      {src: "/pwa/icon-maskable.svg", sizes: "any", type: "image/svg+xml", purpose: "maskable"},
+      { src: "/pwa/icon.svg", sizes: "any", type: "image/svg+xml" },
+      { src: "/pwa/icon-maskable.svg", sizes: "any", type: "image/svg+xml", purpose: "maskable" },
     ],
     shortcuts: [
       {

@@ -21,8 +21,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     where: { id, userId: user.id },
     data: {
       ...rest,
-      characters: characterIds !== undefined ? { set: characterIds.map((cid: string) => ({ id: cid })) } : undefined,
-      locations: locationIds !== undefined ? { set: locationIds.map((lid: string) => ({ id: lid })) } : undefined,
+      characters:
+        characterIds !== undefined
+          ? { set: characterIds.map((cid: string) => ({ id: cid })) }
+          : undefined,
+      locations:
+        locationIds !== undefined
+          ? { set: locationIds.map((lid: string) => ({ id: lid })) }
+          : undefined,
     },
     include: { characters: true, locations: true },
   });

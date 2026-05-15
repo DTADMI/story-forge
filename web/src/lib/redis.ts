@@ -10,7 +10,9 @@ export function getRedis(): Redis {
 
   if (!url || !token) {
     if (process.env.NODE_ENV === "development") {
-      console.warn("Upstash Redis not configured — using in-memory fallback. Set UPSTASH_REDIS_URL and UPSTASH_REDIS_TOKEN.");
+      console.warn(
+        "Upstash Redis not configured — using in-memory fallback. Set UPSTASH_REDIS_URL and UPSTASH_REDIS_TOKEN."
+      );
     }
     // Return a no-op compatible client for dev
     const noopRedis = {
@@ -33,7 +35,7 @@ export function getRedis(): Redis {
       pipeline: () => ({ exec: async () => [] }),
     } as unknown as Redis;
 
-    return redisClient = noopRedis;
+    return (redisClient = noopRedis);
   }
 
   redisClient = new Redis({ url, token });

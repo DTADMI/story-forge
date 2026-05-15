@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
-const GOAL_TYPES = ["words_per_day", "pages_per_week", "scenes_completed", "panels_per_day"] as const;
+const GOAL_TYPES = [
+  "words_per_day",
+  "pages_per_week",
+  "scenes_completed",
+  "panels_per_day",
+] as const;
 
 export async function POST(request: NextRequest) {
   const user = await requireUser();

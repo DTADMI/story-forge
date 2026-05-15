@@ -6,11 +6,7 @@ import { JoinLeaveButton } from "./join-leave-button";
 import Link from "next/link";
 import { ArrowLeft, Shield, User } from "lucide-react";
 
-export default async function GroupDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function GroupDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
   if (!user) redirect("/signin");
 
@@ -31,9 +27,7 @@ export default async function GroupDetailPage({
   if (!group) notFound();
 
   const isMember = group.members.some((m) => m.userId === user.id);
-  const isAdmin = group.members.some(
-    (m) => m.userId === user.id && m.role === "admin"
-  );
+  const isAdmin = group.members.some((m) => m.userId === user.id && m.role === "admin");
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
@@ -49,19 +43,17 @@ export default async function GroupDetailPage({
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-extrabold">{group.name}</h1>
-            {group.description && (
-              <p className="text-fg/60 mt-2">{group.description}</p>
-            )}
+            {group.description && <p className="text-fg/60 mt-2">{group.description}</p>}
             <div className="flex items-center gap-3 mt-3 text-xs text-fg/40">
-              <span>{group.members.length} member{group.members.length !== 1 ? "s" : ""}</span>
-              {group.isPrivate && <span className="border border-fg/20 rounded px-1.5 py-0.5">Private</span>}
+              <span>
+                {group.members.length} member{group.members.length !== 1 ? "s" : ""}
+              </span>
+              {group.isPrivate && (
+                <span className="border border-fg/20 rounded px-1.5 py-0.5">Private</span>
+              )}
             </div>
           </div>
-          <JoinLeaveButton
-            groupId={group.id}
-            isMember={isMember}
-            isPrivate={group.isPrivate}
-          />
+          <JoinLeaveButton groupId={group.id} isMember={isMember} isPrivate={group.isPrivate} />
         </div>
       </Card>
 

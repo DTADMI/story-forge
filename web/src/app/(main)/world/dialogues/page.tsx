@@ -47,9 +47,7 @@ export default async function DialoguesPage() {
             <Card key={d.id} className="p-4 flex items-center justify-between">
               <div>
                 <h3 className="font-bold">{d.title || "Untitled Scene"}</h3>
-                {d.project && (
-                  <p className="text-xs text-fg/40">{d.project.title}</p>
-                )}
+                {d.project && <p className="text-xs text-fg/40">{d.project.title}</p>}
               </div>
               <Link
                 href={`/world/dialogues/${d.id}`}

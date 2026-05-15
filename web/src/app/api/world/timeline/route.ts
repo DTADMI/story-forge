@@ -21,7 +21,9 @@ export async function POST(request: NextRequest) {
     data: {
       ...rest,
       userId: user.id,
-      characters: characterIds ? { connect: characterIds.map((id: string) => ({ id })) } : undefined,
+      characters: characterIds
+        ? { connect: characterIds.map((id: string) => ({ id })) }
+        : undefined,
       locations: locationIds ? { connect: locationIds.map((id: string) => ({ id })) } : undefined,
     },
     include: { characters: true, locations: true },

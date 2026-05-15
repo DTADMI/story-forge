@@ -12,9 +12,7 @@ export function createMiddlewareClient(request: NextRequest, response: NextRespo
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
@@ -28,10 +26,13 @@ export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createMiddlewareClient(request, response);
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // Protect /app routes (all under (main) layout group)
-  const isProtectedRoute = request.nextUrl.pathname.startsWith("/dashboard") ||
+  const isProtectedRoute =
+    request.nextUrl.pathname.startsWith("/dashboard") ||
     request.nextUrl.pathname.startsWith("/profile") ||
     request.nextUrl.pathname.startsWith("/projects") ||
     request.nextUrl.pathname.startsWith("/world") ||

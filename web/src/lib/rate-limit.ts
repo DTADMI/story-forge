@@ -35,17 +35,18 @@ export async function checkRateLimit(
 
     if (count >= maxRequests) {
       // Get oldest entry to calculate reset time
-      const oldest = (await redis.zrange(key, 0, 0, { withScores: true })) as [
-        string,
-        number
-      ][];
-      const resetAt = oldest.length > 0 ? Math.ceil(oldest[0][1]) + windowSeconds : now + windowSeconds;
+      const oldest = (await redis.zrange(key, 0, 0, { withScores: true })) as [string, number][];
+      const resetAt =
+        oldest.length > 0 ? Math.ceil(oldest[0][1]) + windowSeconds : now + windowSeconds;
 
       return { allowed: false, remaining: 0, resetAt };
     }
 
     // Add current request timestamp
-    await redis.zadd(key, { score: now, member: `${now}-${Math.random().toString(36).slice(2, 8)}` });
+    await redis.zadd(key, {
+      score: now,
+      member: `${now}-${Math.random().toString(36).slice(2, 8)}`,
+    });
     await redis.expire(key, windowSeconds + 1);
 
     return {
@@ -68,9 +69,7 @@ export async function checkRateLimit(
  *   // ... handler logic
  * }, { maxRequests: 60, keyPrefix: "api:ai:suggest" });
  */
-export function withRateLimit<
-  T extends (request: Request, ...args: any[]) => Promise<Response>
->(
+export function withRateLimit<T extends (request: Request, ...args: any[]) => Promise<Response>>(
   handler: T,
   options: { maxRequests: number; keyPrefix: string; windowSeconds?: number }
 ): T {

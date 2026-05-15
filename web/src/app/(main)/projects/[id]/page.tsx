@@ -8,11 +8,7 @@ import { ShareButton } from "@/components/social/share-button";
 import { Download, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 
-export default async function ProjectDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
   if (!user) redirect("/signin");
 
@@ -65,11 +61,7 @@ export default async function ProjectDetailPage({
           <LayoutGrid className="h-4 w-4" />
           Storyboard
         </Link>
-        <ShareButton
-          type="project"
-          id={project.id}
-          title={project.title}
-        />
+        <ShareButton type="project" id={project.id} title={project.title} />
       </div>
 
       {/* Version History */}
@@ -119,9 +111,7 @@ export default async function ProjectDetailPage({
 
       {/* Comments */}
       <div className="border-t border-fg/10 pt-8">
-        <h2 className="text-lg font-bold mb-4">
-          Comments ({comments.length})
-        </h2>
+        <h2 className="text-lg font-bold mb-4">Comments ({comments.length})</h2>
         {comments.length === 0 ? (
           <p className="text-sm text-fg/40">No comments yet.</p>
         ) : (

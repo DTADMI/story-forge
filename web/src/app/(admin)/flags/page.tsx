@@ -15,19 +15,123 @@ interface FeatureFlag {
 }
 
 const DEFAULT_FLAGS: FeatureFlag[] = [
-  { id: "payments", name: "Payments", description: "Stripe subscription checkout", type: "boolean", enabled: false, value: false, category: "monetization" },
-  { id: "ai_assist", name: "AI Writing Assistant", description: "Master AI toggle", type: "boolean", enabled: false, value: false, category: "ai" },
-  { id: "ai_writing_suggestions", name: "AI Writing Suggestions", description: "Inline AI suggestions in editor", type: "boolean", enabled: false, value: false, category: "ai" },
-  { id: "ai_character_development", name: "AI Character Dev", description: "AI-generated character traits", type: "boolean", enabled: false, value: false, category: "ai" },
-  { id: "ai_plot_analysis", name: "AI Plot Analysis", description: "AI story structure review", type: "boolean", enabled: false, value: false, category: "ai" },
-  { id: "ai_style_consistency", name: "AI Style Check", description: "AI writing style analysis", type: "boolean", enabled: false, value: false, category: "ai" },
-  { id: "ai_research_assistant", name: "AI Research", description: "AI research assistant", type: "boolean", enabled: false, value: false, category: "ai" },
-  { id: "projects_v2", name: "Projects V2", description: "Next-gen project editor", type: "boolean", enabled: false, value: false, category: "core" },
-  { id: "wellbeing", name: "Wellbeing", description: "Break reminders, streak recovery", type: "boolean", enabled: true, value: true, category: "wellbeing" },
-  { id: "design_system_v2", name: "Design System V2", description: "Updated tokens + components", type: "boolean", enabled: true, value: true, category: "core" },
-  { id: "real_time_collaboration", name: "Real-time Collab", description: "Live co-authoring", type: "boolean", enabled: false, value: false, category: "core" },
-  { id: "groups_feature", name: "Groups", description: "Writing groups", type: "boolean", enabled: true, value: true, category: "social" },
-  { id: "public_feed", name: "Public Feed", description: "Story discovery feed", type: "boolean", enabled: true, value: true, category: "social" },
+  {
+    id: "payments",
+    name: "Payments",
+    description: "Stripe subscription checkout",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "monetization",
+  },
+  {
+    id: "ai_assist",
+    name: "AI Writing Assistant",
+    description: "Master AI toggle",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "ai",
+  },
+  {
+    id: "ai_writing_suggestions",
+    name: "AI Writing Suggestions",
+    description: "Inline AI suggestions in editor",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "ai",
+  },
+  {
+    id: "ai_character_development",
+    name: "AI Character Dev",
+    description: "AI-generated character traits",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "ai",
+  },
+  {
+    id: "ai_plot_analysis",
+    name: "AI Plot Analysis",
+    description: "AI story structure review",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "ai",
+  },
+  {
+    id: "ai_style_consistency",
+    name: "AI Style Check",
+    description: "AI writing style analysis",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "ai",
+  },
+  {
+    id: "ai_research_assistant",
+    name: "AI Research",
+    description: "AI research assistant",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "ai",
+  },
+  {
+    id: "projects_v2",
+    name: "Projects V2",
+    description: "Next-gen project editor",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "core",
+  },
+  {
+    id: "wellbeing",
+    name: "Wellbeing",
+    description: "Break reminders, streak recovery",
+    type: "boolean",
+    enabled: true,
+    value: true,
+    category: "wellbeing",
+  },
+  {
+    id: "design_system_v2",
+    name: "Design System V2",
+    description: "Updated tokens + components",
+    type: "boolean",
+    enabled: true,
+    value: true,
+    category: "core",
+  },
+  {
+    id: "real_time_collaboration",
+    name: "Real-time Collab",
+    description: "Live co-authoring",
+    type: "boolean",
+    enabled: false,
+    value: false,
+    category: "core",
+  },
+  {
+    id: "groups_feature",
+    name: "Groups",
+    description: "Writing groups",
+    type: "boolean",
+    enabled: true,
+    value: true,
+    category: "social",
+  },
+  {
+    id: "public_feed",
+    name: "Public Feed",
+    description: "Story discovery feed",
+    type: "boolean",
+    enabled: true,
+    value: true,
+    category: "social",
+  },
 ];
 
 export default function AdminFlagsPage() {
@@ -38,7 +142,9 @@ export default function AdminFlagsPage() {
   useEffect(() => {
     fetch("/api/admin/flags")
       .then((r) => r.json())
-      .then((data) => { if (Array.isArray(data) && data.length > 0) setFlags(data); })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setFlags(data);
+      })
       .catch(() => {});
   }, []);
 
@@ -62,7 +168,11 @@ export default function AdminFlagsPage() {
     } catch {
       // Rollback on failure
       setFlags(previousFlags);
-      toast({ title: "Save failed", description: "Could not update feature flags. Try again.", variant: "destructive" });
+      toast({
+        title: "Save failed",
+        description: "Could not update feature flags. Try again.",
+        variant: "destructive",
+      });
     } finally {
       setSaving(false);
     }

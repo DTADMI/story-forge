@@ -53,7 +53,9 @@ async function ProjectList() {
       {projects.map((p) => (
         <div key={p.id} className="flex justify-between text-sm">
           <span className="truncate">{p.title}</span>
-          <span className="text-fg/40 shrink-0 ml-2">{p.user?.username || p.user?.name || "—"}</span>
+          <span className="text-fg/40 shrink-0 ml-2">
+            {p.user?.username || p.user?.name || "—"}
+          </span>
         </div>
       ))}
     </div>

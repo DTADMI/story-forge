@@ -14,10 +14,8 @@ export default async function ProfileSettingsPage() {
   if (!profile) redirect("/signin");
 
   const settings = (profile.settings as Record<string, unknown>) ?? {};
-  const defaultScope =
-    (settings.defaultPublicationScope as string) || "PRIVATE";
-  const breakReminders =
-    (settings.breakReminders as boolean) ?? false;
+  const defaultScope = (settings.defaultPublicationScope as string) || "PRIVATE";
+  const breakReminders = (settings.breakReminders as boolean) ?? false;
   const writingCap = (settings.writingCap as number) ?? null;
 
   return (

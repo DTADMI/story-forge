@@ -58,8 +58,7 @@ export async function GET(request: NextRequest) {
           createdAt: msg.createdAt.toISOString(),
           senderId: msg.senderId,
         },
-        unreadCount:
-          msg.receiverId === user.id && !msg.read ? 1 : 0,
+        unreadCount: msg.receiverId === user.id && !msg.read ? 1 : 0,
       });
     } else if (msg.receiverId === user.id && !msg.read) {
       existing.unreadCount += 1;

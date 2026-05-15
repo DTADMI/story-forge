@@ -41,10 +41,7 @@ export default async function EncyclopediaCategoryPage({
   return (
     <main className="mx-auto max-w-4xl px-6 py-10 space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <Link
-          href="/world/encyclopedia"
-          className="p-1.5 rounded-md hover:bg-fg/5"
-        >
+        <Link href="/world/encyclopedia" className="p-1.5 rounded-md hover:bg-fg/5">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         {Icon && <Icon className="h-6 w-6 text-brand" />}
@@ -74,18 +71,10 @@ export default async function EncyclopediaCategoryPage({
             <Link key={entry.id} href={`/world/encyclopedia/${category}/${entry.id}`}>
               <Card className="p-4 hover:bg-fg/5 transition-colors">
                 <h3 className="text-base font-bold">{entry.title}</h3>
-                <p className="text-sm text-fg/50 mt-1 line-clamp-2">
-                  {entry.content}
-                </p>
+                <p className="text-sm text-fg/50 mt-1 line-clamp-2">{entry.content}</p>
                 <div className="flex items-center gap-4 mt-2 text-xs text-fg/40">
-                  <span>
-                    Created{" "}
-                    {new Date(entry.createdAt).toLocaleDateString()}
-                  </span>
-                  <span>
-                    Updated{" "}
-                    {new Date(entry.updatedAt).toLocaleDateString()}
-                  </span>
+                  <span>Created {new Date(entry.createdAt).toLocaleDateString()}</span>
+                  <span>Updated {new Date(entry.updatedAt).toLocaleDateString()}</span>
                 </div>
               </Card>
             </Link>

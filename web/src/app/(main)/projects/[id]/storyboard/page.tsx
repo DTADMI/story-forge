@@ -41,12 +41,13 @@ export default async function ProjectStoryboardPage({
 
   const settings = (project.settings as Record<string, unknown>) ?? {};
   const storyboardData = settings.storyboard as { panels: unknown[] } | undefined;
-  const panels = (storyboardData?.panels as Array<{
-    number: number;
-    description: string;
-    characterId: string;
-    locationId: string;
-  }>) || [];
+  const panels =
+    (storyboardData?.panels as Array<{
+      number: number;
+      description: string;
+      characterId: string;
+      locationId: string;
+    }>) || [];
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-10 space-y-6">
@@ -55,10 +56,7 @@ export default async function ProjectStoryboardPage({
           <h1 className="text-2xl font-extrabold">{project.title}</h1>
           <p className="text-fg/50 text-sm">Storyboard View</p>
         </div>
-        <Link
-          href={`/projects/${id}`}
-          className="text-sm text-fg/50 hover:text-fg"
-        >
+        <Link href={`/projects/${id}`} className="text-sm text-fg/50 hover:text-fg">
           Back to editor
         </Link>
       </div>

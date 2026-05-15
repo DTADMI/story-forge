@@ -25,7 +25,10 @@ export async function POST(request: NextRequest) {
 
   const validTypes = ["comment", "cheer", "follow", "badge", "message", "group_invite"];
   if (!validTypes.includes(type)) {
-    return NextResponse.json({ error: `Invalid type. Must be one of: ${validTypes.join(", ")}` }, { status: 400 });
+    return NextResponse.json(
+      { error: `Invalid type. Must be one of: ${validTypes.join(", ")}` },
+      { status: 400 }
+    );
   }
 
   const notification = await prisma.notification.create({

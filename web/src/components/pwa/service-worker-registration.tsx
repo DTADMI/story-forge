@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect} from "react";
+import { useEffect } from "react";
 
 export function ServiceWorkerRegistration() {
   useEffect(() => {
@@ -10,7 +10,7 @@ export function ServiceWorkerRegistration() {
 
     const register = async () => {
       try {
-        await navigator.serviceWorker.register("/sw.js", {scope: "/"});
+        await navigator.serviceWorker.register("/sw.js", { scope: "/" });
       } catch (error) {
         if (process.env.NODE_ENV !== "production") {
           console.warn("storyforge sw registration failed", error);

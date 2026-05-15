@@ -5,7 +5,10 @@ import { prisma } from "@/lib/prisma";
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
-  const character = await prisma.character.findFirst({ where: { id, userId: user.id }, include: { project: true } });
+  const character = await prisma.character.findFirst({
+    where: { id, userId: user.id },
+    include: { project: true },
+  });
   if (!character) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(character);
 }

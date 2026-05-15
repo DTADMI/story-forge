@@ -49,17 +49,14 @@ export function TimelineViz({ events }: { events: TimelineEvent[] }) {
   const isDragging = useRef(false);
   const lastY = useRef(0);
 
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-        setScale((s) => Math.min(3, Math.max(0.3, s - e.deltaY * 0.001)));
-      } else {
-        setOffsetY((o) => o - e.deltaY);
-      }
-    },
-    []
-  );
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      setScale((s) => Math.min(3, Math.max(0.3, s - e.deltaY * 0.001)));
+    } else {
+      setOffsetY((o) => o - e.deltaY);
+    }
+  }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     isDragging.current = true;

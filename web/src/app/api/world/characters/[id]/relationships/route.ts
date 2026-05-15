@@ -3,10 +3,7 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "@/lib/error-response";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
 
@@ -42,9 +39,7 @@ export async function GET(
     }
   }
 
-  const relatedCharacters = Array.from(coOccurrence.values()).sort(
-    (a, b) => b.count - a.count
-  );
+  const relatedCharacters = Array.from(coOccurrence.values()).sort((a, b) => b.count - a.count);
 
   return NextResponse.json({
     character: {

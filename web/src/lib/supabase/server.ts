@@ -48,7 +48,9 @@ export async function createServerClient() {
 
 export async function getUser() {
   const supabase = await createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   return user;
 }
 

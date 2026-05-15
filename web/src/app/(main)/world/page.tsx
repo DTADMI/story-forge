@@ -11,7 +11,12 @@ export default async function WorldPage() {
   const [characters, locations, timeline] = await Promise.all([
     prisma.character.findMany({ where: { userId: user.id }, orderBy: { name: "asc" } }),
     prisma.location.findMany({ where: { userId: user.id }, orderBy: { name: "asc" } }),
-    prisma.timelineEvent.findMany({ where: { userId: user.id }, orderBy: { date: "asc" }, take: 5, include: { characters: true, locations: true } }),
+    prisma.timelineEvent.findMany({
+      where: { userId: user.id },
+      orderBy: { date: "asc" },
+      take: 5,
+      include: { characters: true, locations: true },
+    }),
   ]);
 
   return (
@@ -28,7 +33,12 @@ export default async function WorldPage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Characters</h2>
-            <Link href="/world/characters/new" className="text-sm text-brand font-medium hover:underline">+ New Character</Link>
+            <Link
+              href="/world/characters/new"
+              className="text-sm text-brand font-medium hover:underline"
+            >
+              + New Character
+            </Link>
           </div>
           <div className="space-y-4">
             {characters.length === 0 ? (
@@ -40,7 +50,12 @@ export default async function WorldPage() {
                     <h3 className="font-bold">{c.name}</h3>
                     {c.traits && <p className="text-xs text-fg/60 italic">{c.traits}</p>}
                   </div>
-                  <Link href={`/world/characters/${c.id}`} className="text-xs text-fg/40 hover:text-brand">Edit</Link>
+                  <Link
+                    href={`/world/characters/${c.id}`}
+                    className="text-xs text-fg/40 hover:text-brand"
+                  >
+                    Edit
+                  </Link>
                 </Card>
               ))
             )}
@@ -49,7 +64,12 @@ export default async function WorldPage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Locations</h2>
-            <Link href="/world/locations/new" className="text-sm text-brand font-medium hover:underline">+ New Location</Link>
+            <Link
+              href="/world/locations/new"
+              className="text-sm text-brand font-medium hover:underline"
+            >
+              + New Location
+            </Link>
           </div>
           <div className="space-y-4">
             {locations.length === 0 ? (
@@ -59,9 +79,16 @@ export default async function WorldPage() {
                 <Card key={l.id} className="p-4 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold">{l.name}</h3>
-                    {l.description && <p className="text-xs text-fg/60 line-clamp-1">{l.description}</p>}
+                    {l.description && (
+                      <p className="text-xs text-fg/60 line-clamp-1">{l.description}</p>
+                    )}
                   </div>
-                  <Link href={`/world/locations/${l.id}`} className="text-xs text-fg/40 hover:text-brand">Edit</Link>
+                  <Link
+                    href={`/world/locations/${l.id}`}
+                    className="text-xs text-fg/40 hover:text-brand"
+                  >
+                    Edit
+                  </Link>
                 </Card>
               ))
             )}
@@ -77,7 +104,12 @@ export default async function WorldPage() {
           {timeline.length === 0 ? (
             <Card className="p-6 text-center">
               <p className="text-sm text-fg/40">No timeline events yet.</p>
-              <Link href="/world/timeline/new" className="text-sm text-brand font-medium hover:underline mt-1 inline-block">+ Create your first event</Link>
+              <Link
+                href="/world/timeline/new"
+                className="text-sm text-brand font-medium hover:underline mt-1 inline-block"
+              >
+                + Create your first event
+              </Link>
             </Card>
           ) : (
             timeline.map((event) => (
@@ -86,7 +118,12 @@ export default async function WorldPage() {
                   <h3 className="font-bold text-sm">{event.title}</h3>
                   {event.date && <span className="text-xs text-fg/40">{event.date}</span>}
                 </div>
-                <Link href={`/world/timeline/${event.id}`} className="text-xs text-fg/40 hover:text-brand">Edit</Link>
+                <Link
+                  href={`/world/timeline/${event.id}`}
+                  className="text-xs text-fg/40 hover:text-brand"
+                >
+                  Edit
+                </Link>
               </Card>
             ))
           )}
@@ -94,22 +131,46 @@ export default async function WorldPage() {
         <section className="md:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Dialogue Scenes</h2>
-            <Link href="/world/dialogues" className="text-sm text-brand font-medium hover:underline">View All</Link>
+            <Link
+              href="/world/dialogues"
+              className="text-sm text-brand font-medium hover:underline"
+            >
+              View All
+            </Link>
           </div>
           <Card className="p-6 text-center">
-            <p className="text-sm text-fg/40">Scripted dialogue for screenplays, comics, and scenes.</p>
-            <Link href="/world/dialogues/new" className="text-sm text-brand font-medium hover:underline mt-1 inline-block">+ Create a dialogue scene</Link>
+            <p className="text-sm text-fg/40">
+              Scripted dialogue for screenplays, comics, and scenes.
+            </p>
+            <Link
+              href="/world/dialogues/new"
+              className="text-sm text-brand font-medium hover:underline mt-1 inline-block"
+            >
+              + Create a dialogue scene
+            </Link>
           </Card>
         </section>
 
         <section className="md:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Encyclopedia</h2>
-            <Link href="/world/encyclopedia" className="text-sm text-brand font-medium hover:underline">Browse</Link>
+            <Link
+              href="/world/encyclopedia"
+              className="text-sm text-brand font-medium hover:underline"
+            >
+              Browse
+            </Link>
           </div>
           <Card className="p-6 text-center">
-            <p className="text-sm text-fg/40">Research notes, magic systems, flora & fauna, cultures, and more.</p>
-            <Link href="/world/encyclopedia" className="text-sm text-brand font-medium hover:underline mt-1 inline-block">Explore the encyclopedia</Link>
+            <p className="text-sm text-fg/40">
+              Research notes, magic systems, flora & fauna, cultures, and more.
+            </p>
+            <Link
+              href="/world/encyclopedia"
+              className="text-sm text-brand font-medium hover:underline mt-1 inline-block"
+            >
+              Explore the encyclopedia
+            </Link>
           </Card>
         </section>
 
@@ -117,8 +178,18 @@ export default async function WorldPage() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Visualizations</h2>
             <div className="flex gap-3">
-              <Link href="/world/timeline/viz" className="text-sm text-brand font-medium hover:underline">Timeline Viz</Link>
-              <Link href="/world/gallery" className="text-sm text-brand font-medium hover:underline">Image Gallery</Link>
+              <Link
+                href="/world/timeline/viz"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                Timeline Viz
+              </Link>
+              <Link
+                href="/world/gallery"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                Image Gallery
+              </Link>
             </div>
           </div>
         </section>

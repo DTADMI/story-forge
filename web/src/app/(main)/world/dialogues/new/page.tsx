@@ -14,9 +14,7 @@ async function createDialogue(formData: FormData) {
     content = JSON.parse(contentRaw || "[]");
   } catch {
     // Store as simple string lines if not valid JSON
-    content = contentRaw
-      ? contentRaw.split("\n").map((line) => ({ text: line }))
-      : [];
+    content = contentRaw ? contentRaw.split("\n").map((line) => ({ text: line })) : [];
   }
 
   await apiFetch("/api/world/dialogues", {
@@ -62,7 +60,8 @@ export default async function NewDialoguePage() {
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg font-mono"
             />
             <p className="text-xs text-fg/40 mt-1">
-              Format: JSON array of {"{speaker, line}"} objects. Plain text is also accepted (one line per entry).
+              Format: JSON array of {"{speaker, line}"} objects. Plain text is also accepted (one
+              line per entry).
             </p>
           </div>
           <div className="flex justify-end gap-3 mt-4">

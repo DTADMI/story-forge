@@ -1,20 +1,20 @@
-import {NextResponse} from 'next/server';
-import {prisma} from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const take = Math.min(parseInt(searchParams.get('take') || '20', 10), 50);
-  const cursor = searchParams.get('cursor') || undefined;
+  const take = Math.min(parseInt(searchParams.get("take") || "20", 10), 50);
+  const cursor = searchParams.get("cursor") || undefined;
 
   const where = {
-      OR: [{isPublic: true}, {defaultScope: 'PUBLIC_ANYONE' as any}],
+    OR: [{ isPublic: true }, { defaultScope: "PUBLIC_ANYONE" as any }],
   };
 
   const items = await prisma.project.findMany({
     where,
     take: take + 1,
-    orderBy: { updatedAt: 'desc' },
-      ...(cursor ? {cursor: {id: cursor}, skip: 1} : {}),
+    orderBy: { updatedAt: "desc" },
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
   });
 
   const hasMore = items.length > take;

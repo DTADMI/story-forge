@@ -31,7 +31,11 @@ export default function NewGroupPage() {
       const res = await fetch("/api/social/groups", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), description: description.trim() || null, isPrivate }),
+        body: JSON.stringify({
+          name: name.trim(),
+          description: description.trim() || null,
+          isPrivate,
+        }),
       });
 
       if (!res.ok) {
@@ -94,11 +98,7 @@ export default function NewGroupPage() {
             <Button type="submit" isLoading={isLoading}>
               Create Group
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => router.back()}
-            >
+            <Button type="button" variant="ghost" onClick={() => router.back()}>
               Cancel
             </Button>
           </div>

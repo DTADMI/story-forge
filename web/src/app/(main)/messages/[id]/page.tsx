@@ -4,11 +4,7 @@ import { redirect, notFound } from "next/navigation";
 import { MessageThread } from "./message-thread";
 import Link from "next/link";
 
-export default async function MessageDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function MessageDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
   if (!user) redirect("/signin");
 
@@ -53,11 +49,7 @@ export default async function MessageDetailPage({
         </Link>
         <div className="h-8 w-8 rounded-full bg-brand/10 flex items-center justify-center text-sm font-bold text-brand">
           {partner.image ? (
-            <img
-              src={partner.image}
-              alt=""
-              className="h-8 w-8 rounded-full object-cover"
-            />
+            <img src={partner.image} alt="" className="h-8 w-8 rounded-full object-cover" />
           ) : (
             (partner.username || partner.name || "?").charAt(0).toUpperCase()
           )}

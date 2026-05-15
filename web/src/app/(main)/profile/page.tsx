@@ -50,15 +50,9 @@ export default async function ProfilePage() {
             )}
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold">
-              {profile.name || profile.username || "Writer"}
-            </h2>
-            {profile.username && (
-              <p className="text-sm text-fg/50">@{profile.username}</p>
-            )}
-            {profile.bio && (
-              <p className="text-sm mt-1 text-fg/70">{profile.bio}</p>
-            )}
+            <h2 className="text-xl font-bold">{profile.name || profile.username || "Writer"}</h2>
+            {profile.username && <p className="text-sm text-fg/50">@{profile.username}</p>}
+            {profile.bio && <p className="text-sm mt-1 text-fg/70">{profile.bio}</p>}
             {profile.website && (
               <a
                 href={profile.website}
@@ -95,9 +89,7 @@ export default async function ProfilePage() {
             <p className="text-xs text-fg/50">Following</p>
           </div>
           <div>
-            <p className="text-2xl font-extrabold">
-              {profile.inkPot?.balance ?? 0}
-            </p>
+            <p className="text-2xl font-extrabold">{profile.inkPot?.balance ?? 0}</p>
             <p className="text-xs text-fg/50">Ink</p>
           </div>
         </div>
@@ -125,9 +117,7 @@ export default async function ProfilePage() {
         </Link>
         <div className="border border-fg/15 rounded-lg p-3 text-center text-sm">
           <span className="text-fg/50">Subscription: </span>
-          <span className="font-medium capitalize">
-            {profile.subscriptionStatus || "Free"}
-          </span>
+          <span className="font-medium capitalize">{profile.subscriptionStatus || "Free"}</span>
         </div>
       </div>
 
@@ -136,9 +126,7 @@ export default async function ProfilePage() {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold">Default Publication Scope</h3>
-            <p className="text-xs text-fg/40 mt-0.5">
-              Controls visibility of new projects
-            </p>
+            <p className="text-xs text-fg/40 mt-0.5">Controls visibility of new projects</p>
           </div>
           <ScopeSelector userId={profile.id} currentScope={defaultScope} />
         </div>

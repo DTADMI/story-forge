@@ -14,9 +14,7 @@ export default function MainError({
           <span className="text-2xl">⚠</span>
         </div>
         <h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
-        <p className="text-fg/50 mb-6">
-          An unexpected error occurred while loading this page.
-        </p>
+        <p className="text-fg/50 mb-6">An unexpected error occurred while loading this page.</p>
         <div className="flex gap-3 justify-center">
           <button
             onClick={reset}
@@ -24,7 +22,10 @@ export default function MainError({
           >
             Try Again
           </button>
-          <a href="/dashboard" className="px-4 py-2 text-sm font-medium bg-brand text-white rounded-md">
+          <a
+            href="/dashboard"
+            className="px-4 py-2 text-sm font-medium bg-brand text-white rounded-md"
+          >
             Go to Dashboard
           </a>
         </div>

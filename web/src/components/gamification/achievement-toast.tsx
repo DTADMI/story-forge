@@ -43,13 +43,29 @@ export function AchievementToast({
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="40" cy="40" r="36" stroke="var(--brand)" strokeOpacity="0.15" strokeWidth="2" />
+            <circle
+              cx="40"
+              cy="40"
+              r="36"
+              stroke="var(--brand)"
+              strokeOpacity="0.15"
+              strokeWidth="2"
+            />
             {Array.from({ length: 8 }).map((_, i) => {
               const angle = (i * 45 * Math.PI) / 180;
               const x = 40 + 34 * Math.cos(angle);
               const y = 40 + 34 * Math.sin(angle);
               const size = i % 2 === 0 ? 4 : 6;
-              const colors = ["#FFD700", "#FF4500", "#7B68EE", "#00CED1", "#FF69B4", "#32CD32", "#FFA500", "#87CEEB"];
+              const colors = [
+                "#FFD700",
+                "#FF4500",
+                "#7B68EE",
+                "#00CED1",
+                "#FF69B4",
+                "#32CD32",
+                "#FFA500",
+                "#87CEEB",
+              ];
               return (
                 <circle
                   key={i}
@@ -64,9 +80,24 @@ export function AchievementToast({
             })}
           </svg>
           <svg viewBox="0 0 80 80" fill="none" className="absolute inset-0 w-full h-full">
-            <circle cx="40" cy="40" r="28" fill="var(--brand)" fillOpacity="0.15" stroke="var(--brand)" strokeWidth="2.5" />
+            <circle
+              cx="40"
+              cy="40"
+              r="28"
+              fill="var(--brand)"
+              fillOpacity="0.15"
+              stroke="var(--brand)"
+              strokeWidth="2.5"
+            />
             <circle cx="40" cy="40" r="22" fill="var(--brand)" fillOpacity="0.05" />
-            <text x="40" y="36" textAnchor="middle" fill="var(--brand)" fontSize="18" fontWeight="bold">
+            <text
+              x="40"
+              y="36"
+              textAnchor="middle"
+              fill="var(--brand)"
+              fontSize="18"
+              fontWeight="bold"
+            >
               ★
             </text>
           </svg>

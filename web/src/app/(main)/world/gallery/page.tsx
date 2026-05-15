@@ -63,12 +63,8 @@ export default async function GalleryPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-3">
                   <div>
-                    <p className="text-white text-sm font-semibold truncate">
-                      {item.name}
-                    </p>
-                    <span className="text-white/60 text-xs capitalize">
-                      {item.type}
-                    </span>
+                    <p className="text-white text-sm font-semibold truncate">{item.name}</p>
+                    <span className="text-white/60 text-xs capitalize">{item.type}</span>
                   </div>
                 </div>
               </div>

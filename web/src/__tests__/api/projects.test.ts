@@ -87,7 +87,10 @@ describe("Projects API", () => {
     it("defaults title to Untitled", async () => {
       const mockUser = { id: "user-1" };
       (requireUser as ReturnType<typeof vi.fn>).mockResolvedValue(mockUser);
-      (prisma.project.create as ReturnType<typeof vi.fn>).mockResolvedValue({ id: "p1", title: "Untitled" });
+      (prisma.project.create as ReturnType<typeof vi.fn>).mockResolvedValue({
+        id: "p1",
+        title: "Untitled",
+      });
 
       await POST(mockRequest({}));
 

@@ -71,10 +71,7 @@ export default function NewEncyclopediaEntryPage() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex items-center gap-3 mb-6">
-        <Link
-          href={`/world/encyclopedia/${category}`}
-          className="p-1.5 rounded-md hover:bg-fg/5"
-        >
+        <Link href={`/world/encyclopedia/${category}`} className="p-1.5 rounded-md hover:bg-fg/5">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <h1 className="text-2xl font-extrabold">New {label} Entry</h1>
@@ -110,9 +107,7 @@ export default function NewEncyclopediaEntryPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Project (optional)
-            </label>
+            <label className="block text-sm font-medium mb-1">Project (optional)</label>
             <input
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}

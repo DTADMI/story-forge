@@ -4,10 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notFound } from "@/lib/error-response";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
 
@@ -23,7 +20,10 @@ export async function POST(
   // Validate file type
   const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
   if (!allowedTypes.includes(file.type)) {
-    return NextResponse.json({ error: "Invalid file type. Use JPEG, PNG, WebP, or GIF." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid file type. Use JPEG, PNG, WebP, or GIF." },
+      { status: 400 }
+    );
   }
 
   const maxSize = 5 * 1024 * 1024;

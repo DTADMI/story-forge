@@ -19,10 +19,7 @@ interface RelationshipGraphProps {
   relatedCharacters: RelatedCharacter[];
 }
 
-export function RelationshipGraph({
-  centralCharacter,
-  relatedCharacters,
-}: RelationshipGraphProps) {
+export function RelationshipGraph({ centralCharacter, relatedCharacters }: RelationshipGraphProps) {
   const router = useRouter();
   const [hovered, setHovered] = useState<RelatedCharacter | null>(null);
 
@@ -30,8 +27,8 @@ export function RelationshipGraph({
     return (
       <div className="text-center py-12">
         <p className="text-fg/40 text-sm">
-          No relationship data yet. Add {centralCharacter.name} to timeline events
-          shared with other characters.
+          No relationship data yet. Add {centralCharacter.name} to timeline events shared with other
+          characters.
         </p>
       </div>
     );
@@ -59,10 +56,7 @@ export function RelationshipGraph({
 
   return (
     <div className="relative">
-      <svg
-        viewBox={`0 0 ${svgSize} ${svgSize}`}
-        className="w-full max-w-[500px] mx-auto"
-      >
+      <svg viewBox={`0 0 ${svgSize} ${svgSize}`} className="w-full max-w-[500px] mx-auto">
         {/* Edges */}
         {nodes.map((node) => {
           const thickness = Math.max(1.5, (node.count / maxCount) * 6);
@@ -127,12 +121,7 @@ export function RelationshipGraph({
         ))}
 
         {/* Center node */}
-        <circle
-          cx={centerX}
-          cy={centerY}
-          r={centerRadius}
-          className="fill-brand"
-        />
+        <circle cx={centerX} cy={centerY} r={centerRadius} className="fill-brand" />
         <text
           x={centerX}
           y={centerY}

@@ -248,7 +248,7 @@ export async function initFlags(): Promise<void> {
 }
 
 export async function isEnabled(key: string): Promise<boolean> {
-  const flags = cachedFlags ?? await loadFlags();
+  const flags = cachedFlags ?? (await loadFlags());
   const flag = flags.find((f) => f.id === normalizeKey(key));
   return flag?.enabled ?? false;
 }

@@ -10,13 +10,7 @@ interface EmptyStateProps {
   children?: ReactNode;
 }
 
-export function EmptyState({
-  icon,
-  title,
-  description,
-  action,
-  children,
-}: EmptyStateProps) {
+export function EmptyState({ icon, title, description, action, children }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-fg/5">

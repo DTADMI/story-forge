@@ -12,9 +12,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: [] });
   }
 
-  const whereBase = scope === "public"
-    ? { OR: [{ isPublic: true }, { defaultScope: "PUBLIC_ANYONE" as const }] }
-    : { userId: user?.id || "" };
+  const whereBase =
+    scope === "public"
+      ? { OR: [{ isPublic: true }, { defaultScope: "PUBLIC_ANYONE" as const }] }
+      : { userId: user?.id || "" };
 
   // Search own or public projects by title + description
   const projects = await prisma.project.findMany({

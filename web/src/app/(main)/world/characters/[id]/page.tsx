@@ -34,11 +34,7 @@ async function deleteCharacter(id: string, formData: FormData) {
   redirect("/world");
 }
 
-export default async function CharacterDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function CharacterDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
   if (!user) redirect("/signin");
 

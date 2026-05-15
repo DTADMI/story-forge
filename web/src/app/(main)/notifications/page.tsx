@@ -48,9 +48,7 @@ export default async function NotificationsPage() {
                     <span>{new Date(n.createdAt).toLocaleDateString()}</span>
                   </p>
                 </div>
-                {!n.read && (
-                  <span className="flex-shrink-0 h-2 w-2 rounded-full bg-brand mt-1.5" />
-                )}
+                {!n.read && <span className="flex-shrink-0 h-2 w-2 rounded-full bg-brand mt-1.5" />}
               </div>
             </Card>
           ))}

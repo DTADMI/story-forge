@@ -10,12 +10,7 @@ export type ApiErrorPayload = {
   code?: string;
 };
 
-export function errorResponse(
-  error: string,
-  status = 500,
-  detail?: string,
-  code?: string
-) {
+export function errorResponse(error: string, status = 500, detail?: string, code?: string) {
   const payload: ApiErrorPayload = { error };
   if (detail) payload.detail = detail;
   if (code) payload.code = code;

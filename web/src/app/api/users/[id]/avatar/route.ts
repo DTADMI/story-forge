@@ -6,10 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const currentUser = await requireUser();
   const { id } = await params;
 
@@ -37,22 +34,17 @@ export async function POST(
   }
 
   if (file.size > MAX_FILE_SIZE) {
-    return NextResponse.json(
-      { error: "File too large. Max size: 2MB" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "File too large. Max size: 2MB" }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const adminClient = createAdminClient();
   const filePath = `avatars/${id}.webp`;
 
-  const { error: uploadError } = await adminClient.storage
-    .from("media")
-    .upload(filePath, buffer, {
-      contentType: "image/webp",
-      upsert: true,
-    });
+  const { error: uploadError } = await adminClient.storage.from("media").upload(filePath, buffer, {
+    contentType: "image/webp",
+    upsert: true,
+  });
 
   if (uploadError) {
     return NextResponse.json(
@@ -61,9 +53,7 @@ export async function POST(
     );
   }
 
-  const { data: urlData } = adminClient.storage
-    .from("media")
-    .getPublicUrl(filePath);
+  const { data: urlData } = adminClient.storage.from("media").getPublicUrl(filePath);
 
   const publicUrl = urlData.publicUrl;
 

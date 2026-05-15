@@ -87,9 +87,7 @@ export function NotificationBell() {
           </div>
 
           {notifications.length === 0 ? (
-            <p className="px-4 py-6 text-center text-sm text-fg/40">
-              No new notifications
-            </p>
+            <p className="px-4 py-6 text-center text-sm text-fg/40">No new notifications</p>
           ) : (
             <div className="max-h-64 overflow-y-auto">
               {notifications.map((n) => (
@@ -102,9 +100,7 @@ export function NotificationBell() {
                   className="w-full text-left px-4 py-3 hover:bg-fg/5 border-b border-fg/5 last:border-b-0 transition-colors"
                 >
                   <p className="text-sm font-medium">{n.title}</p>
-                  {n.body && (
-                    <p className="text-xs text-fg/40 mt-0.5 line-clamp-1">{n.body}</p>
-                  )}
+                  {n.body && <p className="text-xs text-fg/40 mt-0.5 line-clamp-1">{n.body}</p>}
                   <span className="text-xs text-fg/20 mt-1 block capitalize">
                     {n.type.replace(/_/g, " ")}
                   </span>

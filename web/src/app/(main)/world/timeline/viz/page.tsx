@@ -26,10 +26,7 @@ export default async function TimelineVizPage() {
             Scroll to explore. Hold Ctrl/Cmd + scroll to zoom.
           </p>
         </div>
-        <Link
-          href="/world/timeline"
-          className="text-sm text-fg/40 hover:text-brand"
-        >
+        <Link href="/world/timeline" className="text-sm text-fg/40 hover:text-brand">
           List View
         </Link>
       </div>

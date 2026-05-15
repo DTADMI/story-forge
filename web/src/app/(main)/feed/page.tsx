@@ -21,7 +21,8 @@ const ACTIVITY_LABELS: Record<string, (meta?: any) => string> = {
   streak_milestone: (m) => `reached a ${m?.streakDays || 0}-day writing streak!`,
   goal_complete: (m) => `completed their daily writing goal!`,
   follow_gained: () => `gained a new follower`,
-  comment_received: (m) => `${m?.commenterName || "Someone"} commented on "${m?.projectTitle || "a project"}"`,
+  comment_received: (m) =>
+    `${m?.commenterName || "Someone"} commented on "${m?.projectTitle || "a project"}"`,
 };
 
 export default async function ActivityFeedPage() {

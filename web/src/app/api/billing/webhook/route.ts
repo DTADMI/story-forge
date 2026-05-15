@@ -5,7 +5,8 @@ import Stripe from "stripe";
 export async function POST(request: NextRequest) {
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!stripeKey || !webhookSecret) return NextResponse.json({ error: "Not configured" }, { status: 501 });
+  if (!stripeKey || !webhookSecret)
+    return NextResponse.json({ error: "Not configured" }, { status: 501 });
 
   const stripe = new Stripe(stripeKey);
   const sig = request.headers.get("stripe-signature")!;

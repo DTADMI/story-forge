@@ -15,8 +15,7 @@ export function ShareButton({ type, id, title }: ShareButtonProps) {
   const { toast } = useToast();
   const ref = useRef<HTMLDivElement>(null);
 
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : "";
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   const shareUrl = `${origin}/${type}s/${id}`;
   const encodedUrl = encodeURIComponent(shareUrl);
@@ -30,8 +29,7 @@ export function ShareButton({ type, id, title }: ShareButtonProps) {
     }
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [open]);
 
@@ -61,10 +59,7 @@ export function ShareButton({ type, id, title }: ShareButtonProps) {
         <div className="absolute right-0 top-full mt-2 w-72 bg-bg border border-fg/15 rounded-lg shadow-lg z-50 p-3">
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-semibold">Share</h4>
-            <button
-              onClick={() => setOpen(false)}
-              className="p-0.5 rounded hover:bg-fg/5"
-            >
+            <button onClick={() => setOpen(false)} className="p-0.5 rounded hover:bg-fg/5">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -115,9 +110,7 @@ export function ShareButton({ type, id, title }: ShareButtonProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-fg/50 mb-1">
-                Embed
-              </label>
+              <label className="block text-xs font-medium text-fg/50 mb-1">Embed</label>
               <textarea
                 readOnly
                 value={embedCode}

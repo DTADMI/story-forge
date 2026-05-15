@@ -22,7 +22,10 @@ export default function AdminError({
           >
             Try Again
           </button>
-          <a href="/admin/dashboard" className="px-4 py-2 text-sm font-medium bg-brand text-white rounded-md">
+          <a
+            href="/admin/dashboard"
+            className="px-4 py-2 text-sm font-medium bg-brand text-white rounded-md"
+          >
             Admin Dashboard
           </a>
         </div>

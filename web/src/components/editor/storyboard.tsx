@@ -28,12 +28,7 @@ interface StoryboardProps {
   locations: Location[];
 }
 
-export function Storyboard({
-  projectId,
-  initialPanels,
-  characters,
-  locations,
-}: StoryboardProps) {
+export function Storyboard({ projectId, initialPanels, characters, locations }: StoryboardProps) {
   const [panels, setPanels] = useState<Panel[]>(initialPanels);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
@@ -74,9 +69,7 @@ export function Storyboard({
 
   const removePanel = useCallback(
     (index: number) => {
-      const updated = panels
-        .filter((_, i) => i !== index)
-        .map((p, i) => ({ ...p, number: i + 1 }));
+      const updated = panels.filter((_, i) => i !== index).map((p, i) => ({ ...p, number: i + 1 }));
       setPanels(updated);
       savePanels(updated);
     },
@@ -98,9 +91,7 @@ export function Storyboard({
 
   const updatePanel = useCallback(
     (index: number, field: keyof Panel, value: string) => {
-      const updated = panels.map((p, i) =>
-        i === index ? { ...p, [field]: value } : p
-      );
+      const updated = panels.map((p, i) => (i === index ? { ...p, [field]: value } : p));
       setPanels(updated);
     },
     [panels]
@@ -130,14 +121,9 @@ export function Storyboard({
       ) : (
         <div className="grid gap-4">
           {panels.map((panel, index) => (
-            <div
-              key={index}
-              className="border border-fg/10 rounded-lg p-4 bg-bg space-y-3"
-            >
+            <div key={index} className="border border-fg/10 rounded-lg p-4 bg-bg space-y-3">
               <div className="flex items-center gap-3">
-                <span className="text-sm font-bold text-fg/50 w-6">
-                  #{panel.number}
-                </span>
+                <span className="text-sm font-bold text-fg/50 w-6">#{panel.number}</span>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => movePanel(index, "up")}
@@ -168,9 +154,7 @@ export function Storyboard({
 
               <textarea
                 value={panel.description}
-                onChange={(e) =>
-                  updatePanel(index, "description", e.target.value)
-                }
+                onChange={(e) => updatePanel(index, "description", e.target.value)}
                 onBlur={handleBlur}
                 placeholder="Panel description..."
                 className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y min-h-[60px]"
@@ -179,14 +163,10 @@ export function Storyboard({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-fg/50 mb-1">
-                    Character
-                  </label>
+                  <label className="block text-xs font-medium text-fg/50 mb-1">Character</label>
                   <select
                     value={panel.characterId}
-                    onChange={(e) =>
-                      updatePanel(index, "characterId", e.target.value)
-                    }
+                    onChange={(e) => updatePanel(index, "characterId", e.target.value)}
                     onBlur={handleBlur}
                     className="w-full rounded-md border border-fg/20 px-2 py-1.5 text-sm bg-bg"
                   >
@@ -199,14 +179,10 @@ export function Storyboard({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-fg/50 mb-1">
-                    Location
-                  </label>
+                  <label className="block text-xs font-medium text-fg/50 mb-1">Location</label>
                   <select
                     value={panel.locationId}
-                    onChange={(e) =>
-                      updatePanel(index, "locationId", e.target.value)
-                    }
+                    onChange={(e) => updatePanel(index, "locationId", e.target.value)}
                     onBlur={handleBlur}
                     className="w-full rounded-md border border-fg/20 px-2 py-1.5 text-sm bg-bg"
                   >
@@ -224,9 +200,7 @@ export function Storyboard({
         </div>
       )}
 
-      {saving && (
-        <p className="text-xs text-fg/40 text-right">Saving...</p>
-      )}
+      {saving && <p className="text-xs text-fg/40 text-right">Saving...</p>}
     </div>
   );
 }

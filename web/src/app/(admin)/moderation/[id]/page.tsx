@@ -34,7 +34,8 @@ export default async function ModerationReviewPage({
           ← Moderation
         </Link>
         <h1 className="text-2xl font-extrabold">
-          Review: {isProject ? (entity as typeof project)!.title : (entity as typeof character)!.name}
+          Review:{" "}
+          {isProject ? (entity as typeof project)!.title : (entity as typeof character)!.name}
         </h1>
       </div>
 
@@ -62,7 +63,9 @@ export default async function ModerationReviewPage({
           <>
             <div>
               <span className="text-xs text-fg/40">Description</span>
-              <p className="text-sm mt-1">{(entity as typeof project)!.description || "No description"}</p>
+              <p className="text-sm mt-1">
+                {(entity as typeof project)!.description || "No description"}
+              </p>
             </div>
             <div>
               <span className="text-xs text-fg/40">Content</span>
@@ -85,7 +88,9 @@ export default async function ModerationReviewPage({
             </div>
             <div>
               <span className="text-xs text-fg/40">Bio</span>
-              <p className="text-sm mt-1 whitespace-pre-wrap">{(entity as typeof character)!.bio || "—"}</p>
+              <p className="text-sm mt-1 whitespace-pre-wrap">
+                {(entity as typeof character)!.bio || "—"}
+              </p>
             </div>
           </div>
         )}

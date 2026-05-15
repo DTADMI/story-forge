@@ -23,22 +23,35 @@ export default async function StatsPage() {
     prisma.project.count({ where: { userId: user.id } }),
     prisma.character.count({ where: { userId: user.id } }),
     prisma.userBadge.count({ where: { userId: user.id } }),
-    prisma.progressLog.findMany({ where: { userId: user.id }, orderBy: { timestamp: "desc" }, take: 90 }),
     prisma.progressLog.findMany({
-      where: { userId: user.id, timestamp: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } },
+      where: { userId: user.id },
+      orderBy: { timestamp: "desc" },
+      take: 90,
+    }),
+    prisma.progressLog.findMany({
+      where: {
+        userId: user.id,
+        timestamp: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+      },
     }),
     prisma.goal.count({ where: { userId: user.id } }),
-    prisma.project.findMany({ where: { userId: user.id }, select: { genre: true, wordCount: true } }),
+    prisma.project.findMany({
+      where: { userId: user.id },
+      select: { genre: true, wordCount: true },
+    }),
   ]);
 
   // Streak calculation
-  const daysWithProgress = new Set(currentStreakData.map((l) => l.timestamp.toISOString().split("T")[0]));
+  const daysWithProgress = new Set(
+    currentStreakData.map((l) => l.timestamp.toISOString().split("T")[0])
+  );
   let currentStreak = 0;
   let longestStreak = 0;
   let run = 0;
   const today = new Date();
   for (let i = 0; i < 365; i++) {
-    const d = new Date(today); d.setDate(d.getDate() - i);
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
     if (daysWithProgress.has(d.toISOString().split("T")[0])) {
       run++;
       if (run > longestStreak) longestStreak = run;
@@ -52,14 +65,17 @@ export default async function StatsPage() {
   // 30-day trend
   const trendMap = new Map<string, number>();
   for (let i = 0; i < 30; i++) {
-    const d = new Date(today); d.setDate(d.getDate() - i);
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
     trendMap.set(d.toISOString().split("T")[0], 0);
   }
   for (const log of recentLogs) {
     const day = log.timestamp.toISOString().split("T")[0];
     trendMap.set(day, (trendMap.get(day) || 0) + log.value);
   }
-  const trend = Array.from(trendMap.entries()).map(([date, words]) => ({ date, words })).sort((a, b) => a.date.localeCompare(b.date));
+  const trend = Array.from(trendMap.entries())
+    .map(([date, words]) => ({ date, words }))
+    .sort((a, b) => a.date.localeCompare(b.date));
   const maxDaily = Math.max(...trend.map((t) => t.words), 1);
 
   // Genre breakdown
@@ -70,14 +86,25 @@ export default async function StatsPage() {
   }
 
   const stats = [
-    { label: "Total Words", value: (totalWords._sum.wordCount || 0).toLocaleString(), icon: BookOpen },
+    {
+      label: "Total Words",
+      value: (totalWords._sum.wordCount || 0).toLocaleString(),
+      icon: BookOpen,
+    },
     { label: "Projects", value: String(projectCount), icon: BookOpen },
     { label: "Characters", value: String(characterCount), icon: BookOpen },
     { label: "Badges", value: String(badgeCount), icon: Trophy },
     { label: "Current Streak", value: `${currentStreak} days`, icon: Flame },
     { label: "Longest Streak", value: `${longestStreak} days`, icon: Flame },
     { label: "Goals Set", value: String(goals), icon: Target },
-    { label: "Avg Words/Project", value: projectCount > 0 ? Math.round((totalWords._sum.wordCount || 0) / projectCount).toLocaleString() : "0", icon: BarChart3 },
+    {
+      label: "Avg Words/Project",
+      value:
+        projectCount > 0
+          ? Math.round((totalWords._sum.wordCount || 0) / projectCount).toLocaleString()
+          : "0",
+      icon: BarChart3,
+    },
   ];
 
   return (
@@ -109,10 +136,16 @@ export default async function StatsPage() {
             <h2 className="font-bold mb-4">30-Day Word Count</h2>
             <div className="flex items-end gap-0.5 h-32">
               {trend.map((t) => (
-                <div key={t.date} className="flex-1 flex flex-col items-center gap-1 group relative">
+                <div
+                  key={t.date}
+                  className="flex-1 flex flex-col items-center gap-1 group relative"
+                >
                   <div
                     className="w-full bg-brand/60 hover:bg-brand rounded-t transition-colors"
-                    style={{ height: `${(t.words / maxDaily) * 100}%`, minHeight: t.words > 0 ? "4px" : "0" }}
+                    style={{
+                      height: `${(t.words / maxDaily) * 100}%`,
+                      minHeight: t.words > 0 ? "4px" : "0",
+                    }}
                   />
                 </div>
               ))}
@@ -139,7 +172,9 @@ export default async function StatsPage() {
                           style={{ width: `${(words / (totalWords._sum.wordCount || 1)) * 100}%` }}
                         />
                       </div>
-                      <span className="text-xs text-fg/40 w-16 text-right">{words.toLocaleString()}</span>
+                      <span className="text-xs text-fg/40 w-16 text-right">
+                        {words.toLocaleString()}
+                      </span>
                     </div>
                   ))}
               </div>

@@ -86,9 +86,7 @@ export default function AdminAuditPage() {
                       ? `${entry.entityType}${entry.entityId ? ` / ${entry.entityId.slice(0, 12)}` : ""}`
                       : "—"}
                   </td>
-                  <td className="p-3 text-fg/50 font-mono text-xs">
-                    {entry.userId.slice(0, 12)}
-                  </td>
+                  <td className="p-3 text-fg/50 font-mono text-xs">{entry.userId.slice(0, 12)}</td>
                 </tr>
               ))}
             </tbody>
@@ -97,8 +95,9 @@ export default function AdminAuditPage() {
       </Card>
 
       <p className="text-xs text-fg/30">
-        The audit log currently shows placeholder entries. Once `auditLog` persistence is implemented
-        (writing to `prisma.auditLog`), this page will display real data with filtering and search.
+        The audit log currently shows placeholder entries. Once `auditLog` persistence is
+        implemented (writing to `prisma.auditLog`), this page will display real data with filtering
+        and search.
       </p>
     </div>
   );

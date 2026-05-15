@@ -20,9 +20,7 @@ async function updateDialogue(id: string, formData: FormData) {
   try {
     content = JSON.parse(contentRaw || "[]");
   } catch {
-    content = contentRaw
-      ? contentRaw.split("\n").map((line: string) => ({ text: line }))
-      : [];
+    content = contentRaw ? contentRaw.split("\n").map((line: string) => ({ text: line })) : [];
   }
 
   await apiFetch(`/api/world/dialogues/${id}`, {
@@ -38,11 +36,7 @@ async function deleteDialogue(id: string) {
   redirect("/world/dialogues");
 }
 
-export default async function DialogueDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function DialogueDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
   if (!user) redirect("/signin");
 

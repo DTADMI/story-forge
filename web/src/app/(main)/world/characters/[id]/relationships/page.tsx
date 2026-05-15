@@ -69,18 +69,15 @@ export default async function CharacterRelationshipsPage({
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex items-center gap-3 mb-6">
-        <Link
-          href={`/world/characters/${id}`}
-          className="text-sm text-fg/40 hover:text-brand"
-        >
+        <Link href={`/world/characters/${id}`} className="text-sm text-fg/40 hover:text-brand">
           Back to {character.name}
         </Link>
       </div>
 
       <h1 className="text-2xl font-extrabold mb-2">Relationship Graph</h1>
       <p className="text-fg/60 text-sm mb-6">
-        Characters connected through shared timeline events. Line thickness
-        reflects relationship strength (co-occurrence count).
+        Characters connected through shared timeline events. Line thickness reflects relationship
+        strength (co-occurrence count).
       </p>
 
       <Card className="p-4">
