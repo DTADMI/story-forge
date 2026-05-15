@@ -30,9 +30,27 @@ export default function SignUpPage() {
       setError(error.message);
       setLoading(false);
     } else if (data.session) {
+      try {
+        await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+      } catch {
+        // ignore verification email failure
+      }
       router.push("/dashboard");
       router.refresh();
     } else {
+      try {
+        await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+      } catch {
+        // ignore verification email failure
+      }
       router.push("/signin?message=check_email");
     }
   };

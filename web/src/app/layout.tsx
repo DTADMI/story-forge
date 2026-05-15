@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
+import { OfflineIndicator } from "@/components/pwa/offline-indicator";
 import { Providers } from "@/components/providers";
 import { ToastProvider } from "@/components/toast";
 import { SkipLink } from "@/components/a11y/skip-link";
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SkipLink />
         <ServiceWorkerRegistration />
         <PWAInstallPrompt />
+        <OfflineIndicator />
         <Providers>
           <ToastProvider>
             <Header />

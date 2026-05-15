@@ -76,7 +76,7 @@ function escapeXml(str: string): string {
 
 function stripHtmlKeepText(html: string): string {
   return html
-    .replace(/<(p|h[1-6]|li|br)[^>]*>/gi, "\n")
+    .replace(/<(p|h[1-6]|li|br|div)[^>]*>/gi, "\n")
     .replace(/<[^>]*>/g, "")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
@@ -87,19 +87,117 @@ function stripHtmlKeepText(html: string): string {
     .trim();
 }
 
-function wrapHtml(body: string, title: string): string {
+function wrapChapterXhtml(body: string, title: string): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
 <head>
   <title>${escapeXml(title)}</title>
   <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-${body}
+  <section class="chapter">
+    <h1>${escapeXml(title)}</h1>
+    ${body}
+  </section>
 </body>
 </html>`;
 }
+
+function wrapCoverXhtml(title: string, author: string): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
+  <title>Cover</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body class="cover">
+  <div class="cover-container">
+    <h1 class="cover-title">${escapeXml(title)}</h1>
+    <p class="cover-author">by ${escapeXml(author)}</p>
+  </div>
+</body>
+</html>`;
+}
+
+function wrapNavXhtml(title: string): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head>
+  <title>Table of Contents</title>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <nav epub:type="toc" id="toc">
+    <h1>Table of Contents</h1>
+    <ol>
+      <li><a href="cover.xhtml">Cover</a></li>
+      <li><a href="chapter.xhtml">${escapeXml(title)}</a></li>
+    </ol>
+  </nav>
+</body>
+</html>`;
+}
+
+const EPUB_CSS = `@namespace epub "http://www.idpf.org/2007/ops";
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.6;
+  margin: 5%;
+  color: #1a1a1a;
+}
+
+h1 {
+  font-size: 1.8em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+p {
+  margin: 0 0 0.8em 0;
+  text-indent: 1.5em;
+}
+
+p:first-of-type {
+  text-indent: 0;
+}
+
+body.cover {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  page-break-after: always;
+}
+
+.cover-container {
+  text-align: center;
+}
+
+.cover-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  text-indent: 0;
+}
+
+.cover-author {
+  font-size: 1.2em;
+  color: #555;
+  text-indent: 0;
+}
+
+.chapter h1 {
+  margin-top: 2em;
+  margin-bottom: 1.5em;
+}
+`;
 
 export interface EpubInput {
   title: string;
@@ -117,10 +215,21 @@ export function generateEpub(input: EpubInput): Buffer {
 
   const bodyContent = stripHtmlKeepText(input.content)
     .split("\n")
-    .map((line) => `<p>${escapeXml(line) || "&#160;"}</p>`)
+    .map((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return "";
+      const escaped = escapeXml(trimmed);
+
+      if (trimmed.startsWith("# ")) return `<h2>${escaped.slice(2)}</h2>`;
+      if (trimmed.startsWith("## ")) return `<h3>${escaped.slice(3)}</h3>`;
+      return `<p>${escaped || "&#160;"}</p>`;
+    })
+    .filter(Boolean)
     .join("\n");
 
-  const xhtmlContent = wrapHtml(bodyContent, title);
+  const chapterXhtml = wrapChapterXhtml(bodyContent, title);
+  const coverXhtml = wrapCoverXhtml(title, author);
+  const navXhtml = wrapNavXhtml(title);
 
   const containerXml = `<?xml version="1.0" encoding="UTF-8"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
@@ -140,10 +249,15 @@ export function generateEpub(input: EpubInput): Buffer {
     <meta property="dcterms:modified">${now}</meta>
   </metadata>
   <manifest>
+    <item id="style" href="style.css" media-type="text/css" />
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
+    <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter" href="chapter.xhtml" media-type="application/xhtml+xml" />
   </manifest>
   <spine>
-    <itemref idref="chapter" />
+    <itemref idref="cover" linear="yes" />
+    <itemref idref="nav" linear="no" />
+    <itemref idref="chapter" linear="yes" />
   </spine>
 </package>`;
 
@@ -161,8 +275,20 @@ export function generateEpub(input: EpubInput): Buffer {
       data: Buffer.from(opfContent, "utf-8"),
     },
     {
+      name: "OEBPS/style.css",
+      data: Buffer.from(EPUB_CSS, "utf-8"),
+    },
+    {
+      name: "OEBPS/nav.xhtml",
+      data: Buffer.from(navXhtml, "utf-8"),
+    },
+    {
+      name: "OEBPS/cover.xhtml",
+      data: Buffer.from(coverXhtml, "utf-8"),
+    },
+    {
       name: "OEBPS/chapter.xhtml",
-      data: Buffer.from(xhtmlContent, "utf-8"),
+      data: Buffer.from(chapterXhtml, "utf-8"),
     },
   ];
 

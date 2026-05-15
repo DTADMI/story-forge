@@ -3,9 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { ProjectEditor } from "@/components/editor/project-editor";
 import { VersionHistory } from "@/components/editor/version-history";
+import { CollaboratorManager } from "@/components/editor/collaborator-manager";
+import { PresenceAvatars } from "@/components/editor/presence-avatars";
+import { ExportDropdown } from "@/components/editor/export-dropdown";
 import { Card } from "@/components/ui/card";
 import { ShareButton } from "@/components/social/share-button";
-import { Download, LayoutGrid } from "lucide-react";
+import { Layers, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -14,7 +17,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   const { id } = await params;
   const project = await prisma.project.findFirst({
-    where: { id, userId: user.id },
+    where: {
+      id,
+      OR: [{ userId: user.id }, { collaborators: { some: { userId: user.id } } }],
+    },
   });
 
   if (!project) {
@@ -24,6 +30,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       </main>
     );
   }
+
+  const isOwner = project.userId === user.id;
 
   // Fetch comments
   const comments = await prisma.comment.findMany({
@@ -40,22 +48,36 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     orderBy: { createdAt: "asc" },
   });
 
+  const currentUserName = user.user_metadata?.name || user.email?.split("@")[0] || "Writer";
+
   return (
     <main className="mx-auto max-w-4xl px-6 py-10 space-y-10">
+      {/* Presence Indicator */}
+      <div className="flex items-center justify-between">
+        <PresenceAvatars
+          projectId={project.id}
+          currentUser={{ id: user.id, name: currentUserName }}
+        />
+      </div>
+
       {/* Editor */}
       <ProjectEditor project={project} userPreferences={undefined} />
 
+      {/* Panel count display */}
+      <div className="flex items-center gap-2 text-sm text-fg/50">
+        <Layers className="h-4 w-4" />
+        <span>
+          {project.content?.split(/\s+/).filter(Boolean).length || 0} words
+          {" · "}
+          {project.panelCount || 0} panels
+        </span>
+      </div>
+
       {/* Export / Share button */}
       <div className="flex flex-wrap items-center gap-3">
-        <a
-          href={`/api/projects/${id}/export`}
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border border-fg/20 rounded-md hover:bg-fg/5"
-        >
-          <Download className="h-4 w-4" />
-          Export as Markdown
-        </a>
+        <ExportDropdown projectId={project.id} />
         <Link
-          href={`/projects/${id}/storyboard`}
+          href={`/projects/${project.id}/storyboard`}
           className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border border-fg/20 rounded-md hover:bg-fg/5"
         >
           <LayoutGrid className="h-4 w-4" />
@@ -108,6 +130,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </button>
         </form>
       </div>
+
+      {/* Collaborators */}
+      {isOwner && (
+        <div className="border-t border-fg/10 pt-8">
+          <h2 className="text-lg font-bold mb-4">Collaborators</h2>
+          <Card className="p-4">
+            <CollaboratorManager projectId={project.id} />
+          </Card>
+        </div>
+      )}
 
       {/* Comments */}
       <div className="border-t border-fg/10 pt-8">
@@ -166,8 +198,13 @@ async function updateSettings(id: string, formData: FormData) {
   const description = String(formData.get("description") || "").trim();
   const defaultScope = String(formData.get("defaultScope") || "PRIVATE");
 
-  await prisma.project.update({
+  const project = await prisma.project.findFirst({
     where: { id, userId: user.id },
+  });
+  if (!project) return;
+
+  await prisma.project.update({
+    where: { id },
     data: { title: title || undefined, description: description || undefined, defaultScope },
   });
   redirect(`/projects/${id}`);

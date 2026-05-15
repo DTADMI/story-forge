@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, notFound } from "@/lib/error-response";
 import { generateEpub } from "@/lib/export-epub";
+import { generatePdfHtml } from "@/lib/export-pdf";
 
 function htmlToMarkdown(html: string): string {
   let md = html;
@@ -30,7 +31,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id } = await params;
 
   const project = await prisma.project.findFirst({
-    where: { id, userId: user.id },
+    where: {
+      id,
+      OR: [{ userId: user.id }, { collaborators: { some: { userId: user.id } } }],
+    },
   });
   if (!project) return notFound("Project not found");
 
@@ -38,9 +42,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const format = searchParams.get("format");
 
   const safeFilename = project.title.replace(/[^a-zA-Z0-9_-]/g, "_");
+  const author = user.email || "Anonymous";
 
   if (format === "epub") {
-    const author = user.email || "Anonymous";
     const epubBuffer = generateEpub({
       title: project.title,
       author,
@@ -55,8 +59,19 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     });
   }
 
+  if (format === "pdf") {
+    const pdfHtml = generatePdfHtml(project.content || "", project.title, author);
+
+    return new NextResponse(pdfHtml, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${safeFilename}.pdf"`,
+      },
+    });
+  }
+
   const mdContent = htmlToMarkdown(project.content || "");
-  const markdown = `# ${project.title}\n\n> By ${user.email || "Anonymous"} | ${project.wordCount} words\n\n${mdContent}`;
+  const markdown = `# ${project.title}\n\n> By ${author} | ${project.wordCount} words\n\n${mdContent}`;
 
   return new NextResponse(markdown, {
     headers: {

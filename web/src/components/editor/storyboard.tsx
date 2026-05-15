@@ -57,6 +57,7 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             settings: { storyboard: { panels: updated } },
+            panelCount: updated.length,
           }),
         });
         if (!res.ok) throw new Error("Failed to save");

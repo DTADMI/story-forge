@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { syncEventToNeo4j, syncEventCharacterLink } from "@/lib/neo4j-sync";
 
 export async function GET(request: NextRequest) {
   const user = await requireUser();
@@ -28,5 +29,13 @@ export async function POST(request: NextRequest) {
     },
     include: { characters: true, locations: true },
   });
+
+  syncEventToNeo4j(event).catch(() => {});
+  if (characterIds?.length) {
+    for (const charId of characterIds) {
+      syncEventCharacterLink(event.id, charId).catch(() => {});
+    }
+  }
+
   return NextResponse.json(event, { status: 201 });
 }

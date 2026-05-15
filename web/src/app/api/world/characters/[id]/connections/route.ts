@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { syncRelationshipToNeo4j, deleteRelationshipFromNeo4j } from "@/lib/neo4j-sync";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
@@ -53,6 +54,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     },
   });
 
+  syncRelationshipToNeo4j({
+    characterId: id,
+    relatedId: body.relatedId,
+    type: body.type,
+  }).catch(() => {});
+
   return NextResponse.json(relationship, { status: 201 });
 }
 
@@ -81,6 +88,9 @@ export async function DELETE(
   });
   if (!rel) return NextResponse.json({ error: "Relationship not found" }, { status: 404 });
 
+  const relSnapshot = { characterId: rel.characterId, relatedId: rel.relatedId, type: rel.type };
   await prisma.characterRelationship.delete({ where: { id: relationshipId } });
+  deleteRelationshipFromNeo4j(relSnapshot).catch(() => {});
+
   return NextResponse.json({ deleted: true });
 }

@@ -10,6 +10,7 @@ const WebEnvSchema = z.object({
   UPSTASH_REDIS_URL: z.string().url().optional(),
   UPSTASH_REDIS_TOKEN: z.string().optional(),
   OPENROUTER_API_KEY: z.string().optional(),
+  RESEND_API_KEY: z.string().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
   NEXT_PUBLIC_FEATURE_PAYMENTS: z.string().optional(),
   NEXT_PUBLIC_FEATURE_AI_ASSIST: z.string().optional(),

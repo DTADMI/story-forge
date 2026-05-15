@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { canCreateCharacter } from "@/lib/permissions";
 import { forbidden } from "@/lib/error-response";
+import { syncCharacterToNeo4j } from "@/lib/neo4j-sync";
 
 export async function GET(request: NextRequest) {
   const user = await requireUser();
@@ -37,5 +38,6 @@ export async function POST(request: NextRequest) {
   const character = await prisma.character.create({
     data: { ...body, userId: user.id },
   });
+  syncCharacterToNeo4j(character).catch(() => {});
   return NextResponse.json(character, { status: 201 });
 }

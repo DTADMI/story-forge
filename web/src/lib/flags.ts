@@ -125,8 +125,8 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
     name: "Real-time Collaboration",
     description: "Live co-authoring and presence indicators",
     type: "boolean",
-    enabled: false,
-    value: false,
+    enabled: true,
+    value: true,
     category: "core",
   },
   {

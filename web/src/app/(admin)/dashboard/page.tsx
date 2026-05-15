@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { ResyncGraphButton } from "./resync-button";
 
 export default async function AdminDashboardPage() {
   const [userCount, projectCount, characterCount, groupCount] = await Promise.all([
@@ -19,7 +20,10 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-extrabold">Admin Dashboard</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-extrabold">Admin Dashboard</h1>
+        <ResyncGraphButton />
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((s) => (
           <Card key={s.label} className="p-4 text-center">
