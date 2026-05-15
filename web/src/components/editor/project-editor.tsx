@@ -201,7 +201,8 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
             </div>
 
             <p className="text-[10px] text-fg/40">
-              Linked entities are saved to project settings. Use them to associate scene context with world data.
+              Linked entities are saved to project settings. Use them to associate scene context
+              with world data.
             </p>
           </div>
         )}

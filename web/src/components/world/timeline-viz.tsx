@@ -49,13 +49,7 @@ const CHIP_COLORS = [
   "bg-indigo-500",
 ];
 
-export function TimelineViz({
-  events,
-  eras = [],
-}: {
-  events: TimelineEvent[];
-  eras?: Era[];
-}) {
+export function TimelineViz({ events, eras = [] }: { events: TimelineEvent[]; eras?: Era[] }) {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);

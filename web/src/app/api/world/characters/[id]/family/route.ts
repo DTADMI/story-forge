@@ -2,18 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
 
   const character = await prisma.character.findFirst({
     where: { id, userId: user.id },
   });
-  if (!character)
-    return NextResponse.json({ error: "Character not found" }, { status: 404 });
+  if (!character) return NextResponse.json({ error: "Character not found" }, { status: 404 });
 
   const relationships = await prisma.characterRelationship.findMany({
     where: {

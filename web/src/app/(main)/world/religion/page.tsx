@@ -49,7 +49,10 @@ export default function ReligionPage() {
         </button>
       </div>
 
-      <Link href="/world/encyclopedia/religion" className="text-sm text-fg/40 hover:text-brand inline-block">
+      <Link
+        href="/world/encyclopedia/religion"
+        className="text-sm text-fg/40 hover:text-brand inline-block"
+      >
         View all religion encyclopedia entries
       </Link>
 
@@ -87,10 +90,7 @@ export default function ReligionPage() {
       ) : (
         <div className="grid gap-3">
           {entries.map((entry: any) => (
-            <Link
-              key={entry.id}
-              href={`/world/encyclopedia/religion/${entry.id}`}
-            >
+            <Link key={entry.id} href={`/world/encyclopedia/religion/${entry.id}`}>
               <Card className="p-4 hover:bg-fg/5 transition-colors">
                 <h3 className="text-base font-bold">{entry.title}</h3>
                 <p className="text-sm text-fg/50 mt-1 line-clamp-2">{entry.content}</p>

@@ -70,7 +70,9 @@ export function RelationshipManager({ characterId }: { characterId: string }) {
       if (!cancelled) setLoading(false);
     }
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [characterId]);
 
   async function refreshRelationships() {
@@ -246,9 +248,7 @@ export function RelationshipManager({ characterId }: { characterId: string }) {
                   >
                     <div>
                       <span className="font-medium">{r.targetName}</span>
-                      {r.description && (
-                        <span className="text-fg/40 ml-2">{r.description}</span>
-                      )}
+                      {r.description && <span className="text-fg/40 ml-2">{r.description}</span>}
                     </div>
                     <button
                       onClick={() => handleDelete(r.id)}

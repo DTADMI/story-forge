@@ -196,7 +196,9 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                     {linkedChars.length > 0 && (
                       <optgroup label="Linked Characters">
                         {linkedChars.map((c) => (
-                          <option key={c.id} value={c.id}>{c.name}</option>
+                          <option key={c.id} value={c.id}>
+                            {c.name}
+                          </option>
                         ))}
                       </optgroup>
                     )}
@@ -221,7 +223,9 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                     {linkedLocs.length > 0 && (
                       <optgroup label="Linked Locations">
                         {linkedLocs.map((l) => (
-                          <option key={l.id} value={l.id}>{l.name}</option>
+                          <option key={l.id} value={l.id}>
+                            {l.name}
+                          </option>
                         ))}
                       </optgroup>
                     )}

@@ -67,7 +67,14 @@ export function FamilyTree({ characterId, characterName, relationships }: Family
   const svgHeight = 480;
 
   const centerX = svgWidth / 2;
-  const layerY = { parents: 40, spouse: 130, siblings: 175, center: 220, children: 310, others: 400 };
+  const layerY = {
+    parents: 40,
+    spouse: 130,
+    siblings: 175,
+    center: 220,
+    children: 310,
+    others: 400,
+  };
 
   function renderNode(x: number, y: number, id: string, name: string, color: string) {
     const w = NODE_WIDTH;
@@ -140,10 +147,24 @@ export function FamilyTree({ characterId, characterName, relationships }: Family
   spouse.forEach((r, i) => {
     const x = centerX + NODE_WIDTH + 20;
     nodes.push(renderNode(x, layerY.spouse, r.targetId, r.targetName, COLORS.spouse));
-    lines.push(renderLine(centerX, layerY.center + NODE_HEIGHT / 2, x, layerY.spouse + NODE_HEIGHT / 2, COLORS.spouse));
+    lines.push(
+      renderLine(
+        centerX,
+        layerY.center + NODE_HEIGHT / 2,
+        x,
+        layerY.spouse + NODE_HEIGHT / 2,
+        COLORS.spouse
+      )
+    );
     const midX = (centerX + x) / 2;
     lines.push(
-      <text key={`spouse-label-${i}`} x={midX} y={layerY.spouse - 6} textAnchor="middle" className="text-[9px] fill-fg/40">
+      <text
+        key={`spouse-label-${i}`}
+        x={midX}
+        y={layerY.spouse - 6}
+        textAnchor="middle"
+        className="text-[9px] fill-fg/40"
+      >
         spouse
       </text>
     );

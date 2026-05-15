@@ -58,16 +58,8 @@ export function TimelineEditForm({
 
       {/* Entity Selectors */}
       <div className="border border-fg/10 rounded-lg p-4 space-y-4">
-        <EntitySelector
-          entityType="character"
-          selected={characterIds}
-          onChange={setCharacterIds}
-        />
-        <EntitySelector
-          entityType="location"
-          selected={locationIds}
-          onChange={setLocationIds}
-        />
+        <EntitySelector entityType="character" selected={characterIds} onChange={setCharacterIds} />
+        <EntitySelector entityType="location" selected={locationIds} onChange={setLocationIds} />
       </div>
 
       <div>

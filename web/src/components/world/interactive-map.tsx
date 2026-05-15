@@ -20,7 +20,9 @@ interface InteractiveMapProps {
 export function InteractiveMap({ locations, mapUrl, onPinSave, onPinClick }: InteractiveMapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [pins, setPins] = useState<MapLocation[]>(locations);
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; location: MapLocation } | null>(null);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; location: MapLocation } | null>(
+    null
+  );
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [addMode, setAddMode] = useState(false);
   const [newPinName, setNewPinName] = useState("");
@@ -104,18 +106,12 @@ export function InteractiveMap({ locations, mapUrl, onPinSave, onPinClick }: Int
             setNewPinName("");
           }}
           className={`px-3 py-1.5 text-xs rounded-md border ${
-            addMode
-              ? "bg-brand text-white border-brand"
-              : "border-fg/20 hover:bg-fg/5"
+            addMode ? "bg-brand text-white border-brand" : "border-fg/20 hover:bg-fg/5"
           }`}
         >
           {addMode ? "Cancel Add Mode" : "Add Pin Mode"}
         </button>
-        {addMode && (
-          <span className="text-xs text-fg/50">
-            Click on the map to place a new pin
-          </span>
-        )}
+        {addMode && <span className="text-xs text-fg/50">Click on the map to place a new pin</span>}
       </div>
 
       {pendingCoords && (
@@ -148,9 +144,7 @@ export function InteractiveMap({ locations, mapUrl, onPinSave, onPinClick }: Int
         onMouseLeave={handleMouseUp}
       >
         {/* Background image if provided */}
-        {mapUrl && (
-          <image href={mapUrl} x={0} y={0} width={svgWidth} height={svgHeight} />
-        )}
+        {mapUrl && <image href={mapUrl} x={0} y={0} width={svgWidth} height={svgHeight} />}
 
         {/* Grid lines */}
         {!mapUrl && (
@@ -158,8 +152,10 @@ export function InteractiveMap({ locations, mapUrl, onPinSave, onPinClick }: Int
             {Array.from({ length: 8 }, (_, i) => (
               <line
                 key={`h${i}`}
-                x1={0} y1={(svgHeight / 8) * (i + 1)}
-                x2={svgWidth} y2={(svgHeight / 8) * (i + 1)}
+                x1={0}
+                y1={(svgHeight / 8) * (i + 1)}
+                x2={svgWidth}
+                y2={(svgHeight / 8) * (i + 1)}
                 stroke="var(--fg)"
                 strokeOpacity={0.05}
                 strokeWidth={1}
@@ -168,8 +164,10 @@ export function InteractiveMap({ locations, mapUrl, onPinSave, onPinClick }: Int
             {Array.from({ length: 8 }, (_, i) => (
               <line
                 key={`v${i}`}
-                x1={(svgWidth / 8) * (i + 1)} y1={0}
-                x2={(svgWidth / 8) * (i + 1)} y2={svgHeight}
+                x1={(svgWidth / 8) * (i + 1)}
+                y1={0}
+                x2={(svgWidth / 8) * (i + 1)}
+                y2={svgHeight}
                 stroke="var(--fg)"
                 strokeOpacity={0.05}
                 strokeWidth={1}
@@ -180,8 +178,8 @@ export function InteractiveMap({ locations, mapUrl, onPinSave, onPinClick }: Int
 
         {/* Pins */}
         {pins.map((loc) => {
-          const px = loc.x ?? (svgWidth / 2);
-          const py = loc.y ?? (svgHeight / 2);
+          const px = loc.x ?? svgWidth / 2;
+          const py = loc.y ?? svgHeight / 2;
           return (
             <g
               key={loc.id}
@@ -199,21 +197,12 @@ export function InteractiveMap({ locations, mapUrl, onPinSave, onPinClick }: Int
               onMouseLeave={() => setTooltip(null)}
             >
               {/* Pin shape */}
-              <circle
-                cx={px}
-                cy={py - 4}
-                r={6}
+              <circle cx={px} cy={py - 4} r={6} fill="var(--brand)" stroke="#fff" strokeWidth={2} />
+              <polygon
+                points={`${px - 4},${py} ${px + 4},${py} ${px},${py + 10}`}
                 fill="var(--brand)"
-                stroke="#fff"
-                strokeWidth={2}
               />
-              <polygon points={`${px - 4},${py} ${px + 4},${py} ${px},${py + 10}`} fill="var(--brand)" />
-              <text
-                x={px}
-                y={py + 18}
-                textAnchor="middle"
-                className="text-[8px] fill-fg/60"
-              >
+              <text x={px} y={py + 18} textAnchor="middle" className="text-[8px] fill-fg/60">
                 {loc.name.length > 10 ? loc.name.slice(0, 10) + ".." : loc.name}
               </text>
             </g>

@@ -10,18 +10,16 @@ export default async function WorldExportPage() {
 
   const filter = { userId: user.id };
 
-  const [charCount, locCount, timelineCount, encCount, orgCount, speciesCount] =
-    await Promise.all([
-      prisma.character.count({ where: filter }),
-      prisma.location.count({ where: filter }),
-      prisma.timelineEvent.count({ where: filter }),
-      prisma.encyclopediaEntry.count({ where: filter }),
-      prisma.organization.count({ where: filter }),
-      prisma.species.count({ where: filter }),
-    ]);
+  const [charCount, locCount, timelineCount, encCount, orgCount, speciesCount] = await Promise.all([
+    prisma.character.count({ where: filter }),
+    prisma.location.count({ where: filter }),
+    prisma.timelineEvent.count({ where: filter }),
+    prisma.encyclopediaEntry.count({ where: filter }),
+    prisma.organization.count({ where: filter }),
+    prisma.species.count({ where: filter }),
+  ]);
 
-  const totalCount =
-    charCount + locCount + timelineCount + encCount + orgCount + speciesCount;
+  const totalCount = charCount + locCount + timelineCount + encCount + orgCount + speciesCount;
 
   const stats = [
     { label: "Characters", count: charCount },
@@ -64,7 +62,8 @@ export default async function WorldExportPage() {
         <Card className="p-6">
           <h3 className="text-lg font-bold mb-2">Export World Bible (JSON)</h3>
           <p className="text-sm text-fg/50 mb-4">
-            Download a structured JSON file with all your world data. Suitable for backup, import, or programmatic use.
+            Download a structured JSON file with all your world data. Suitable for backup, import,
+            or programmatic use.
           </p>
           <a
             href="/api/world/export"
@@ -78,7 +77,8 @@ export default async function WorldExportPage() {
         <Card className="p-6">
           <h3 className="text-lg font-bold mb-2">Export Markdown</h3>
           <p className="text-sm text-fg/50 mb-4">
-            Download a formatted Markdown file suitable for reading, printing, or importing into writing tools.
+            Download a formatted Markdown file suitable for reading, printing, or importing into
+            writing tools.
           </p>
           <a
             href="/api/world/export?format=markdown"

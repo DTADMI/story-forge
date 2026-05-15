@@ -25,14 +25,12 @@ export async function POST(request: NextRequest) {
       userId: user.id,
       months: months
         ? {
-            create: months.map(
-              (m: Record<string, unknown>, i: number) => ({
-                name: m.name as string,
-                days: (m.days as number) ?? 30,
-                orderIndex: (m.orderIndex as number) ?? i,
-                description: (m.description as string) ?? null,
-              })
-            ),
+            create: months.map((m: Record<string, unknown>, i: number) => ({
+              name: m.name as string,
+              days: (m.days as number) ?? 30,
+              orderIndex: (m.orderIndex as number) ?? i,
+              description: (m.description as string) ?? null,
+            })),
           }
         : undefined,
     },

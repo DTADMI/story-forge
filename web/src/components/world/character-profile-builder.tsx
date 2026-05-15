@@ -140,9 +140,7 @@ export function CharacterProfileBuilder({ character, onSaved }: CharacterProfile
             className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium hover:bg-fg/5"
           >
             {section.label}
-            <span className="text-xs text-fg/40">
-              {expanded === section.key ? "-" : "+"}
-            </span>
+            <span className="text-xs text-fg/40">{expanded === section.key ? "-" : "+"}</span>
           </button>
           {expanded === section.key && (
             <div className="px-3 pb-3 space-y-3">

@@ -34,7 +34,9 @@ export function EntitySelector({ entityType, selected, onChange }: EntitySelecto
       if (!cancelled) setLoading(false);
     }
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [entityType]);
 
   function toggle(id: string) {
@@ -45,9 +47,7 @@ export function EntitySelector({ entityType, selected, onChange }: EntitySelecto
     }
   }
 
-  const filtered = entities.filter((e) =>
-    e.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = entities.filter((e) => e.name.toLowerCase().includes(search.toLowerCase()));
 
   const label = entityType === "character" ? "Characters" : "Locations";
   const colorClass = entityType === "character" ? "bg-brand/10 text-brand" : "bg-fg/5 text-fg/60";

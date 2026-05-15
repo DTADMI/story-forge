@@ -111,7 +111,11 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
       </Card>
 
       {/* Private Notes */}
-      <PrivateNotes entityType="locations" entityId={location.id} initialNotes={(location.metadata as any)?.privateNotes || ""} />
+      <PrivateNotes
+        entityType="locations"
+        entityId={location.id}
+        initialNotes={(location.metadata as any)?.privateNotes || ""}
+      />
     </main>
   );
 }

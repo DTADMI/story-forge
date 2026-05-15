@@ -48,9 +48,10 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
         script: script.trim(),
         vocabulary: vocabulary.map((v) => ({ word: v.word, meaning: v.meaning })),
       };
-      const vocabStr = vocabulary.length > 0
-        ? `\n**Vocabulary:**\n${vocabulary.map((v) => `${v.word} — ${v.meaning}`).join("\n")}`
-        : "";
+      const vocabStr =
+        vocabulary.length > 0
+          ? `\n**Vocabulary:**\n${vocabulary.map((v) => `${v.word} — ${v.meaning}`).join("\n")}`
+          : "";
       const content = `**Phonology:** ${phonology || "N/A"}\n**Grammar Rules:** ${grammarRules || "N/A"}\n**Script/Alphabet:** ${script || "N/A"}${vocabStr}`;
 
       const res = await fetch("/api/world/encyclopedia", {
@@ -153,10 +154,7 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
                   <span className="font-medium">{v.word}</span>
                   <span className="text-fg/40 ml-2">— {v.meaning}</span>
                 </span>
-                <button
-                  onClick={() => removeWord(i)}
-                  className="text-fg/30 hover:text-red-500"
-                >
+                <button onClick={() => removeWord(i)} className="text-fg/30 hover:text-red-500">
                   <Trash2 className="h-3 w-3" />
                 </button>
               </div>

@@ -17,11 +17,7 @@ async function deleteCalendar(id: string) {
   redirect("/world/calendar");
 }
 
-export default async function CalendarDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function CalendarDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
   if (!user) redirect("/signin");
 
@@ -63,10 +59,7 @@ export default async function CalendarDetailPage({
             <Card key={month.orderIndex} className="p-4">
               <h3 className="text-base font-bold mb-3">{month.name}</h3>
               <div className="border border-fg/10 rounded overflow-hidden">
-                <div
-                  className="grid"
-                  style={{ gridTemplateColumns: `repeat(${weekLength}, 1fr)` }}
-                >
+                <div className="grid" style={{ gridTemplateColumns: `repeat(${weekLength}, 1fr)` }}>
                   {weekDays.map((d) => (
                     <span
                       key={d}

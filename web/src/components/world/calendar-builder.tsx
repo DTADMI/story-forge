@@ -46,9 +46,7 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
   }
 
   function updateMonth(index: number, field: keyof Month, value: string | number) {
-    setMonths((prev) =>
-      prev.map((m, i) => (i === index ? { ...m, [field]: value } : m))
-    );
+    setMonths((prev) => prev.map((m, i) => (i === index ? { ...m, [field]: value } : m)));
   }
 
   async function handleSave() {
@@ -202,7 +200,10 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
                   <h4 className="text-xs font-bold mb-1">{month.name}</h4>
                   <div className="border border-fg/10 rounded overflow-hidden">
                     {/* Header row */}
-                    <div className="grid" style={{ gridTemplateColumns: `repeat(${weekLength}, 1fr)` }}>
+                    <div
+                      className="grid"
+                      style={{ gridTemplateColumns: `repeat(${weekLength}, 1fr)` }}
+                    >
                       {weekDays.map((d) => (
                         <span
                           key={d}

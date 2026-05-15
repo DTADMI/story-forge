@@ -66,10 +66,7 @@ export default async function EncyclopediaEntryDetailPage({
           Encyclopedia
         </Link>
         <span className="text-fg/20">/</span>
-        <Link
-          href={`/world/encyclopedia/${category}`}
-          className="text-fg/40 hover:text-brand"
-        >
+        <Link href={`/world/encyclopedia/${category}`} className="text-fg/40 hover:text-brand">
           {label}
         </Link>
         <span className="text-fg/20">/</span>

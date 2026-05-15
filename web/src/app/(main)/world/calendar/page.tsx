@@ -23,9 +23,7 @@ export default async function CalendarPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold">Calendars</h1>
-          <p className="text-fg/60 text-sm mt-1">
-            Design custom calendars for your world.
-          </p>
+          <p className="text-fg/60 text-sm mt-1">Design custom calendars for your world.</p>
         </div>
         <Link
           href="/world/calendar/new"
@@ -61,7 +59,8 @@ export default async function CalendarPage() {
                     <div>
                       <h3 className="text-base font-bold">{cal.name}</h3>
                       <p className="text-xs text-fg/40 mt-1">
-                        {cal.weekLength || 7} days/week &middot; {months.length} months &middot; {totalDays} days
+                        {cal.weekLength || 7} days/week &middot; {months.length} months &middot;{" "}
+                        {totalDays} days
                       </p>
                     </div>
                   </div>

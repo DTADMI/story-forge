@@ -5,13 +5,51 @@ import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Search } from "lucide-react";
 
-const entityConfig: Record<string, { label: string; href: (id: string, data: any) => string; excerpt: (data: any) => string; icon: string }> = {
-  characters: { label: "Characters", href: (id) => `/world/characters/${id}`, excerpt: (d) => d.bio || "", icon: "C" },
-  locations: { label: "Locations", href: (id) => `/world/locations/${id}`, excerpt: (d) => d.description || "", icon: "L" },
-  timeline: { label: "Timeline Events", href: (id) => `/world/timeline/${id}`, excerpt: (d) => d.description || "", icon: "T" },
-  encyclopedia: { label: "Encyclopedia", href: (id, d) => `/world/encyclopedia/${d.category || "research"}/${id}`, excerpt: (d) => d.content || "", icon: "E" },
-  organizations: { label: "Organizations", href: (id) => `/world/organizations/${id}`, excerpt: (d) => d.description || "", icon: "O" },
-  species: { label: "Species", href: (id) => `/world/species/${id}`, excerpt: (d) => d.description || "", icon: "S" },
+const entityConfig: Record<
+  string,
+  {
+    label: string;
+    href: (id: string, data: any) => string;
+    excerpt: (data: any) => string;
+    icon: string;
+  }
+> = {
+  characters: {
+    label: "Characters",
+    href: (id) => `/world/characters/${id}`,
+    excerpt: (d) => d.bio || "",
+    icon: "C",
+  },
+  locations: {
+    label: "Locations",
+    href: (id) => `/world/locations/${id}`,
+    excerpt: (d) => d.description || "",
+    icon: "L",
+  },
+  timeline: {
+    label: "Timeline Events",
+    href: (id) => `/world/timeline/${id}`,
+    excerpt: (d) => d.description || "",
+    icon: "T",
+  },
+  encyclopedia: {
+    label: "Encyclopedia",
+    href: (id, d) => `/world/encyclopedia/${d.category || "research"}/${id}`,
+    excerpt: (d) => d.content || "",
+    icon: "E",
+  },
+  organizations: {
+    label: "Organizations",
+    href: (id) => `/world/organizations/${id}`,
+    excerpt: (d) => d.description || "",
+    icon: "O",
+  },
+  species: {
+    label: "Species",
+    href: (id) => `/world/species/${id}`,
+    excerpt: (d) => d.description || "",
+    icon: "S",
+  },
 };
 
 export default function WorldSearchPage() {

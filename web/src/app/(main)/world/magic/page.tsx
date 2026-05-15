@@ -36,9 +36,7 @@ export default function MagicPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold">Magic Systems</h1>
-          <p className="text-fg/60 text-sm mt-1">
-            Define how magic works in your world.
-          </p>
+          <p className="text-fg/60 text-sm mt-1">Define how magic works in your world.</p>
         </div>
         <button
           onClick={() => setShowBuilder(true)}
@@ -49,7 +47,10 @@ export default function MagicPage() {
         </button>
       </div>
 
-      <Link href="/world/encyclopedia/magic" className="text-sm text-fg/40 hover:text-brand inline-block">
+      <Link
+        href="/world/encyclopedia/magic"
+        className="text-sm text-fg/40 hover:text-brand inline-block"
+      >
         View all magic encyclopedia entries
       </Link>
 
@@ -87,22 +88,15 @@ export default function MagicPage() {
       ) : (
         <div className="grid gap-3">
           {entries.map((entry: any) => (
-            <Link
-              key={entry.id}
-              href={`/world/encyclopedia/magic/${entry.id}`}
-            >
+            <Link key={entry.id} href={`/world/encyclopedia/magic/${entry.id}`}>
               <Card className="p-4 hover:bg-fg/5 transition-colors">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-base font-bold">{entry.title}</h3>
                     {entry.metadata?.type && (
-                      <span className="text-xs text-fg/40 capitalize">
-                        {entry.metadata.type}
-                      </span>
+                      <span className="text-xs text-fg/40 capitalize">{entry.metadata.type}</span>
                     )}
-                    <p className="text-sm text-fg/50 mt-1 line-clamp-2">
-                      {entry.content}
-                    </p>
+                    <p className="text-sm text-fg/50 mt-1 line-clamp-2">{entry.content}</p>
                   </div>
                 </div>
               </Card>

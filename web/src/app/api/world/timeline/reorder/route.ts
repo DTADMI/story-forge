@@ -7,10 +7,7 @@ export async function POST(request: NextRequest) {
   const { eventIds } = await request.json();
 
   if (!Array.isArray(eventIds)) {
-    return NextResponse.json(
-      { error: "eventIds must be an array" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "eventIds must be an array" }, { status: 400 });
   }
 
   await prisma.$transaction(

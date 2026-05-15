@@ -7,15 +7,7 @@ import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-const ORG_TYPES = [
-  "faction",
-  "guild",
-  "kingdom",
-  "clan",
-  "corporation",
-  "cult",
-  "other",
-];
+const ORG_TYPES = ["faction", "guild", "kingdom", "clan", "corporation", "cult", "other"];
 
 export default function NewOrganizationPage() {
   const router = useRouter();

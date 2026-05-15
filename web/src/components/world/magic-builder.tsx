@@ -158,10 +158,7 @@ export function MagicBuilder({ onSaved }: MagicBuilderProps) {
                 className="flex items-center justify-between text-xs py-1 px-2 rounded hover:bg-fg/5"
               >
                 <span>{s.name}</span>
-                <button
-                  onClick={() => removeSpell(i)}
-                  className="text-fg/30 hover:text-red-500"
-                >
+                <button onClick={() => removeSpell(i)} className="text-fg/30 hover:text-red-500">
                   <Trash2 className="h-3 w-3" />
                 </button>
               </li>

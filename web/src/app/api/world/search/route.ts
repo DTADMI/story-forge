@@ -22,63 +22,57 @@ export async function GET(request: NextRequest) {
   const term = q.trim();
   const contains = { contains: term, mode: "insensitive" as const };
 
-  const [
-    characters,
-    locations,
-    organizations,
-    species,
-    timelineEvents,
-    encyclopediaEntries,
-  ] = await Promise.all([
-    prisma.character.findMany({
-      where: {
-        userId: user.id,
-        OR: [{ name: contains }, { bio: contains }],
-      },
-      select: { id: true, name: true, bio: true },
-      take: 20,
-    }),
-    prisma.location.findMany({
-      where: {
-        userId: user.id,
-        OR: [{ name: contains }, { description: contains }],
-      },
-      select: { id: true, name: true, description: true },
-      take: 20,
-    }),
-    prisma.organization.findMany({
-      where: {
-        userId: user.id,
-        OR: [{ name: contains }, { description: contains }],
-      },
-      select: { id: true, name: true, description: true },
-      take: 20,
-    }),
-    prisma.species.findMany({
-      where: {
-        userId: user.id,
-        OR: [{ name: contains }, { description: contains }],
-      },
-      select: { id: true, name: true, description: true },
-      take: 20,
-    }),
-    prisma.timelineEvent.findMany({
-      where: {
-        userId: user.id,
-        title: contains,
-      },
-      select: { id: true, title: true, description: true },
-      take: 20,
-    }),
-    prisma.encyclopediaEntry.findMany({
-      where: {
-        userId: user.id,
-        OR: [{ title: contains }, { content: contains }],
-      },
-      select: { id: true, title: true, content: true },
-      take: 20,
-    }),
-  ]);
+  const [characters, locations, organizations, species, timelineEvents, encyclopediaEntries] =
+    await Promise.all([
+      prisma.character.findMany({
+        where: {
+          userId: user.id,
+          OR: [{ name: contains }, { bio: contains }],
+        },
+        select: { id: true, name: true, bio: true },
+        take: 20,
+      }),
+      prisma.location.findMany({
+        where: {
+          userId: user.id,
+          OR: [{ name: contains }, { description: contains }],
+        },
+        select: { id: true, name: true, description: true },
+        take: 20,
+      }),
+      prisma.organization.findMany({
+        where: {
+          userId: user.id,
+          OR: [{ name: contains }, { description: contains }],
+        },
+        select: { id: true, name: true, description: true },
+        take: 20,
+      }),
+      prisma.species.findMany({
+        where: {
+          userId: user.id,
+          OR: [{ name: contains }, { description: contains }],
+        },
+        select: { id: true, name: true, description: true },
+        take: 20,
+      }),
+      prisma.timelineEvent.findMany({
+        where: {
+          userId: user.id,
+          title: contains,
+        },
+        select: { id: true, title: true, description: true },
+        take: 20,
+      }),
+      prisma.encyclopediaEntry.findMany({
+        where: {
+          userId: user.id,
+          OR: [{ title: contains }, { content: contains }],
+        },
+        select: { id: true, title: true, content: true },
+        take: 20,
+      }),
+    ]);
 
   const results: SearchResult[] = [];
 

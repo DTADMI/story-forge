@@ -33,10 +33,7 @@ export function EncyclopediaEntryDelete({
     return (
       <div className="flex items-center gap-2">
         <span className="text-xs text-red-600">Are you sure?</span>
-        <button
-          onClick={handleDelete}
-          className="px-2 py-1 text-xs bg-red-600 text-white rounded"
-        >
+        <button onClick={handleDelete} className="px-2 py-1 text-xs bg-red-600 text-white rounded">
           Yes
         </button>
         <button

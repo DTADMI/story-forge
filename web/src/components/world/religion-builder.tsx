@@ -107,10 +107,7 @@ export function ReligionBuilder({ onSaved }: ReligionBuilderProps) {
                 className="flex items-center justify-between text-xs py-1 px-2 rounded hover:bg-fg/5"
               >
                 <span>{d.name}</span>
-                <button
-                  onClick={() => removeDeity(i)}
-                  className="text-fg/30 hover:text-red-500"
-                >
+                <button onClick={() => removeDeity(i)} className="text-fg/30 hover:text-red-500">
                   <Trash2 className="h-3 w-3" />
                 </button>
               </li>

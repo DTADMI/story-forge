@@ -13,11 +13,7 @@ async function getCharacter(id: string) {
   });
 }
 
-export default async function CharacterFamilyPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function CharacterFamilyPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
   if (!user) redirect("/signin");
 
@@ -36,9 +32,7 @@ export default async function CharacterFamilyPage({
       </div>
 
       <h1 className="text-2xl font-extrabold mb-2">Family Tree</h1>
-      <p className="text-fg/60 text-sm mb-6">
-        Visual relationship graph for {character.name}.
-      </p>
+      <p className="text-fg/60 text-sm mb-6">Visual relationship graph for {character.name}.</p>
 
       <Card className="p-6">
         <FamilyTree
@@ -54,7 +48,10 @@ export default async function CharacterFamilyPage({
           <div className="grid grid-cols-2 gap-2 text-xs">
             {Array.from(new Set(connections.map((c: any) => c.type))).map((type) => (
               <div key={type as string} className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: getColor(type as string) }} />
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: getColor(type as string) }}
+                />
                 <span className="capitalize">{type as string}</span>
               </div>
             ))}

@@ -5,15 +5,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { Card } from "@/components/ui/card";
 
-const ORG_TYPES = [
-  "faction",
-  "guild",
-  "kingdom",
-  "clan",
-  "corporation",
-  "cult",
-  "other",
-];
+const ORG_TYPES = ["faction", "guild", "kingdom", "clan", "corporation", "cult", "other"];
 
 export function OrganizationEditForm({ org }: { org: any }) {
   const router = useRouter();
