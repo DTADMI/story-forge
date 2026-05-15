@@ -10,6 +10,7 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: [resolve(__dirname, './vitest.setup.ts')],
         globals: true,
+        pool: 'forks',
     },
     esbuild: {
         jsx: 'automatic',
