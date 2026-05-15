@@ -146,7 +146,9 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
 
     const isSearchActive = search.length > 0;
     const searchMatchIds = isSearchActive
-      ? new Set(nodes.filter((n) => n.label.toLowerCase().includes(search.toLowerCase())).map((n) => n.id))
+      ? new Set(
+          nodes.filter((n) => n.label.toLowerCase().includes(search.toLowerCase())).map((n) => n.id)
+        )
       : null;
 
     for (const e of edges) {
@@ -156,7 +158,8 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
 
       let alpha = 0.3;
       if (isSearchActive && searchMatchIds) {
-        const matchCount = (searchMatchIds.has(e.source) ? 1 : 0) + (searchMatchIds.has(e.target) ? 1 : 0);
+        const matchCount =
+          (searchMatchIds.has(e.source) ? 1 : 0) + (searchMatchIds.has(e.target) ? 1 : 0);
         if (matchCount === 0) alpha = 0.05;
         else if (matchCount === 2) alpha = 0.7;
       }
@@ -189,7 +192,9 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
       }
 
       const color = ENTITY_COLORS[n.type] || "#94a3b8";
-      const alphaHex = Math.round(nodeAlpha * 255).toString(16).padStart(2, "0");
+      const alphaHex = Math.round(nodeAlpha * 255)
+        .toString(16)
+        .padStart(2, "0");
 
       ctx.beginPath();
       ctx.arc(nx, ny, r, 0, Math.PI * 2);
@@ -218,7 +223,10 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
     function tick() {
       const nodes = nodesRef.current;
       const container = containerRef.current;
-      if (!container) { animationRef.current = requestAnimationFrame(tick); return; }
+      if (!container) {
+        animationRef.current = requestAnimationFrame(tick);
+        return;
+      }
 
       const w = container.clientWidth;
       const h = container.clientHeight;
@@ -234,7 +242,13 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
 
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        if (n.fx !== null) { n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0; continue; }
+        if (n.fx !== null) {
+          n.x = n.fx;
+          n.y = n.fy;
+          n.vx = 0;
+          n.vy = 0;
+          continue;
+        }
 
         for (let j = i + 1; j < nodes.length; j++) {
           const m = nodes[j];
@@ -267,8 +281,14 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
         const force = dist * attractionStrength * e.strength;
         const fx = (dx / dist) * force * alpha;
         const fy = (dy / dist) * force * alpha;
-        if (s.fx === null) { s.vx += fx; s.vy += fy; }
-        if (t.fx === null) { t.vx -= fx; t.vy -= fy; }
+        if (s.fx === null) {
+          s.vx += fx;
+          s.vy += fy;
+        }
+        if (t.fx === null) {
+          t.vx -= fx;
+          t.vy -= fy;
+        }
       }
 
       for (const n of nodes) {
@@ -319,7 +339,10 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
         node.fy = node.y;
       } else {
         isPanningRef.current = true;
-        panStartRef.current = { x: e.clientX - offsetRef.current.x, y: e.clientY - offsetRef.current.y };
+        panStartRef.current = {
+          x: e.clientX - offsetRef.current.x,
+          y: e.clientY - offsetRef.current.y,
+        };
       }
     },
     [screenToWorld, findNodeAt]
@@ -400,7 +423,13 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-fg/5">
-          <svg className="h-6 w-6 text-fg/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <svg
+            className="h-6 w-6 text-fg/30"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
             <circle cx="12" cy="12" r="3" />
             <circle cx="5" cy="18" r="3" />
             <circle cx="19" cy="18" r="3" />
@@ -410,7 +439,8 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
         </div>
         <h3 className="text-lg font-semibold">No data to visualize</h3>
         <p className="text-sm text-fg/40 mt-1 max-w-sm">
-          Add characters, events, and locations to your world to see them connected in the galaxy view.
+          Add characters, events, and locations to your world to see them connected in the galaxy
+          view.
         </p>
       </div>
     );
@@ -463,7 +493,11 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={() => { isPanningRef.current = false; dragNodeRef.current = null; setHoveredNode(null); }}
+        onMouseLeave={() => {
+          isPanningRef.current = false;
+          dragNodeRef.current = null;
+          setHoveredNode(null);
+        }}
         onWheel={handleWheel}
       >
         <canvas ref={canvasRef} className="absolute inset-0" />
@@ -479,11 +513,14 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
           {edges.get(hoveredNode.id) && edges.get(hoveredNode.id)!.length > 0 && (
             <div className="mt-1.5 space-y-0.5">
               <p className="text-fg/40 font-medium">Relationships:</p>
-              {edges.get(hoveredNode.id)!.slice(0, 5).map((rel, i) => (
-                <p key={i} className="text-fg/60 leading-tight">
-                  {rel.label || rel.type} &rarr; {rel.otherLabel}
-                </p>
-              ))}
+              {edges
+                .get(hoveredNode.id)!
+                .slice(0, 5)
+                .map((rel, i) => (
+                  <p key={i} className="text-fg/60 leading-tight">
+                    {rel.label || rel.type} &rarr; {rel.otherLabel}
+                  </p>
+                ))}
               {edges.get(hoveredNode.id)!.length > 5 && (
                 <p className="text-fg/30">+{edges.get(hoveredNode.id)!.length - 5} more</p>
               )}

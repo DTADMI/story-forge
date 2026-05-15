@@ -4,10 +4,7 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { auditLog } from "@/lib/audit";
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await requireUser();
   const { id } = await params;
 
@@ -15,7 +12,9 @@ export async function GET(
     where: { id },
     include: {
       entries: {
-        include: { project: { select: { id: true, title: true, wordCount: true, description: true } } },
+        include: {
+          project: { select: { id: true, title: true, wordCount: true, description: true } },
+        },
       },
     },
   });
@@ -24,10 +23,7 @@ export async function GET(
   return NextResponse.json(competition);
 }
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   const user = await requireUser();
   const { id } = await params;

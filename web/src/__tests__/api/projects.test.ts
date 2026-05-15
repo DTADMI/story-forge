@@ -9,6 +9,9 @@ vi.mock("@/lib/prisma", () => ({
       create: vi.fn(),
       update: vi.fn(),
     },
+    user: {
+      findUnique: vi.fn(),
+    },
   },
 }));
 
@@ -69,6 +72,10 @@ describe("Projects API", () => {
       const mockProject = { id: "new-1", title: "New Story", userId: "user-1" };
 
       (requireUser as ReturnType<typeof vi.fn>).mockResolvedValue(mockUser);
+      (prisma.user.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue({
+        subscriptionTier: "creator",
+        _count: { projects: 0 },
+      });
       (prisma.project.create as ReturnType<typeof vi.fn>).mockResolvedValue(mockProject);
 
       const response = await POST(mockRequest({ title: "New Story", description: "A story" }));
@@ -87,6 +94,10 @@ describe("Projects API", () => {
     it("defaults title to Untitled", async () => {
       const mockUser = { id: "user-1" };
       (requireUser as ReturnType<typeof vi.fn>).mockResolvedValue(mockUser);
+      (prisma.user.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue({
+        subscriptionTier: "creator",
+        _count: { projects: 0 },
+      });
       (prisma.project.create as ReturnType<typeof vi.fn>).mockResolvedValue({
         id: "p1",
         title: "Untitled",

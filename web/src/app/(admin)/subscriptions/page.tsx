@@ -54,7 +54,9 @@ export default async function AdminSubscriptionsPage() {
           </thead>
           <tbody>
             {users.map((u) => {
-              const limits = SUBSCRIPTION_LIMITS[u.subscriptionTier as keyof typeof SUBSCRIPTION_LIMITS] ?? SUBSCRIPTION_LIMITS.free;
+              const limits =
+                SUBSCRIPTION_LIMITS[u.subscriptionTier as keyof typeof SUBSCRIPTION_LIMITS] ??
+                SUBSCRIPTION_LIMITS.free;
               return (
                 <tr key={u.id} className="border-b border-fg/5 hover:bg-fg/[0.02]">
                   <td className="py-2 pr-4">
@@ -64,25 +66,37 @@ export default async function AdminSubscriptionsPage() {
                     </div>
                   </td>
                   <td className="py-2 pr-4">
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-fg/10 capitalize">{u.role}</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-fg/10 capitalize">
+                      {u.role}
+                    </span>
                   </td>
                   <td className="py-2 pr-4">
-                    <span className={`text-xs px-1.5 py-0.5 rounded capitalize ${
-                      u.subscriptionTier === "lifetime" ? "bg-purple-500/10 text-purple-500" :
-                      u.subscriptionTier === "creator" ? "bg-brand/10 text-brand" :
-                      u.subscriptionTier === "explorer" ? "bg-blue-500/10 text-blue-500" :
-                      "bg-fg/10 text-fg/50"
-                    }`}>
+                    <span
+                      className={`text-xs px-1.5 py-0.5 rounded capitalize ${
+                        u.subscriptionTier === "lifetime"
+                          ? "bg-purple-500/10 text-purple-500"
+                          : u.subscriptionTier === "creator"
+                            ? "bg-brand/10 text-brand"
+                            : u.subscriptionTier === "explorer"
+                              ? "bg-blue-500/10 text-blue-500"
+                              : "bg-fg/10 text-fg/50"
+                      }`}
+                    >
                       {u.subscriptionTier}
                     </span>
                   </td>
                   <td className="py-2 pr-4">
-                    <span className={`text-xs px-1.5 py-0.5 rounded capitalize ${
-                      u.subscriptionStatus === "active" ? "bg-green-500/10 text-green-500" :
-                      u.subscriptionStatus === "past_due" ? "bg-red-500/10 text-red-500" :
-                      u.subscriptionStatus === "trialing" ? "bg-yellow-500/10 text-yellow-500" :
-                      "bg-fg/10 text-fg/50"
-                    }`}>
+                    <span
+                      className={`text-xs px-1.5 py-0.5 rounded capitalize ${
+                        u.subscriptionStatus === "active"
+                          ? "bg-green-500/10 text-green-500"
+                          : u.subscriptionStatus === "past_due"
+                            ? "bg-red-500/10 text-red-500"
+                            : u.subscriptionStatus === "trialing"
+                              ? "bg-yellow-500/10 text-yellow-500"
+                              : "bg-fg/10 text-fg/50"
+                      }`}
+                    >
                       {u.subscriptionStatus || "N/A"}
                     </span>
                   </td>
@@ -90,7 +104,8 @@ export default async function AdminSubscriptionsPage() {
                     {u._count.projects} / {limits.maxProjects === -1 ? "∞" : limits.maxProjects}
                   </td>
                   <td className="py-2 pr-4 text-fg/60">
-                    {u._count.characters} / {limits.maxCharacters === -1 ? "∞" : limits.maxCharacters}
+                    {u._count.characters} /{" "}
+                    {limits.maxCharacters === -1 ? "∞" : limits.maxCharacters}
                   </td>
                   <td className="py-2 pr-4 text-xs text-fg/40">
                     {u.subscriptionExpiresAt
@@ -105,9 +120,7 @@ export default async function AdminSubscriptionsPage() {
       </div>
 
       {users.length === 0 && (
-        <Card className="p-6 text-center text-sm text-fg/40">
-          No users found.
-        </Card>
+        <Card className="p-6 text-center text-sm text-fg/40">No users found.</Card>
       )}
     </main>
   );

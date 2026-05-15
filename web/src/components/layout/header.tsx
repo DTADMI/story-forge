@@ -63,7 +63,11 @@ export async function Header() {
                 <Trophy className="h-4 w-4" />
               </Link>
               {isUserAdmin && (
-                <Link href="/admin/subscriptions" className="text-xs hover:text-brand" title="Admin">
+                <Link
+                  href="/admin/subscriptions"
+                  className="text-xs hover:text-brand"
+                  title="Admin"
+                >
                   Admin
                 </Link>
               )}

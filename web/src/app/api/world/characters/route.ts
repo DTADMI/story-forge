@@ -29,7 +29,9 @@ export async function POST(request: NextRequest) {
   });
 
   if (dbUser && !canCreateCharacter(dbUser)) {
-    return forbidden("Character limit reached for your subscription tier. Upgrade to create more characters.");
+    return forbidden(
+      "Character limit reached for your subscription tier. Upgrade to create more characters."
+    );
   }
 
   const character = await prisma.character.create({

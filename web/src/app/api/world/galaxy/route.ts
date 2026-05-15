@@ -67,7 +67,12 @@ export async function GET(request: NextRequest) {
     nodes.push({ id: e.id, type: "event", label: e.title, group: e.projectId || "ungrouped" });
   }
   for (const o of organizations) {
-    nodes.push({ id: o.id, type: "organization", label: o.name, group: o.projectId || "ungrouped" });
+    nodes.push({
+      id: o.id,
+      type: "organization",
+      label: o.name,
+      group: o.projectId || "ungrouped",
+    });
   }
   for (const l of locations) {
     nodes.push({ id: l.id, type: "location", label: l.name, group: l.projectId || "ungrouped" });
@@ -97,13 +102,25 @@ export async function GET(request: NextRequest) {
   }
   for (const [key, count] of eventCharPairs) {
     const [a, b] = key.split(":");
-    edges.push({ source: a, target: b, type: "co-occurrence", strength: Math.min(count, 5), label: "co-occurrence" });
+    edges.push({
+      source: a,
+      target: b,
+      type: "co-occurrence",
+      strength: Math.min(count, 5),
+      label: "co-occurrence",
+    });
   }
 
   // TimelineEvent -> Location links
   for (const e of timelineEvents) {
     for (const l of e.locations) {
-      edges.push({ source: e.id, target: l.id, type: "located_in", strength: 1, label: "located in" });
+      edges.push({
+        source: e.id,
+        target: l.id,
+        type: "located_in",
+        strength: 1,
+        label: "located in",
+      });
     }
   }
 

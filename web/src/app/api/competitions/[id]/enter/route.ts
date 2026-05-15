@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id: competitionId } = await params;
   const body: { projectId: string } = await request.json();
@@ -29,13 +26,17 @@ export async function POST(
   }
   if (project.wordCount < competition.minWords) {
     return NextResponse.json(
-      { error: `Project word count (${project.wordCount}) is below minimum (${competition.minWords})` },
+      {
+        error: `Project word count (${project.wordCount}) is below minimum (${competition.minWords})`,
+      },
       { status: 400 }
     );
   }
   if (competition.maxWords && project.wordCount > competition.maxWords) {
     return NextResponse.json(
-      { error: `Project word count (${project.wordCount}) exceeds maximum (${competition.maxWords})` },
+      {
+        error: `Project word count (${project.wordCount}) exceeds maximum (${competition.maxWords})`,
+      },
       { status: 400 }
     );
   }

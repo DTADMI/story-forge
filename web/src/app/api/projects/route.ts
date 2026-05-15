@@ -29,7 +29,9 @@ export async function POST(request: NextRequest) {
   });
 
   if (dbUser && !canCreateProject(dbUser)) {
-    return forbidden("Project limit reached for your subscription tier. Upgrade to create more projects.");
+    return forbidden(
+      "Project limit reached for your subscription tier. Upgrade to create more projects."
+    );
   }
 
   const project = await prisma.project.create({

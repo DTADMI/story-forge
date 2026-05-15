@@ -57,12 +57,23 @@ export default async function GalaxyPage() {
   for (const e of timelineEvents)
     nodes.push({ id: e.id, type: "event", label: e.title, group: e.projectId || "ungrouped" });
   for (const o of organizations)
-    nodes.push({ id: o.id, type: "organization", label: o.name, group: o.projectId || "ungrouped" });
+    nodes.push({
+      id: o.id,
+      type: "organization",
+      label: o.name,
+      group: o.projectId || "ungrouped",
+    });
   for (const l of locations)
     nodes.push({ id: l.id, type: "location", label: l.name, group: l.projectId || "ungrouped" });
 
   for (const cr of characterRelationships) {
-    edges.push({ source: cr.characterId, target: cr.relatedId, type: cr.type, strength: 1, label: cr.type });
+    edges.push({
+      source: cr.characterId,
+      target: cr.relatedId,
+      type: cr.type,
+      strength: 1,
+      label: cr.type,
+    });
   }
 
   const eventCharPairs = new Map<string, number>();
@@ -77,12 +88,24 @@ export default async function GalaxyPage() {
   }
   for (const [key, count] of eventCharPairs) {
     const [a, b] = key.split(":");
-    edges.push({ source: a, target: b, type: "co-occurrence", strength: Math.min(count, 5), label: "co-occurrence" });
+    edges.push({
+      source: a,
+      target: b,
+      type: "co-occurrence",
+      strength: Math.min(count, 5),
+      label: "co-occurrence",
+    });
   }
 
   for (const e of timelineEvents) {
     for (const l of e.locations) {
-      edges.push({ source: e.id, target: l.id, type: "located_in", strength: 1, label: "located in" });
+      edges.push({
+        source: e.id,
+        target: l.id,
+        type: "located_in",
+        strength: 1,
+        label: "located in",
+      });
     }
   }
 
@@ -93,7 +116,8 @@ export default async function GalaxyPage() {
       <header>
         <h1 className="text-3xl font-extrabold">Galaxy View</h1>
         <p className="text-fg/60 mt-1">
-          Interconnected visualization of your world — characters, events, locations, and organizations.
+          Interconnected visualization of your world — characters, events, locations, and
+          organizations.
         </p>
       </header>
 

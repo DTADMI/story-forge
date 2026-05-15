@@ -3,10 +3,7 @@ import { requireUser } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   const { id: userId } = await params;
   const body: { subscriptionTier?: string; subscriptionStatus?: string } = await request.json();
