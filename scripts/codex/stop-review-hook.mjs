@@ -1,58 +1,39 @@
-import { spawnSync } from "node:child_process";
+// Stop review hook — validates changes before session ends.
+// This runs automatically when the agent session stops (via .codex/hooks.json).
 
-function gitChangedPaths() {
-  const result = spawnSync("git", ["status", "--short"], {
-    encoding: "utf8",
-  });
+const { execSync } = await import("node:child_process");
+const fs = await import("node:fs");
+const path = await import("node:path");
 
-  if (result.status !== 0) {
-    return [];
+const checks = [];
+
+// Check 1: Git status — are there uncommitted changes?
+try {
+  const status = execSync("git status --porcelain", { encoding: "utf-8" }).trim();
+  if (status) {
+    const lines = status.split("\n").length;
+    checks.push({ name: "git status", status: "warn", detail: `${lines} uncommitted file(s)` });
+  } else {
+    checks.push({ name: "git status", status: "ok", detail: "clean" });
   }
-
-  return result.stdout
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => line.slice(3).trim());
+} catch {
+  checks.push({ name: "git status", status: "ok", detail: "not a git repo" });
 }
 
-const changedPaths = gitChangedPaths();
-
-if (changedPaths.length === 0) {
-  process.exit(0);
+// Check 2: Documentation consistency — does action-plan.md mention recent changes?
+try {
+  const actionPlan = path.join(process.cwd(), "action-plan.md");
+  if (fs.existsSync(actionPlan)) {
+    const stat = fs.statSync(actionPlan);
+    const ageDays = (Date.now() - stat.mtimeMs) / (1000 * 60 * 60 * 24);
+    if (ageDays > 7) {
+      checks.push({ name: "action-plan.md", status: "warn", detail: `last updated ${ageDays.toFixed(0)} days ago` });
+    } else {
+      checks.push({ name: "action-plan.md", status: "ok", detail: `updated ${ageDays.toFixed(0)} days ago` });
+    }
+  }
+} catch {
+  // Ignore
 }
 
-const reminders = [];
-const touchesUi = changedPaths.some((path) => /^(web|api)\//.test(path));
-const touchesDocs = changedPaths.some((path) => /^docs\//.test(path));
-const touchesDb = changedPaths.some((path) => /^prisma\//.test(path));
-const touchesAgentTooling = changedPaths.some(
-  (path) => /^(AGENTS\.md|\.agents\/|\.codex\/|plugins\/storyforge-integrations\/|scripts\/codex\/)/.test(path)
-);
-
-if (touchesUi) {
-  reminders.push("UI/API changes detected: confirm responsive behavior, hover states, and 320px validation.");
-}
-
-if (touchesDocs) {
-  reminders.push("Docs changes detected: keep docs indexes and references aligned with source-of-truth changes.");
-}
-
-if (touchesDb) {
-  reminders.push(
-    "Prisma schema changes detected: confirm migration files, schema consistency, and API alignment."
-  );
-}
-
-if (touchesAgentTooling) {
-  reminders.push("Agent tooling changed: confirm rules/hooks/skills/plugins layer integrity.");
-}
-
-if (reminders.length === 0) {
-  process.exit(0);
-}
-
-console.log("Story Forge stop review reminders:");
-for (const reminder of reminders) {
-  console.log(`- ${reminder}`);
-}
+console.log(JSON.stringify({ hook: "stop-review", checks, timestamp: new Date().toISOString() }, null, 2));

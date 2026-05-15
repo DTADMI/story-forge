@@ -1,5 +1,4 @@
-import {getServerSession} from 'next-auth';
-import {authOptions} from '@/lib/auth';
+import { getUser } from "@/lib/supabase/server";
 import Link from 'next/link';
 import {apiFetch} from '@/lib/api';
 
@@ -11,7 +10,7 @@ type Project = {
 };
 
 async function getProjects(): Promise<Project[]> {
-    const res = await apiFetch('/projects', {cache: 'no-store' as any});
+    const res = await apiFetch('/api/projects', {cache: 'no-store' as any});
     if (!res.ok) return [] as Project[];
     return res.json();
 }
@@ -25,15 +24,15 @@ async function createProject(_userId: string, formData: FormData) {
         formData.get('defaultScope') || 'private'
     ) as Project['defaultScope'];
     if (!title) return;
-    await apiFetch('/projects', {
+    await apiFetch('/api/projects', {
         method: 'POST',
         body: JSON.stringify({title, description, defaultScope}),
     });
 }
 
 export default async function ProjectsPage() {
-    const session = await getServerSession(authOptions);
-    const userId = (session?.user as any)?.id as string | undefined;
+    const user = await getUser();
+    const userId = user?.id as string | undefined;
     const projects = userId ? await getProjects() : [];
 
     return (

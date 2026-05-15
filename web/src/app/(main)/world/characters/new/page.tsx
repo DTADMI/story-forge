@@ -1,5 +1,4 @@
-import {getServerSession} from 'next-auth';
-import {authOptions} from '@/lib/auth';
+import { getUser } from "@/lib/supabase/server";
 import {apiFetch} from '@/lib/api';
 import {redirect} from 'next/navigation';
 import {Card} from '@/components/ui/card';
@@ -12,7 +11,7 @@ async function createCharacter(formData: FormData) {
 
     if (!name) return;
 
-    await apiFetch('/world/characters', {
+    await apiFetch('/api/world/characters', {
         method: 'POST',
         body: JSON.stringify({name, traits, bio}),
     });
@@ -20,8 +19,8 @@ async function createCharacter(formData: FormData) {
 }
 
 export default async function NewCharacterPage() {
-    const session = await getServerSession(authOptions);
-    if (!session) redirect('/signin');
+    const user = await getUser();
+    if (!user) redirect('/signin');
 
     return (
         <main className="mx-auto max-w-2xl px-6 py-10">

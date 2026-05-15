@@ -1,16 +1,11 @@
-import {ReactNode} from 'react';
-import {redirect} from 'next/navigation';
-import {getServerSession} from 'next-auth';
-import {authOptions} from '@/lib/auth';
+import { ReactNode } from "react";
+import { redirect } from "next/navigation";
+import { getUser } from "@/lib/supabase/server";
 
-export default async function MainLayout({
-                                             children,
-                                         }: {
-    children: ReactNode;
-}) {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-        redirect('/signin');
-    }
-    return <>{children}</>;
+export default async function MainLayout({ children }: { children: ReactNode }) {
+  const user = await getUser();
+  if (!user) {
+    redirect("/signin");
+  }
+  return <>{children}</>;
 }

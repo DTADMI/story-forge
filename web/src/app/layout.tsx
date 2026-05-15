@@ -3,6 +3,8 @@ import {Header} from '@/components/layout/header';
 import {Footer} from '@/components/layout/footer';
 import {PWAInstallPrompt} from '@/components/pwa/install-prompt';
 import {ServiceWorkerRegistration} from '@/components/pwa/service-worker-registration';
+import {Providers} from '@/components/providers';
+import {ToastProvider} from '@/components/toast';
 
 export const metadata = {
   title: 'StoryForge',
@@ -16,18 +18,22 @@ export const metadata = {
 };
 
 export default function RootLayout({
-                                       children,
+                                     children,
                                    }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
     <body className="bg-bg text-fg min-h-screen">
     <ServiceWorkerRegistration/>
     <PWAInstallPrompt/>
-    <Header/>
-    <div className="min-h-[calc(100vh-200px)]">{children}</div>
-    <Footer/>
+    <Providers>
+      <ToastProvider>
+        <Header/>
+        <div className="min-h-[calc(100vh-200px)]">{children}</div>
+        <Footer/>
+      </ToastProvider>
+    </Providers>
       </body>
     </html>
   );

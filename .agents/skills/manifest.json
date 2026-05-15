@@ -1,0 +1,24 @@
+{
+  "skills": {
+    "story-authoring": {
+      "description": "Create or revise story content, project templates, and writing prompts",
+      "path": ".agents/skills/story-authoring.md"
+    },
+    "world-building": {
+      "description": "Create characters, locations, timelines, and dialogue for stories",
+      "path": ".agents/skills/world-building.md"
+    },
+    "db-migration": {
+      "description": "Apply Prisma migrations and Supabase SQL migrations across environments",
+      "path": ".agents/skills/db-migration.md"
+    },
+    "docs-maintenance": {
+      "description": "Update canonical docs, action-plan references, and technical documentation",
+      "path": ".agents/skills/docs-maintenance.md"
+    },
+    "release-validation": {
+      "description": "Run validation and smoke-test paths before deployment handoff",
+      "path": ".agents/skills/release-validation.md"
+    }
+  }
+}

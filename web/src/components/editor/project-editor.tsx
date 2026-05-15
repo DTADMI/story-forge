@@ -1,7 +1,8 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {Editor} from '@/components/editor/editor';
+import {AiWritingButton} from '@/components/ai/ai-writing';
 import {useRouter} from 'next/navigation';
 
 interface ProjectEditorProps {
@@ -60,10 +61,23 @@ export function ProjectEditor({project, userPreferences}: ProjectEditorProps) {
         }
     };
 
+    const handleAiSuggestion = useCallback((suggestion: string) => {
+        setContent((prev) => prev + "\n\n" + suggestion);
+    }, []);
+
+    const lastParagraph = content.split(/\n\n+/).pop() ?? content.slice(-500);
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-extrabold">{project.title}</h1>
+                <div className="flex items-center gap-3">
+                    <h1 className="text-2xl font-extrabold">{project.title}</h1>
+                    <AiWritingButton
+                        context={lastParagraph}
+                        onSuggestion={handleAiSuggestion}
+                        feature="suggest"
+                    />
+                </div>
                 {saving && <span className="text-sm text-fg/50 animate-pulse">Saving...</span>}
             </div>
             <Editor

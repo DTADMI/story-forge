@@ -47,6 +47,11 @@ model User {
   characters    Character[]
   locations     Location[]
   timelineEvents TimelineEvent[]
+  dialogues     Dialogue[]
+  comments      Comment[]
+  versions      ProjectVersion[]
+  activities    Activity[]
+  comments      Comment[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -196,13 +201,62 @@ model TimelineEvent {
 
 model Dialogue {
   id          String   @id @default(cuid())
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+  project     Project? @relation(fields: [projectId], references: [id])
   projectId   String?
+  title       String?  // Optional title for the dialogue scene
   content     Json     // Structured list of speakers and lines
-  
+   
   timelineEvents TimelineEvent[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// Activity feed
+model Activity {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  type       String   // project_created, project_published, badge_earned, streak_milestone, goal_complete, follow_gained
+  entityId   String?  // ID of the related entity (project, badge, etc.)
+  entityType String?  // project, badge, goal
+  metadata   Json?    // { title, wordCount, badgeName, streakDays, etc. }
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
+// Project comments
+model Comment {
+  id        String   @id @default(cuid())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  content   String
+  parentId  String?  // For threaded replies
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId, createdAt])
+}
+
+// Project version history
+model ProjectVersion {
+  id        String   @id @default(cuid())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  content   String   @db.Text
+  wordCount Int      @default(0)
+  label     String?  // Optional user-provided version label
+  createdAt DateTime @default(now())
+
+  @@index([projectId, createdAt])
 }
 
 // Social follow model

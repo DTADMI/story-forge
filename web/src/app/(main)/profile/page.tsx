@@ -1,10 +1,9 @@
-import {getServerSession} from 'next-auth';
-import {authOptions} from '@/lib/auth';
+import { getUser as getSupabaseUser } from "@/lib/supabase/server"
 import {apiFetch} from '@/lib/api';
 import {redirect} from 'next/navigation';
 
 async function getUser(id: string) {
-    const res = await apiFetch(`/users/${encodeURIComponent(id)}`, {
+    const res = await apiFetch(`/api/users/${encodeURIComponent(id)}`, {
         cache: 'no-store' as any,
     });
     if (!res.ok) return null;
@@ -12,7 +11,7 @@ async function getUser(id: string) {
 }
 
 async function getWallet(userId: string) {
-    const res = await apiFetch('/gamification/wallet', {
+    const res = await apiFetch('/api/gamification/wallet', {
         cache: 'no-store' as any,
     });
     if (!res.ok) return null;
@@ -23,14 +22,14 @@ async function setGoal(userId: string, formData: FormData) {
     'use server';
     const target = Number(String(formData.get('dailyGoal') || '0'));
     if (!Number.isFinite(target) || target <= 0) return;
-    await apiFetch('/gamification/goals', {
+    await apiFetch('/api/gamification/goals', {
         method: 'POST',
         body: JSON.stringify({target}),
     });
 }
 
 async function getStreak(userId: string) {
-    const res = await apiFetch('/gamification/streak', {
+    const res = await apiFetch('/api/gamification/streak', {
         cache: 'no-store' as any,
     });
     if (!res.ok) return {streak: 0};
@@ -47,17 +46,16 @@ async function updateUser(userId: string, formData: FormData) {
         defaultPublicationScope:
             String(formData.get('defaultPublicationScope') || '') || undefined,
     };
-    await apiFetch(`/users/${encodeURIComponent(userId)}`, {
+    await apiFetch(`/api/users/${encodeURIComponent(userId)}`, {
         method: 'PATCH',
         body: JSON.stringify(payload),
     });
 }
 
 export default async function ProfilePage() {
-    const session = await getServerSession(authOptions);
-    const userId = (session?.user as any)?.id as string | undefined;
-    if (!userId) redirect('/signin');
-    const safeUserId = userId;
+    const supabaseUser = await getSupabaseUser();
+    if (!supabaseUser) redirect('/signin');
+    const safeUserId = supabaseUser.id;
     const [user, pot, streak] = await Promise.all([
         getUser(safeUserId),
         getWallet(safeUserId),
@@ -79,7 +77,7 @@ export default async function ProfilePage() {
             },
             breakReminders: String(formData.get('breakReminders') || '') === 'on',
         };
-        await apiFetch(`/users/${encodeURIComponent(safeUserId)}/preferences`, {
+        await apiFetch(`/api/users/${encodeURIComponent(safeUserId)}/preferences`, {
             method: 'PATCH',
             body: JSON.stringify(payload),
         });

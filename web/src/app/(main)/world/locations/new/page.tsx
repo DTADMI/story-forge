@@ -1,5 +1,4 @@
-import {getServerSession} from 'next-auth';
-import {authOptions} from '@/lib/auth';
+import { getUser } from "@/lib/supabase/server";
 import {apiFetch} from '@/lib/api';
 import {redirect} from 'next/navigation';
 import {Card} from '@/components/ui/card';
@@ -11,7 +10,7 @@ async function createLocation(formData: FormData) {
 
     if (!name) return;
 
-    await apiFetch('/world/locations', {
+    await apiFetch('/api/world/locations', {
         method: 'POST',
         body: JSON.stringify({name, description}),
     });
@@ -19,8 +18,8 @@ async function createLocation(formData: FormData) {
 }
 
 export default async function NewLocationPage() {
-    const session = await getServerSession(authOptions);
-    if (!session) redirect('/signin');
+    const user = await getUser();
+    if (!user) redirect('/signin');
 
     return (
         <main className="mx-auto max-w-2xl px-6 py-10">

@@ -255,3 +255,108 @@ Notes
 
 - Keep this plan synchronized with `README.md` and `docs/story-forge-documentation.md` whenever scope changes.
 - When a task starts, move it to In Progress; when done, move it to Completed with a short note or link if helpful.
+
+## Completed (May 14, 2026)
+
+### AI Integration
+
+- [x] Shared AI package created: `packages/ai-core/` with `@story-forge/ai-core` (types, OpenRouter adapter, factory, base adapter)
+- [x] Web wired to `@story-forge/ai-core` workspace dependency
+- [x] AI feature flags: `aiWritingSuggestions`, `aiCharacterDevelopment`, `aiPlotAnalysis`, `aiStyleConsistency`, `aiResearchAssistant`
+- [x] AI suggest API route: `POST /api/ai/suggest` — generic AI text generation with free model fallback
+- [x] AI writing button component: `components/ai/ai-writing.tsx` — `AiWritingButton` + `AiSuggestPanel`
+- [x] Project editor wired with AI writing suggestions button
+- [x] Environment config updated: `OPENROUTER_API_KEY`, `NEXT_PUBLIC_SITE_URL` in env schema
+
+### World-Building UI Completion
+
+- [x] Character detail/edit page: `world/characters/[id]/page.tsx` — view/edit name, traits, quirks, bio, project; delete action
+- [x] Location detail/edit page: `world/locations/[id]/page.tsx` — view/edit name, description, mapUrl, project; delete action
+- [x] Timeline list page: `world/timeline/page.tsx`
+- [x] Timeline create page: `world/timeline/new/page.tsx`
+- [x] Timeline edit page: `world/timeline/[id]/page.tsx`
+- [x] Dialogues list page: `world/dialogues/page.tsx`
+- [x] Dialogues create page: `world/dialogues/new/page.tsx`
+- [x] Dialogues edit page: `world/dialogues/[id]/page.tsx`
+- [x] World overview page updated with timeline and dialogue section links
+
+### API Endpoint Completion
+
+- [x] Location GET by ID, PATCH, DELETE endpoints
+- [x] Timeline GET by ID, PATCH, DELETE endpoints
+- [x] Dialogue full CRUD (GET list, GET by ID, POST, PATCH, DELETE)
+
+### Schema Updates
+
+- [x] Dialogue model: added `user User?` relation, `project Project?` relation, `title` field
+- [x] User model: added `dialogues Dialogue[]` relation
+- [x] Project model: added `dialogues Dialogue[]` relation
+- [x] `pnpm-workspace.yaml` created for monorepo workspace
+
+## Completed — Supabase Architecture Migration (May 14, 2026)
+
+### Infrastructure
+
+- [x] Supabase project integration: `@supabase/ssr`, `@supabase/supabase-js` dependencies added
+- [x] Supabase client layer: `lib/supabase/server.ts`, `client.ts`, `middleware.ts`, `admin.ts`
+- [x] Supabase SQL migrations: `001_create_users_table.sql`, `002_create_app_tables.sql`, `003_storage_buckets.sql`
+- [x] Upstash Redis integration: `lib/redis.ts` with no-op fallback for dev
+- [x] Cache helper: `lib/cache.ts` — `getCached`, `setCached`, `invalidateCache`, `buildCacheKey`
+- [x] Environment validation updated: `lib/env.ts` validates Supabase + Redis vars
+- [x] `.env.example` updated with Supabase, Redis, OpenRouter, Stripe config
+
+### Auth
+
+- [x] NextAuth v4 completely removed — replaced by Supabase Auth
+- [x] Sign-in page rewritten: Supabase `signInWithPassword` client component
+- [x] Sign-up page rewritten: Supabase `signUp` with metadata + email redirect
+- [x] Auth callback route: `api/auth/callback/route.ts` — exchanges code for session
+- [x] Middleware: `middleware.ts` — Supabase session refresh + protected route guard
+- [x] Protected layout: `(main)/layout.tsx` uses `getUser()` from Supabase
+- [x] Header User component: replaced `useSession`/`signOut` with Supabase client
+- [x] All 17 server pages updated: `getServerSession(authOptions)` → `getUser()`
+- [x] Old auth files removed: `lib/auth.ts`, `api/auth/signup`, `api/auth/[...nextauth]`
+
+### API Consolidation (NestJS → Next.js Route Handlers)
+
+- [x] NestJS API removed as dependency — all 38 endpoints ported
+- [x] `lib/api.ts` simplified — no JWT signing, uses cookie-based Supabase auth
+- [x] Projects API: `GET/POST /api/projects`, `GET/PATCH /api/projects/[id]`
+- [x] Users API: `GET/PATCH /api/users/[id]`
+- [x] Gamification API: wallet, progress, goals, streak, badges
+- [x] Social API: follow, followers, following, cheer, groups list+create, groups join+leave
+- [x] World API: characters CRUD, locations CRUD, timeline CRUD, dialogues CRUD
+- [x] Billing API: checkout session, Stripe webhook
+- [x] AI API: `api/ai/suggest` — kept, now uses direct Prisma queries
+- [x] Old proxy routes removed: checkout, social, billing proxies
+- [x] 25+ API route handler files created
+
+### Feature Flags
+
+- [x] Redis-backed flag system: `lib/flags.ts` — 13 flags with types, categories
+- [x] Flag types: boolean, percentage, user_list, subscription_tier
+- [x] Graceful fallback: Redis → env vars → defaults
+- [x] Categories: core, social, monetization, experimental, wellbeing, ai
+- [x] API key normalization: `isEnabled()` / `isEnabledSync()`
+
+### Data Layer
+
+- [x] TanStack Query provider: `components/providers.tsx` — `QueryClientProvider` wrapper
+- [x] Storage upload hook: `lib/storage.ts` — `useStorageUpload()` for Supabase Storage
+- [x] Zod validation alignment: `lib/env.ts` uses Zod for all env vars
+
+### CI/CD
+
+- [x] CI updated: removed NestJS API job, single web job with lint+test+build
+- [x] Build env vars updated: Supabase test keys for CI build
+
+### Testing
+
+- [x] API route test: `__tests__/api/projects.test.ts` — GET/POST with auth mocking
+
+### Documentation
+
+- [x] `AGENTS.md` fully rewritten: new architecture map, Supabase/Redis/RLS rules
+- [x] `action-plan.md` updated with all migration completions
+- [x] `.env.example` updated with full Supabase + Redis config
+- [x] `supabase/migrations/` documented with 3 migration files

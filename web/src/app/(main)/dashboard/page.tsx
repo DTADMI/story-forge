@@ -1,7 +1,8 @@
 'use client';
-import {signOut} from 'next-auth/react';
+import { createBrowserClient } from "@/lib/supabase/client";
 
 export default function DashboardPage() {
+    const supabase = createBrowserClient();
     return (
         <div style={{maxWidth: 720, margin: '48px auto', padding: 24}}>
             <h1 style={{fontSize: 28, fontWeight: 700}}>Dashboard</h1>
@@ -10,7 +11,7 @@ export default function DashboardPage() {
             </p>
             <div style={{marginTop: 16}}>
                 <button
-                    onClick={() => signOut({callbackUrl: '/signin'})}
+                    onClick={() => supabase.auth.signOut().then(() => window.location.href = '/signin')}
                     style={{
                         background: '#b4371e',
                         color: 'white',

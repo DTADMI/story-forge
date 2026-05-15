@@ -12,7 +12,7 @@ env:
 
 jobs:
   web:
-    name: Web - test and build
+    name: Web — lint, test, build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,60 +29,23 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
-      - name: Install root dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install web dependencies
-        run: pnpm -C web install --frozen-lockfile
-
-      - name: Prisma generate (web)
+      - name: Prisma generate
         run: pnpm exec prisma generate
 
       - name: Web tests
         run: pnpm -C web test:run
 
-      - name: Web typecheck (build --no-lint)
+      - name: Web lint
+        run: pnpm -C web lint
+
+      - name: Web build
         env:
-          NEXTAUTH_SECRET: testsecret
           NEXTAUTH_URL: http://localhost:3000
+          NEXTAUTH_SECRET: test-secret-ci-build-only
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/storyforge
-          API_URL: http://localhost:3001
-          API_JWT_SECRET: testsecret
+          NEXT_PUBLIC_SUPABASE_URL: https://test.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: test-anon-key
         run: pnpm -C web build
-
-  api:
-    name: API - dependency sanity
-    runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.26.0 --activate
-
-      - name: Setup Node.js 24.x
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
-      - name: Install root dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Install API dependencies
-        run: pnpm -C api install --frozen-lockfile
-
-      - name: Prisma generate (api)
-        run: pnpm exec prisma generate
-
-      - name: API migrate deploy (optional/preview)
-        # Only run if DATABASE_URL secret is configured.
-        if: ${{ env.DATABASE_URL != '' }}
-        run: pnpm exec prisma migrate deploy
-
-      - name: API sanity check
-        run: pnpm -C api exec node -e "console.log('api dependencies installed')"

@@ -1,5 +1,4 @@
-import {getServerSession} from 'next-auth';
-import {authOptions} from '@/lib/auth';
+import { getUser as getSupabaseUser } from "@/lib/supabase/server";
 import {apiFetch} from '@/lib/api';
 import {notFound, redirect} from 'next/navigation';
 import {FollowButton} from '@/components/social/follow-button';
@@ -8,7 +7,7 @@ import {Card} from '@/components/ui/card';
 import Link from 'next/link';
 
 async function getUser(id: string) {
-    const res = await apiFetch(`/users/${encodeURIComponent(id)}`, {
+    const res = await apiFetch(`/api/users/${encodeURIComponent(id)}`, {
         cache: 'no-store' as any,
     });
     if (!res.ok) return null;
@@ -16,14 +15,14 @@ async function getUser(id: string) {
 }
 
 async function isFollowing(targetId: string) {
-    const res = await apiFetch('/social/following', {cache: 'no-store' as any});
+    const res = await apiFetch('/api/social/following', {cache: 'no-store' as any});
     if (!res.ok) return false;
     const following = await res.json();
     return following.some((f: any) => f.user.id === targetId);
 }
 
 async function getUserProjects(userId: string) {
-    const res = await apiFetch(`/projects?userId=${encodeURIComponent(userId)}`, {cache: 'no-store' as any});
+    const res = await apiFetch(`/api/projects?userId=${encodeURIComponent(userId)}`, {cache: 'no-store' as any});
     if (!res.ok) return [];
     return res.json();
 }
@@ -34,8 +33,8 @@ export default async function UserProfilePage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
-    const session = await getServerSession(authOptions);
-    const currentUserId = (session?.user as any)?.id as string | undefined;
+    const supabaseUser = await getSupabaseUser();
+    const currentUserId = supabaseUser?.id;
     if (!currentUserId) redirect('/signin');
 
     // If viewing own profile, redirect to /profile
