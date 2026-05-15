@@ -11,15 +11,21 @@ export async function isAdmin(): Promise<boolean> {
     } = await supabase.auth.getUser();
     if (!user) return false;
 
-    // Check if user has admin role in public.users table
     const dbUser = await prisma.user.findUnique({
       where: { id: user.id },
-      select: { settings: true },
+      select: { role: true, settings: true },
     });
 
-    if (!dbUser?.settings) return false;
-    const settings = dbUser.settings as Record<string, unknown>;
-    return settings.is_admin === true || settings.is_moderator === true;
+    if (!dbUser) return false;
+    if (dbUser.role === "admin" || dbUser.role === "moderator") return true;
+
+    // Legacy fallback: check settings JSON
+    if (dbUser.settings) {
+      const settings = dbUser.settings as Record<string, unknown>;
+      if (settings.is_admin === true || settings.is_moderator === true) return true;
+    }
+
+    return false;
   } catch {
     return false;
   }

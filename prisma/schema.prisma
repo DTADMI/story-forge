@@ -33,6 +33,10 @@ model User {
   subscriptionStatus   String?
   subscriptionExpiresAt DateTime?
 
+  // Role-based access
+  role             String @default("reader")
+  subscriptionTier String @default("free")
+
   accounts      Account[]
   sessions      Session[]
   projects      Project[]
@@ -59,6 +63,11 @@ model User {
   sentMessages     Message[]  @relation("SentMessages")
   receivedMessages Message[]  @relation("ReceivedMessages")
   notifications    Notification[]
+
+  blockedUsers UserBlock[] @relation("Blocker")
+  blockedBy    UserBlock[] @relation("Blocked")
+  favorites    ProjectFavorite[]
+  votes        ProjectVote[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -88,6 +97,10 @@ model Project {
   eras         Era[]
   comments      Comment[]
   versions      ProjectVersion[]
+
+  favoritedBy        ProjectFavorite[]
+  votes              ProjectVote[]
+  competitionEntries CompetitionEntry[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -505,4 +518,67 @@ model Message {
 
   @@index([senderId, receiverId, createdAt])
   @@index([receiverId, read, createdAt])
+}
+
+model UserBlock {
+  id        String   @id @default(cuid())
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id])
+  blockerId String
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id])
+  blockedId String
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+}
+
+model ProjectFavorite {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, projectId])
+}
+
+model ProjectVote {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  value     Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, projectId])
+}
+
+model Competition {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  type        String
+  genre       String?
+  minWords    Int      @default(0)
+  maxWords    Int?
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("upcoming")
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  entries     CompetitionEntry[]
+}
+
+model CompetitionEntry {
+  id            String      @id @default(cuid())
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  competitionId String
+  project       Project     @relation(fields: [projectId], references: [id])
+  projectId     String
+  userId        String
+  createdAt     DateTime    @default(now())
+
+  @@unique([competitionId, projectId])
 }

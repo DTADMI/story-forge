@@ -70,6 +70,12 @@ export default async function DashboardPage() {
           icon: Globe,
         },
         {
+          href: "/world/galaxy",
+          label: "Galaxy View",
+          desc: "Interconnected relationship graph",
+          icon: Globe,
+        },
+        {
           href: "/world/encyclopedia",
           label: "Encyclopedia",
           desc: "Lore, magic, cultures",

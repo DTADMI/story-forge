@@ -3,6 +3,8 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { createActivityAsync } from "@/lib/activity";
 import { auditLog } from "@/lib/audit";
+import { canCreateProject } from "@/lib/permissions";
+import { forbidden } from "@/lib/error-response";
 
 export async function GET() {
   const user = await requireUser();
@@ -16,6 +18,20 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   const user = await requireUser();
   const body = await request.json();
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: {
+      subscriptionTier: true,
+      role: true,
+      _count: { select: { projects: true } },
+    },
+  });
+
+  if (dbUser && !canCreateProject(dbUser)) {
+    return forbidden("Project limit reached for your subscription tier. Upgrade to create more projects.");
+  }
+
   const project = await prisma.project.create({
     data: {
       title: body.title || "Untitled",
@@ -25,7 +41,6 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  // Fire-and-forget activity
   createActivityAsync({
     userId: user.id,
     type: "project_created",

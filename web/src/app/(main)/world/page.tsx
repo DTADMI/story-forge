@@ -185,6 +185,12 @@ export default async function WorldPage() {
                 Timeline Viz
               </Link>
               <Link
+                href="/world/galaxy"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                Galaxy View
+              </Link>
+              <Link
                 href="/world/gallery"
                 className="text-sm text-brand font-medium hover:underline"
               >

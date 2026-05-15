@@ -2,10 +2,22 @@ import Link from "next/link";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { getUser } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 import { BarChart3, Activity, Trophy } from "lucide-react";
 
 export async function Header() {
   const user = await getUser();
+
+  let isUserAdmin = false;
+  if (user) {
+    try {
+      const dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { role: true },
+      });
+      isUserAdmin = dbUser?.role === "admin";
+    } catch {}
+  }
 
   return (
     <header className="border-fg/10 bg-bg/80 sticky top-0 z-40 border-b backdrop-blur">
@@ -17,6 +29,9 @@ export async function Header() {
           <nav className="hidden gap-4 text-sm sm:flex">
             <Link href="/feed" className="hover:text-brand transition-colors">
               Feed
+            </Link>
+            <Link href="/world/galaxy" className="hover:text-brand transition-colors">
+              Galaxy
             </Link>
             <Link href="/pricing" className="hover:text-brand transition-colors">
               Pricing
@@ -47,6 +62,11 @@ export async function Header() {
               <Link href="/leaderboard" className="text-xs hover:text-brand" title="Leaderboard">
                 <Trophy className="h-4 w-4" />
               </Link>
+              {isUserAdmin && (
+                <Link href="/admin/subscriptions" className="text-xs hover:text-brand" title="Admin">
+                  Admin
+                </Link>
+              )}
               <Link href="/dashboard" className="text-sm hover:text-brand">
                 Dashboard
               </Link>

@@ -36,7 +36,9 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/profile") ||
     request.nextUrl.pathname.startsWith("/projects") ||
     request.nextUrl.pathname.startsWith("/world") ||
-    request.nextUrl.pathname.startsWith("/social");
+    request.nextUrl.pathname.startsWith("/social") ||
+    request.nextUrl.pathname.startsWith("/admin") ||
+    request.nextUrl.pathname.startsWith("/competitions");
 
   if (isProtectedRoute && !user) {
     const signInUrl = new URL("/signin", request.url);
