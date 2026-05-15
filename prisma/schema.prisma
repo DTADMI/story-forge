@@ -48,10 +48,13 @@ model User {
   locations     Location[]
   timelineEvents TimelineEvent[]
   dialogues     Dialogue[]
+  encyclopediaEntries EncyclopediaEntry[]
   comments      Comment[]
   versions      ProjectVersion[]
   activities    Activity[]
-  comments      Comment[]
+  sentMessages     Message[]  @relation("SentMessages")
+  receivedMessages Message[]  @relation("ReceivedMessages")
+  notifications    Notification[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -73,6 +76,10 @@ model Project {
   characters    Character[]
   locations     Location[]
   timelineEvents TimelineEvent[]
+  dialogues     Dialogue[]
+  encyclopediaEntries EncyclopediaEntry[]
+  comments      Comment[]
+  versions      ProjectVersion[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -214,6 +221,22 @@ model Dialogue {
   updatedAt   DateTime @updatedAt
 }
 
+model EncyclopediaEntry {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  category    String   // research, calendar, magic, fauna, flora, culture, item, system, language, religion, philosophy
+  title       String
+  content     String   @db.Text
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, category])
+}
+
 // Activity feed
 model Activity {
   id         String   @id @default(cuid())
@@ -227,6 +250,21 @@ model Activity {
 
   @@index([userId, createdAt])
   @@index([createdAt])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  type       String   // comment, cheer, follow, badge, message, group_invite
+  title      String
+  body       String?
+  entityId   String?
+  entityType String?
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([userId, read, createdAt])
 }
 
 // Project comments
@@ -251,6 +289,8 @@ model ProjectVersion {
   id        String   @id @default(cuid())
   project   Project  @relation(fields: [projectId], references: [id])
   projectId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
   content   String   @db.Text
   wordCount Int      @default(0)
   label     String?  // Optional user-provided version label
@@ -331,4 +371,18 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  senderId   String
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  receiverId String
+  content    String
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([senderId, receiverId, createdAt])
+  @@index([receiverId, read, createdAt])
 }

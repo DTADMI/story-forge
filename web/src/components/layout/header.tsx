@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { getUser } from "@/lib/supabase/server";
 import { BarChart3, Activity, Trophy } from "lucide-react";
 
@@ -32,6 +33,7 @@ export async function Header() {
           <DarkModeToggle />
           {user ? (
             <div className="flex items-center gap-3">
+              <NotificationBell />
               <Link href="/feed/activity" className="text-xs hover:text-brand" title="Activity Feed">
                 <Activity className="h-4 w-4" />
               </Link>

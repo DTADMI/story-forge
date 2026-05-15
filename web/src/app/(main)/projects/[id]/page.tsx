@@ -4,7 +4,9 @@ import { redirect } from "next/navigation";
 import { ProjectEditor } from "@/components/editor/project-editor";
 import { VersionHistory } from "@/components/editor/version-history";
 import { Card } from "@/components/ui/card";
-import { Download } from "lucide-react";
+import { ShareButton } from "@/components/social/share-button";
+import { Download, LayoutGrid } from "lucide-react";
+import Link from "next/link";
 
 export default async function ProjectDetailPage({
   params,
@@ -47,8 +49,8 @@ export default async function ProjectDetailPage({
       {/* Editor */}
       <ProjectEditor project={project} userPreferences={undefined} />
 
-      {/* Export button */}
-      <div className="flex items-center gap-3">
+      {/* Export / Share button */}
+      <div className="flex flex-wrap items-center gap-3">
         <a
           href={`/api/projects/${id}/export`}
           className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border border-fg/20 rounded-md hover:bg-fg/5"
@@ -56,6 +58,18 @@ export default async function ProjectDetailPage({
           <Download className="h-4 w-4" />
           Export as Markdown
         </a>
+        <Link
+          href={`/projects/${id}/storyboard`}
+          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border border-fg/20 rounded-md hover:bg-fg/5"
+        >
+          <LayoutGrid className="h-4 w-4" />
+          Storyboard
+        </Link>
+        <ShareButton
+          type="project"
+          id={project.id}
+          title={project.title}
+        />
       </div>
 
       {/* Version History */}

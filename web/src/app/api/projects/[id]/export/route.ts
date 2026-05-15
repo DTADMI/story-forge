@@ -2,16 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, notFound } from "@/lib/error-response";
-
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
-}
+import { generateEpub } from "@/lib/export-epub";
 
 function htmlToMarkdown(html: string): string {
   let md = html;
@@ -35,7 +26,7 @@ function htmlToMarkdown(html: string): string {
 }
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await requireUser();
@@ -46,13 +37,34 @@ export async function GET(
   });
   if (!project) return notFound("Project not found");
 
+  const { searchParams } = new URL(req.url);
+  const format = searchParams.get("format");
+
+  const safeFilename = project.title.replace(/[^a-zA-Z0-9_-]/g, "_");
+
+  if (format === "epub") {
+    const author = user.email || "Anonymous";
+    const epubBuffer = generateEpub({
+      title: project.title,
+      author,
+      content: project.content || "",
+    });
+
+    return new NextResponse(new Uint8Array(epubBuffer), {
+      headers: {
+        "Content-Type": "application/epub+zip",
+        "Content-Disposition": `attachment; filename="${safeFilename}.epub"`,
+      },
+    });
+  }
+
   const mdContent = htmlToMarkdown(project.content || "");
   const markdown = `# ${project.title}\n\n> By ${user.email || "Anonymous"} | ${project.wordCount} words\n\n${mdContent}`;
 
   return new NextResponse(markdown, {
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${project.title.replace(/[^a-zA-Z0-9]/g, "_")}.md"`,
+      "Content-Disposition": `attachment; filename="${safeFilename}.md"`,
     },
   });
 }

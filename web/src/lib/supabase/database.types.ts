@@ -45,8 +45,8 @@ export interface Database {
         };
       };
     };
- |    Views: Record<string, never>;
- |    Functions: Record<string, never>;
- |    Enums: Record<string, never>;
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
   };
 }

@@ -15,6 +15,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <AdminNav href="/admin/flags" label="Feature Flags" />
         <AdminNav href="/admin/users" label="Users" />
         <AdminNav href="/admin/moderation" label="Moderation" />
+        <AdminNav href="/admin/audit" label="Audit Log" />
         <hr className="border-fg/10 my-4" />
         <Link href="/dashboard" className="text-xs text-fg/40 hover:text-brand block">
           ← Back to app

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
 import { getRedis } from "@/lib/redis";
+import { auditLog } from "@/lib/audit";
 
 const REDIS_KEY = "storyforge:feature_flags";
 
@@ -23,5 +24,12 @@ export async function PUT(request: NextRequest) {
     const redis = getRedis();
     await redis.set(REDIS_KEY, JSON.stringify(flags));
   } catch {}
+
+  auditLog({
+    userId: "admin",
+    action: "admin.flag_update",
+    metadata: { flagCount: Array.isArray(flags) ? flags.length : 0 },
+  });
+
   return NextResponse.json({ success: true });
 }

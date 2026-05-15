@@ -101,6 +101,27 @@ export default async function WorldPage() {
             <Link href="/world/dialogues/new" className="text-sm text-brand font-medium hover:underline mt-1 inline-block">+ Create a dialogue scene</Link>
           </Card>
         </section>
+
+        <section className="md:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Encyclopedia</h2>
+            <Link href="/world/encyclopedia" className="text-sm text-brand font-medium hover:underline">Browse</Link>
+          </div>
+          <Card className="p-6 text-center">
+            <p className="text-sm text-fg/40">Research notes, magic systems, flora & fauna, cultures, and more.</p>
+            <Link href="/world/encyclopedia" className="text-sm text-brand font-medium hover:underline mt-1 inline-block">Explore the encyclopedia</Link>
+          </Card>
+        </section>
+
+        <section className="md:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Visualizations</h2>
+            <div className="flex gap-3">
+              <Link href="/world/timeline/viz" className="text-sm text-brand font-medium hover:underline">Timeline Viz</Link>
+              <Link href="/world/gallery" className="text-sm text-brand font-medium hover:underline">Image Gallery</Link>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );

@@ -5,6 +5,7 @@ import {PWAInstallPrompt} from '@/components/pwa/install-prompt';
 import {ServiceWorkerRegistration} from '@/components/pwa/service-worker-registration';
 import {Providers} from '@/components/providers';
 import {ToastProvider} from '@/components/toast';
+import {SkipLink} from '@/components/a11y/skip-link';
 
 export const metadata = {
   title: 'StoryForge',
@@ -25,12 +26,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
     <body className="bg-bg text-fg min-h-screen">
+    <SkipLink />
     <ServiceWorkerRegistration/>
     <PWAInstallPrompt/>
     <Providers>
       <ToastProvider>
         <Header/>
-        <div className="min-h-[calc(100vh-200px)]">{children}</div>
+        <main id="main-content" aria-label="Main content" className="min-h-[calc(100vh-200px)]">{children}</main>
         <Footer/>
       </ToastProvider>
     </Providers>
