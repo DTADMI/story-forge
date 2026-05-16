@@ -1,8 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { requireAdmin } from "@/lib/admin";
 
 export default async function AdminModerationPage() {
+  await requireAdmin();
+
   const [projectCount, recentProjects] = await Promise.all([
     prisma.project.count(),
     prisma.project.findMany({

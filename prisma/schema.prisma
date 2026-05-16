@@ -195,9 +195,9 @@ model Character {
   project     Project? @relation(fields: [projectId], references: [id])
   projectId   String?
   name        String
-  bio         String?
-  traits      String?
-  quirks      String?
+  bio         String?  @db.Text
+  traits      String?  @db.Text
+  quirks      String?  @db.Text
   imageUrl    String?
   metadata    Json?    // For flexible properties
   isShared             Boolean  @default(false)
@@ -218,7 +218,7 @@ model Location {
   project     Project? @relation(fields: [projectId], references: [id])
   projectId   String?
   name        String
-  description String?
+  description String?  @db.Text
   mapUrl      String?
   metadata    Json?
   isShared             Boolean  @default(false)
@@ -238,7 +238,7 @@ model TimelineEvent {
   projectId   String?
   title       String
   date        String?  // Flexible date format
-  description String?
+  description String?  @db.Text
   isShared             Boolean  @default(false)
   sharedFromProjectId  String?
    
@@ -418,7 +418,7 @@ model Notification {
   userId     String
   type       String   // comment, cheer, follow, badge, message, group_invite
   title      String
-  body       String?
+  body       String?  @db.Text
   entityId   String?
   entityType String?
   read       Boolean  @default(false)
@@ -434,7 +434,7 @@ model Comment {
   projectId String
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  content   String
+  content   String   @db.Text
   parentId  String?  // For threaded replies
   parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id])
   replies   Comment[] @relation("CommentReplies")
@@ -539,7 +539,7 @@ model Message {
   senderId   String
   receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
   receiverId String
-  content    String
+  content    String   @db.Text
   read       Boolean  @default(false)
   createdAt  DateTime @default(now())
 

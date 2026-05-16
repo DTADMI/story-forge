@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import type { Organization } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { Card } from "@/components/ui/card";
 
 const ORG_TYPES = ["faction", "guild", "kingdom", "clan", "corporation", "cult", "other"];
 
-export function OrganizationEditForm({ org }: { org: any }) {
+export function OrganizationEditForm({ org }: { org: Organization }) {
   const router = useRouter();
   const { toast } = useToast();
   const [name, setName] = useState(org.name || "");

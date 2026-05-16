@@ -1,19 +1,10 @@
-import { getUser } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { SUBSCRIPTION_LIMITS } from "@/lib/permissions";
+import { requireAdmin } from "@/lib/admin";
 
 export default async function AdminSubscriptionsPage() {
-  const supabaseUser = await getUser();
-  if (!supabaseUser) redirect("/signin");
-
-  const dbUser = await prisma.user.findUnique({
-    where: { id: supabaseUser.id },
-    select: { role: true },
-  });
-
-  if (!dbUser || dbUser.role !== "admin") redirect("/signin");
+  await requireAdmin();
 
   const users = await prisma.user.findMany({
     select: {

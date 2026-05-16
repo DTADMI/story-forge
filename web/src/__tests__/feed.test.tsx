@@ -1,4 +1,14 @@
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+
+vi.mock("@/lib/prisma", () => ({
+  prisma: {
+    project: {
+      findMany: vi.fn().mockResolvedValue([]),
+    },
+  },
+}));
+
 import PublicFeedPage from "@/app/feed/page";
 
 describe("PublicFeedPage", () => {

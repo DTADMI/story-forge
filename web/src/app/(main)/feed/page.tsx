@@ -14,12 +14,14 @@ const ACTIVITY_ICONS: Record<string, typeof Activity> = {
   comment_received: Activity,
 };
 
-const ACTIVITY_LABELS: Record<string, (meta?: any) => string> = {
+type ActivityMetadata = Record<string, unknown> | null;
+
+const ACTIVITY_LABELS: Record<string, (meta?: ActivityMetadata) => string> = {
   project_created: (m) => `started a new project: "${m?.title || "Untitled"}"`,
   project_published: (m) => `published "${m?.title || "a project"}" (${m?.wordCount || 0} words)`,
   badge_earned: (m) => `earned the "${m?.badgeName || "Unknown"}" badge!`,
   streak_milestone: (m) => `reached a ${m?.streakDays || 0}-day writing streak!`,
-  goal_complete: (m) => `completed their daily writing goal!`,
+  goal_complete: () => `completed their daily writing goal!`,
   follow_gained: () => `gained a new follower`,
   comment_received: (m) =>
     `${m?.commenterName || "Someone"} commented on "${m?.projectTitle || "a project"}"`,
@@ -75,7 +77,7 @@ async function ActivityFeedList() {
     <div className="space-y-3">
       {activities.map((a) => {
         const Icon = ACTIVITY_ICONS[a.type] || Activity;
-        const label = (ACTIVITY_LABELS[a.type] || (() => a.type))(a.metadata as any);
+        const label = (ACTIVITY_LABELS[a.type] || (() => a.type))(a.metadata as ActivityMetadata);
 
         return (
           <Card key={a.id} className="p-4 flex items-start gap-3">

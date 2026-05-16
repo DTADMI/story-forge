@@ -5,17 +5,18 @@ import { createActivityAsync } from "@/lib/activity";
 import { auditLog } from "@/lib/audit";
 import { canCreateProject } from "@/lib/permissions";
 import { forbidden } from "@/lib/error-response";
+import { withErrorHandler } from "@/lib/api-handler";
 
-export async function GET() {
+export const GET = withErrorHandler(async () => {
   const user = await requireUser();
   const projects = await prisma.project.findMany({
     where: { userId: user.id },
     orderBy: { updatedAt: "desc" },
   });
   return NextResponse.json(projects);
-}
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
   const body = await request.json();
 
@@ -60,4 +61,4 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json(project, { status: 201 });
-}
+});

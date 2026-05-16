@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { syncEventToNeo4j, syncEventCharacterLink } from "@/lib/neo4j-sync";
+import { withErrorHandler } from "@/lib/api-handler";
 
-export async function GET(request: NextRequest) {
+export const GET = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
   const { searchParams } = new URL(request.url);
   const projectId = searchParams.get("projectId") || undefined;
@@ -13,13 +15,24 @@ export async function GET(request: NextRequest) {
     include: { characters: true, locations: true },
   });
   return NextResponse.json(events);
-}
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
-  const { characterIds, locationIds, ...rest } = await request.json();
+  const body = await request.json();
+
+  const schema = z.object({ title: z.string().min(1).max(300) }).passthrough();
+  const parsed = schema.safeParse(body);
+  if (!parsed.success)
+    return NextResponse.json(
+      { error: "Validation failed", detail: parsed.error.message },
+      { status: 400 }
+    );
+  const { title, characterIds, locationIds, ...rest } = parsed.data;
+
   const event = await prisma.timelineEvent.create({
     data: {
+      title,
       ...rest,
       userId: user.id,
       characters: characterIds
@@ -38,4 +51,4 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json(event, { status: 201 });
-}
+});

@@ -2,8 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { requireAdmin } from "@/lib/admin";
 
 export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const user = await prisma.user.findUnique({
     where: { id },

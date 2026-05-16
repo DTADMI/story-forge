@@ -1,6 +1,10 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm -C web build",
+  "outputDirectory": "web/.next",
+  "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
-  "installCommand": "pnpm -C web install --frozen-lockfile",
-  "buildCommand": "pnpm run vercel-build"
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_SITE_URL": "https://storyforge.app"
+  }
 }

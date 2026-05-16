@@ -137,16 +137,23 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
 export default function AdminFlagsPage() {
   const [flags, setFlags] = useState<FeatureFlag[]>(DEFAULT_FLAGS);
   const [saving, setSaving] = useState(false);
+  const [authorized, setAuthorized] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     fetch("/api/admin/flags")
-      .then((r) => r.json())
+      .then((r) => {
+        if (r.status === 403) window.location.href = "/signin";
+        else setAuthorized(true);
+        return r.json();
+      })
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) setFlags(data);
       })
       .catch(() => {});
   }, []);
+
+  if (!authorized) return <div>Checking access...</div>;
 
   const toggle = async (id: string) => {
     // Optimistic update: toggle immediately

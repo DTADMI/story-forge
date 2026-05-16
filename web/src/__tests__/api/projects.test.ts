@@ -62,7 +62,8 @@ describe("Projects API", () => {
     it("returns 401 when unauthenticated", async () => {
       (requireUser as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Unauthorized"));
 
-      await expect(GET()).rejects.toThrow("Unauthorized");
+      const response = await GET();
+      expect(response.status).toBe(401);
     });
   });
 

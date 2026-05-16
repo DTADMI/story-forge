@@ -2,8 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { ResyncGraphButton } from "./resync-button";
+import { requireAdmin } from "@/lib/admin";
 
 export default async function AdminDashboardPage() {
+  await requireAdmin();
+
   const [userCount, projectCount, characterCount, groupCount] = await Promise.all([
     prisma.user.count(),
     prisma.project.count(),

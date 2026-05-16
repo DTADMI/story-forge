@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { withErrorHandler } from "@/lib/api-handler";
 
-export async function GET() {
+export const GET = withErrorHandler(async () => {
   const user = await requireUser();
 
   const notifications = await prisma.notification.findMany({
@@ -12,9 +13,9 @@ export async function GET() {
   });
 
   return NextResponse.json(notifications);
-}
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
   const body = await request.json();
   const { type, title, body: bodyText, entityId, entityType } = body;
@@ -43,4 +44,4 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json(notification, { status: 201 });
-}
+});

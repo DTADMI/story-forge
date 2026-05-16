@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { withErrorHandler } from "@/lib/api-handler";
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
   const { value, goalId } = await request.json();
   const log = await prisma.progressLog.create({
@@ -38,4 +39,4 @@ export async function POST(request: NextRequest) {
     });
   }
   return NextResponse.json({ log, inkEarned, totalWords: total });
-}
+});

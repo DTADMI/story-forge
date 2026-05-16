@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import type { TimelineEvent, Character, Location } from "@prisma/client";
 import { EntitySelector } from "@/components/world/entity-selector";
 import Link from "next/link";
+
+type TimelineEventWithRelations = TimelineEvent & {
+  characters: Character[];
+  locations: Location[];
+};
 
 export function TimelineEditForm({
   event,
@@ -11,7 +17,7 @@ export function TimelineEditForm({
   action,
   deleteAction,
 }: {
-  event: any;
+  event: TimelineEventWithRelations;
   existingCharacterIds: string[];
   existingLocationIds: string[];
   action: (formData: FormData) => void;

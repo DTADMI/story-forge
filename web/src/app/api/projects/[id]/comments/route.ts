@@ -7,7 +7,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params;
 
   const comments = await prisma.comment.findMany({
-    where: { projectId: id },
+    where: { projectId: id, parentId: null },
     include: {
       user: { select: { id: true, name: true, username: true, image: true } },
       replies: {
@@ -18,7 +18,6 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       },
     },
     orderBy: { createdAt: "asc" },
-    where: { projectId: id, parentId: null },
   });
 
   return NextResponse.json(comments);

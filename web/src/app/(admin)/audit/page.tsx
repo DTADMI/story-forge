@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { requireAdmin } from "@/lib/admin";
 
 const MOCK_ENTRIES = [
   {
@@ -45,7 +46,9 @@ const ACTION_COLORS: Record<string, string> = {
   "message.send": "bg-amber-500/10 text-amber-600",
 };
 
-export default function AdminAuditPage() {
+export default async function AdminAuditPage() {
+  await requireAdmin();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

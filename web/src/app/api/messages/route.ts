@@ -3,8 +3,9 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { errorResponse, validationError, notFound } from "@/lib/error-response";
 import { auditLog } from "@/lib/audit";
+import { withErrorHandler } from "@/lib/api-handler";
 
-export async function GET(request: NextRequest) {
+export const GET = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
   const { searchParams } = new URL(request.url);
   const withUser = searchParams.get("with");
@@ -67,9 +68,9 @@ export async function GET(request: NextRequest) {
 
   const conversations = Array.from(conversationMap.values());
   return NextResponse.json(conversations);
-}
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
   const body = await request.json().catch(() => null);
   if (!body) return validationError("Invalid JSON body");
@@ -112,4 +113,4 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json(message, { status: 201 });
-}
+});
