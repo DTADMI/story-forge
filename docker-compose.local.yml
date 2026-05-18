@@ -1,0 +1,24 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: storyforge-redis
+    ports:
+      - "6382:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - storyforge-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  stripe-mock:
+    image: stripe/stripe-mock:latest
+    container_name: storyforge-stripe-mock
+    ports:
+      - "12112:12111"
+      - "12113:12112"
+
+volumes:
+  storyforge-redis-data:

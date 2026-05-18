@@ -18,11 +18,8 @@
     "jsx": "react-jsx",
     "incremental": true,
     "paths": {
-      "@/lib/*": [
-        "./src/lib/*"
-      ],
-      "@/components/*": [
-        "./src/components/*"
+      "@/*": [
+        "./*"
       ]
     },
     "plugins": [

@@ -24,9 +24,9 @@ Single Next.js 16 App Router app on Vercel with Supabase (Auth, DB, Storage, Rea
 ```
 story-forge/
 ├── web/              ← Next.js 16 App Router (single app)
-│   ├── src/app/      ← Pages, layouts, API route handlers
-│   ├── src/components/ ← UI components (design system, editor, AI)
-│   └── src/lib/      ← Prisma, Supabase, Redis, flags, cache, AI
+│   ├── app/      ← Pages, layouts, API route handlers
+│   ├── components/ ← UI components (design system, editor, AI)
+│   └── lib/      ← Prisma, Supabase, Redis, flags, cache, AI
 ├── packages/
 │   └── ai-core/      ← Shared AI package (OpenRouter adapter)
 ├── prisma/           ← Prisma schema + migrations
@@ -38,11 +38,11 @@ story-forge/
 
 ## Repository Map
 
-- `web/src/app/` Next.js App Router pages and API route handlers
-- `web/src/app/(main)/` Protected routes (requires auth)
-- `web/src/app/api/` All API route handlers (projects, users, world, social, gamification, billing, AI)
-- `web/src/components/` Shared UI components (ui/, editor/, ai/, social/, billing/, pwa/)
-- `web/src/lib/` Shared logic: prisma.ts, supabase/, redis.ts, flags.ts, cache.ts, storage.ts
+- `web/app/` Next.js App Router pages and API route handlers
+- `web/app/(main)/` Protected routes (requires auth)
+- `web/app/api/` All API route handlers (projects, users, world, social, gamification, billing, AI)
+- `web/components/` Shared UI components (ui/, editor/, ai/, social/, billing/, pwa/)
+- `web/lib/` Shared logic: prisma.ts, supabase/, redis.ts, flags.ts, cache.ts, storage.ts
 - `packages/ai-core/` Shared AI infrastructure (types, OpenRouter adapter, factory)
 - `prisma/` Prisma schema and tracked migration history
 - `supabase/migrations/` Supabase SQL migrations (RLS policies, triggers, tables)

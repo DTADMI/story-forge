@@ -22,7 +22,15 @@
   "scripts": {
     "build": "pnpm -C web build",
     "test": "pnpm -C web test:run",
-    "vercel-build": "pnpm -C web install --frozen-lockfile && pnpm -C web exec prisma generate --schema ../prisma/schema.prisma && pnpm -C web build && node ./scripts/vercel-output-compat.mjs"
+    "vercel-build": "pnpm -C web install --frozen-lockfile && pnpm -C web exec prisma generate --schema ../prisma/schema.prisma && pnpm -C web build && node ./scripts/vercel-output-compat.mjs",
+    "docker:up": "docker compose -f docker-compose.local.yml up -d",
+    "docker:down": "docker compose -f docker-compose.local.yml down",
+    "docker:stop": "docker compose -f docker-compose.local.yml stop",
+    "docker:logs": "docker compose -f docker-compose.local.yml logs -f",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "dev:local": "pnpm docker:up && pnpm supabase:start && pnpm dev"
   },
   "dependencies": {
     "next": "^16.2.2"
