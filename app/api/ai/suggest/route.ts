@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAiAdapter, resolveProvider } from "@story-forge/ai-core";
+import { getAiAdapter, resolveProvider } from "@/lib/ai";
 
 interface SuggestRequest {
   feature: "suggest" | "character" | "plot" | "style";
