@@ -1,51 +1,54 @@
 name: CI
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
-env:
-  NODE_VERSION: "24"
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+permissions:
+  contents: read
 
 jobs:
-  web:
-    name: Web — lint, test, build
+  validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
-      - name: Setup pnpm
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Enable Corepack
         run: |
           corepack enable
           corepack prepare pnpm@10.26.0 --activate
 
-      - name: Setup Node.js 24.x
-        uses: actions/setup-node@v5
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v5
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Prisma generate
-        run: pnpm exec prisma generate
+      - name: Typecheck
+        run: pnpm typecheck
 
-      - name: Web tests
-        run: pnpm -C web test:run
+      - name: Test
+        run: pnpm test
 
-      - name: Web lint
-        run: pnpm -C web lint
-
-      - name: Web build
-        env:
-          NEXTAUTH_URL: http://localhost:3000
-          NEXTAUTH_SECRET: test-secret-ci-build-only
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/storyforge
-          NEXT_PUBLIC_SUPABASE_URL: https://test.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: test-anon-key
-        run: pnpm -C web build
+      - name: Build
+        run: pnpm build
