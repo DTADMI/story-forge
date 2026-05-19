@@ -55,14 +55,13 @@ export function MessageThread({
         const res = await fetch(`/api/messages?with=${partnerId}`);
         if (!res.ok) return;
         const remote: MessageData[] = await res.json();
-        const remoteIds = new Set(remote.map((m) => m.id));
         const localIds = new Set(messages.map((m) => m.id));
         const hasNew = remote.some((m) => !localIds.has(m.id));
         if (hasNew) {
           setMessages(remote);
           fetch(`/api/messages/${partnerId}`, { method: "PATCH" }).catch(() => {});
         }
-      } catch {}
+      } catch { /* noop */ }
     }, 10000);
     return () => clearInterval(interval);
   }, [partnerId, messages]);

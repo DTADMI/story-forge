@@ -24,7 +24,10 @@ export default async function LeaderboardPage() {
 async function LeaderboardContent({ userId }: { userId: string }) {
   const { prisma } = await import("@/lib/prisma");
 
-  const dateFilter = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const dateFilter = new Date(
+    // eslint-disable-next-line react-hooks/purity
+    Date.now() - 7 * 24 * 60 * 60 * 1000
+  );
   const logs = await prisma.progressLog.groupBy({
     by: ["userId"],
     where: { timestamp: { gte: dateFilter } },

@@ -213,7 +213,6 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
 ];
 
 let cachedFlags: FeatureFlag[] | null = null;
-let cacheVersion = 0;
 
 function normalizeKey(key: string): string {
   return key.toLowerCase().replace(/[^a-z0-9_]/g, "_");
@@ -244,7 +243,6 @@ export function getFlagsSync(): FeatureFlag[] {
 
 export async function initFlags(): Promise<void> {
   cachedFlags = await loadFlags();
-  cacheVersion++;
 }
 
 export async function isEnabled(key: string): Promise<boolean> {

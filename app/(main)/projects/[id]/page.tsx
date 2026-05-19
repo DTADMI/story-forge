@@ -61,7 +61,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       </div>
 
       {/* Editor */}
-      <ProjectEditor project={project} userPreferences={undefined} />
+      <ProjectEditor project={project as any} userPreferences={undefined} />
 
       {/* Panel count display */}
       <div className="flex items-center gap-2 text-sm text-fg/50">
@@ -205,7 +205,7 @@ async function updateSettings(id: string, formData: FormData) {
 
   await prisma.project.update({
     where: { id },
-    data: { title: title || undefined, description: description || undefined, defaultScope },
+    data: { title: title || undefined, description: description || undefined, defaultScope: defaultScope as any },
   });
   redirect(`/projects/${id}`);
 }

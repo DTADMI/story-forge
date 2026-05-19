@@ -16,7 +16,9 @@ export async function Header() {
         select: { role: true },
       });
       isUserAdmin = dbUser?.role === "admin";
-    } catch {}
+    } catch {
+      // user not found in DB
+    }
   }
 
   return (

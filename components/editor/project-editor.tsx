@@ -1,9 +1,8 @@
-"use client";
+  "use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { Editor } from "@/components/editor/editor";
 import { AiWritingButton } from "@/components/ai/ai-writing";
-import { useRouter } from "next/navigation";
 
 interface ProjectEditorProps {
   project: {
@@ -22,7 +21,7 @@ interface ProjectEditorProps {
 export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) {
   const [content, setContent] = useState(project.content || "");
   const [saving, setSaving] = useState(false);
-  const [lastBreak, setLastBreak] = useState(Date.now());
+  const [lastBreak, setLastBreak] = useState(() => Date.now());
   const [showLinkedEntities, setShowLinkedEntities] = useState(false);
   const [characters, setCharacters] = useState<{ id: string; name: string }[]>([]);
   const [locations, setLocations] = useState<{ id: string; name: string }[]>([]);
@@ -32,7 +31,6 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
   const [linkedLocIds, setLinkedLocIds] = useState<string[]>(
     project.settings?.linkedEntities?.locations || []
   );
-  const router = useRouter();
 
   useEffect(() => {
     if (showLinkedEntities) {

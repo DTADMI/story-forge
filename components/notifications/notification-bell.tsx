@@ -28,7 +28,7 @@ export function NotificationBell() {
           setUnreadCount(data.length);
           setNotifications(data.slice(0, 5));
         }
-      } catch {}
+      } catch { /* noop */ }
     }
 
     fetchUnread();
@@ -53,7 +53,7 @@ export function NotificationBell() {
       await fetch(`/api/notifications/${id}/read`, { method: "POST" });
       setNotifications((prev) => prev.filter((n) => n.id !== id));
       setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch {}
+    } catch { /* noop */ }
   }
 
   return (

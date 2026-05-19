@@ -244,7 +244,7 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
         const n = nodes[i];
         if (n.fx !== null) {
           n.x = n.fx;
-          n.y = n.fy;
+          n.y = n.fy ?? 0;
           n.vx = 0;
           n.vy = 0;
           continue;

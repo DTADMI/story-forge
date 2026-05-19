@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createBrowserClient } from "./supabase/client";
 
 export function useRealtimeChannel(channelName: string) {
-  const supabase = createBrowserClient();
-  const channel = supabase.channel(channelName);
+  const supabase = useMemo(() => createBrowserClient(), []);
+  const channel = useMemo(() => supabase.channel(channelName), [supabase, channelName]);
   return { channel, supabase };
 }
 
@@ -38,7 +38,7 @@ export function usePresence(channelName: string, user: { id: string; name: strin
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [channelName, user.id, user.name]);
+  }, [channel, supabase, user.id, user.name]);
 
   const updatePresence = useCallback(
     (data: Partial<PresenceUser>) => {

@@ -1,42 +1,43 @@
 "use client";
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "sf-theme";
-
-function getPreferredTheme(): "light" | "dark" {
-  if (typeof window === "undefined") return "light";
-  const stored = localStorage.getItem(STORAGE_KEY) as "light" | "dark" | null;
-  if (stored === "light" || stored === "dark") return stored;
-  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-}
-
 export function DarkModeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">(getPreferredTheme());
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === "dark") root.classList.add("dark");
-    else root.classList.remove("dark");
-    localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <button
+        type="button"
+        aria-label="Toggle dark mode"
+        className="border-fg/20 hover:bg-fg/5 inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm"
+      >
+        <span className="h-4 w-4" />
+      </button>
+    );
+  }
 
   return (
     <button
       type="button"
       aria-label="Toggle dark mode"
       className="border-fg/20 hover:bg-fg/5 inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm"
-      onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       {theme === "dark" ? (
         <>
-          <span aria-hidden>🌙</span>
+          <span aria-hidden className="text-base leading-none">🌙</span>
           <span>Dark</span>
         </>
       ) : (
         <>
-          <span aria-hidden>☀️</span>
+          <span aria-hidden className="text-base leading-none">☀️</span>
           <span>Light</span>
         </>
       )}

@@ -20,6 +20,7 @@ export function AchievementToast({
   useEffect(() => {
     const newlyEarned = searchParams?.get("new_badge");
     if ((badgeName || newlyEarned) && !visible) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
       const timer = setTimeout(() => {
         setVisible(false);

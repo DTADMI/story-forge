@@ -1,8 +1,8 @@
-import neo4j from "neo4j-driver";
+import neo4j, { Driver, auth } from "neo4j-driver";
 
-let driver: neo4j.Driver | null = null;
+let driver: Driver | null = null;
 
-export function getNeo4jDriver(): neo4j.Driver | null {
+export function getNeo4jDriver(): Driver | null {
   if (driver) return driver;
   const uri = process.env.NEO4J_URI;
   const user = process.env.NEO4J_USER;
@@ -12,7 +12,7 @@ export function getNeo4jDriver(): neo4j.Driver | null {
       console.warn("Neo4j not configured. Graph features disabled.");
     return null;
   }
-  driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
+  driver = neo4j.driver(uri, auth.basic(user, password));
   return driver;
 }
 

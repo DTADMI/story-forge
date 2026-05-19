@@ -71,7 +71,7 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
               try {
                 const err = JSON.parse(xhr.responseText);
                 message = err.error || message;
-              } catch {}
+              } catch { /* noop */ }
               reject(new Error(message));
             }
           };

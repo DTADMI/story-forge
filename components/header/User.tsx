@@ -15,7 +15,7 @@ export default function HeaderUser() {
       setUser(data?.user ?? null);
       setLoading(false);
     });
-  }, []);
+  }, [supabase]);
 
   if (loading) return <span />;
   if (!user) {

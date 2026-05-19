@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useToast } from "@/components/toast";
-import { CheckCircle2, Loader2, CircleDot } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 
 type SaveStatus = "saved" | "saving" | "unsaved";
 
@@ -63,6 +63,7 @@ export function AutosaveIndicator({
 
   useEffect(() => {
     if (content === lastSavedRef.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (status !== "saving") setStatus("saved");
       return;
     }

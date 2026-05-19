@@ -49,6 +49,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     console.error("Checkout error:", error);
     return NextResponse.json(
       { message: "Failed to create checkout session" },

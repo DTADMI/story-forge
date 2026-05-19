@@ -38,7 +38,7 @@ export default async function TimelineVizPage() {
         </Link>
       </div>
 
-      <TimelineViz events={events} eras={eras} />
+      <TimelineViz events={events} eras={eras as any} />
     </main>
   );
 }

@@ -28,7 +28,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       { error: "Validation failed", detail: parsed.error.message },
       { status: 400 }
     );
-  const { title, characterIds, locationIds, ...rest } = parsed.data;
+  const { title, characterIds, locationIds, ...rest } = parsed.data as {
+    title: string;
+    characterIds?: string[];
+    locationIds?: string[];
+    [key: string]: unknown;
+  };
 
   const event = await prisma.timelineEvent.create({
     data: {

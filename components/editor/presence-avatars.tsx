@@ -3,12 +3,6 @@
 import { usePresence } from "@/lib/realtime";
 import { isEnabledSync } from "@/lib/flags";
 
-interface PresenceUser {
-  id: string;
-  name: string;
-  online_at: string;
-}
-
 interface PresenceAvatarsProps {
   projectId: string;
   currentUser: { id: string; name: string };
@@ -26,9 +20,9 @@ const AVATAR_COLORS = [
 ];
 
 export function PresenceAvatars({ projectId, currentUser }: PresenceAvatarsProps) {
-  if (!isEnabledSync("real_time_collaboration")) return null;
-
   const { activeUsers } = usePresence(`project:${projectId}`, currentUser);
+
+  if (!isEnabledSync("real_time_collaboration")) return null;
 
   const displayUsers = activeUsers.filter((u) => u.id !== currentUser.id);
 

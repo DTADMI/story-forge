@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default async function BillingReturnPage({
   searchParams,
 }: {
@@ -13,31 +15,34 @@ export default async function BillingReturnPage({
           <p className="text-fg/70 mt-2">
             Thanks for upgrading! Your premium features will unlock shortly.
           </p>
-          <a href="/" className="bg-brand mt-6 inline-block rounded-md px-4 py-2 text-white">
+          <Link
+            href="/"
+            className="bg-brand mt-6 inline-block rounded-md px-4 py-2 text-white"
+          >
             Go to dashboard
-          </a>
+          </Link>
         </>
       ) : status === "canceled" ? (
         <>
           <h1 className="text-2xl font-extrabold">Checkout canceled</h1>
           <p className="text-fg/70 mt-2">No charges were made. You can try again anytime.</p>
-          <a
+          <Link
             href="/pricing"
             className="border-brand text-brand mt-6 inline-block rounded-md border px-4 py-2"
           >
             Back to Pricing
-          </a>
+          </Link>
         </>
       ) : (
         <>
           <h1 className="text-2xl font-extrabold">Checkout</h1>
-          <p className="text-fg/70 mt-2">We couldn’t determine your checkout status.</p>
-          <a
+          <p className="text-fg/70 mt-2">We couldn&apos;t determine your checkout status.</p>
+          <Link
             href="/pricing"
             className="border-brand text-brand mt-6 inline-block rounded-md border px-4 py-2"
           >
             Back to Pricing
-          </a>
+          </Link>
         </>
       )}
     </main>

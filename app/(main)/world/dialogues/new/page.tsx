@@ -1,6 +1,7 @@
 import { getUser } from "@/lib/supabase/server";
 import { apiFetch } from "@/lib/api";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 
 async function createDialogue(formData: FormData) {
@@ -65,12 +66,12 @@ export default async function NewDialoguePage() {
             </p>
           </div>
           <div className="flex justify-end gap-3 mt-4">
-            <a
+            <Link
               href="/world/dialogues"
               className="px-4 py-2 text-sm font-medium border border-fg/20 rounded-md hover:bg-fg/5"
             >
               Cancel
-            </a>
+            </Link>
             <button className="bg-brand text-white px-4 py-2 rounded-md text-sm font-medium">
               Create Scene
             </button>

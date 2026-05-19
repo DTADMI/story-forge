@@ -10,6 +10,7 @@ export function OfflineIndicator() {
   useEffect(() => {
     if (typeof navigator === "undefined") return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOffline(!navigator.onLine);
     if (!navigator.onLine) setShow(true);
 

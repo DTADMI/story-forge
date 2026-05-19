@@ -55,7 +55,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
             <Detail label="Website" value={user.website} />
             <Detail label="Bio" value={user.bio?.slice(0, 100)} />
             <Detail label="Subscription" value={user.subscriptionStatus || "free"} />
-            <Detail label="Joined" value={new Date(user.created_at).toLocaleDateString()} />
+            <Detail label="Joined" value={new Date(user.createdAt).toLocaleDateString()} />
           </div>
         </Card>
 

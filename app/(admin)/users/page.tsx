@@ -7,14 +7,14 @@ export default async function AdminUsersPage() {
 
   const users = await prisma.user.findMany({
     take: 50,
-    orderBy: { created_at: "desc" },
+    orderBy: { createdAt: "desc" },
     select: {
       id: true,
       name: true,
       username: true,
       email: true,
-      subscription_status: true,
-      created_at: true,
+      subscriptionStatus: true,
+      createdAt: true,
       _count: { select: { projects: true, characters: true } },
     },
   });
@@ -42,9 +42,9 @@ export default async function AdminUsersPage() {
                     <div className="text-xs text-fg/40">{u.email || u.id.slice(0, 12)}</div>
                   </td>
                   <td className="p-3">
-                    {u.subscription_status ? (
+                    {u.subscriptionStatus ? (
                       <span className="text-xs bg-brand/10 text-brand px-2 py-0.5 rounded-full">
-                        {u.subscription_status}
+                        {u.subscriptionStatus}
                       </span>
                     ) : (
                       <span className="text-xs text-fg/40">free</span>
@@ -52,7 +52,7 @@ export default async function AdminUsersPage() {
                   </td>
                   <td className="p-3">{u._count.projects}</td>
                   <td className="p-3">{u._count.characters}</td>
-                  <td className="p-3 text-fg/40">{new Date(u.created_at).toLocaleDateString()}</td>
+                  <td className="p-3 text-fg/40">{new Date(u.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>

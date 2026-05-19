@@ -12,9 +12,9 @@ export async function createActivity(params: {
   metadata?: Record<string, unknown>;
 }) {
   try {
-    await prisma.activity.create({ data: params });
+    await prisma.activity.create({ data: params as any });
   } catch {
-    // Non-critical — activity logging failures should not break the main operation
+    // Non-critical
   }
 }
 

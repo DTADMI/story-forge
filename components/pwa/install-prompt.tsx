@@ -19,6 +19,7 @@ export function PWAInstallPrompt() {
     const standalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       (window.navigator as { standalone?: boolean }).standalone === true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsStandalone(standalone);
 
     const iosDevice =

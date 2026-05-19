@@ -31,6 +31,7 @@ export default async function StatsPage() {
     prisma.progressLog.findMany({
       where: {
         userId: user.id,
+        // eslint-disable-next-line react-hooks/purity
         timestamp: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
       },
     }),

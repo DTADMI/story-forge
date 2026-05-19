@@ -37,11 +37,7 @@ export function CollaboratorManager({ projectId }: CollaboratorManagerProps) {
   const [showSearch, setShowSearch] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchCollaborators();
-  }, [projectId]);
-
-  const fetchCollaborators = async () => {
+  const fetchCollaborators = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/projects/${projectId}/collaborators`);
@@ -54,7 +50,12 @@ export function CollaboratorManager({ projectId }: CollaboratorManagerProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCollaborators();
+  }, [fetchCollaborators]);
 
   const searchUsers = useCallback(
     async (q: string) => {

@@ -30,10 +30,6 @@ export default function SharedWorldPage() {
   const [importing, setImporting] = useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchShared();
-  }, []);
-
   const fetchShared = async () => {
     try {
       const res = await fetch("/api/world/shared");
@@ -47,6 +43,11 @@ export default function SharedWorldPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchShared();
+  }, []);
 
   const handleImport = async (entityType: string, entityId: string, entityName: string) => {
     setImporting(entityId);

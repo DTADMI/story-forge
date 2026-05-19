@@ -72,8 +72,8 @@ async function ProjectList() {
 async function UserList() {
   const users = await prisma.user.findMany({
     take: 5,
-    orderBy: { created_at: "desc" },
-    select: { id: true, name: true, username: true, created_at: true },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, name: true, username: true, createdAt: true },
   });
   return (
     <div className="space-y-2">
@@ -83,7 +83,7 @@ async function UserList() {
             {u.username || u.name || u.id.slice(0, 8)}
           </Link>
           <span className="text-fg/40 shrink-0 ml-2">
-            {new Date(u.created_at).toLocaleDateString()}
+            {new Date(u.createdAt).toLocaleDateString()}
           </span>
         </div>
       ))}

@@ -17,7 +17,7 @@ export const GET = withErrorHandler(
         bio: true,
         website: true,
         image: true,
-        created_at: true,
+        createdAt: true,
       },
     });
     if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 });

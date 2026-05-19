@@ -36,7 +36,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     select: {
       subscriptionTier: true,
       role: true,
-      _count: { select: { characters: true } },
+      _count: { select: { projects: true, characters: true } },
     },
   });
 

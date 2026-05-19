@@ -22,6 +22,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     await prisma.projectVersion.create({
       data: {
         projectId: id,
+        userId: user.id,
         content: project.content,
         wordCount: project.wordCount,
         label: `Auto-saved ${new Date().toLocaleDateString()}`,
