@@ -259,4 +259,4 @@ export function isEnabledSync(key: string): boolean {
   return flag?.enabled ?? false;
 }
 
-export type { FeatureFlag };
+

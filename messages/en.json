@@ -1,0 +1,68 @@
+{
+  "common": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "projects": "Projects",
+    "settings": "Settings",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "noResults": "No results found",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "close": "Close",
+    "error": "Something went wrong",
+    "success": "Success",
+    "retry": "Retry"
+  },
+  "auth": {
+    "signInTitle": "Sign In to StoryForge",
+    "signUpTitle": "Create your account",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signingIn": "Signing in...",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGithub": "Continue with GitHub",
+    "or": "or"
+  },
+  "nav": {
+    "home": "Home",
+    "explore": "Explore",
+    "pricing": "Pricing"
+  },
+  "pricing": {
+    "title": "Choose your plan",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "lifetime": "Lifetime",
+    "subscribeMonthly": "Subscribe monthly",
+    "subscribeYearly": "Subscribe yearly",
+    "buyLifetime": "Buy lifetime",
+    "processing": "Processing..."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "myProjects": "My Projects",
+    "startWriting": "Start Writing",
+    "continueWriting": "Continue Writing"
+  },
+  "projects": {
+    "title": "Projects",
+    "newProject": "New Project",
+    "noProjects": "No projects yet",
+    "createFirst": "Create your first project"
+  }
+}

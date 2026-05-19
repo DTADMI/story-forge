@@ -1,7 +1,9 @@
-import { flags } from "@/lib/flags";
-import { Button } from "@/components/ui/button";
+import { isEnabledSync } from "@/lib/flags";
+import { SubscribeButton } from "@/components/billing/SubscribeButton";
 
 export default function PricingPage() {
+  const paymentsEnabled = isEnabledSync("payments");
+
   return (
     <main className="prose-lite mx-auto max-w-3xl px-6 py-12">
       <h1>Pricing</h1>
@@ -14,7 +16,10 @@ export default function PricingPage() {
             <li>Basic world-building tools</li>
             <li>Community features</li>
           </ul>
-          <a className="bg-brand mt-4 inline-block rounded-md px-4 py-2 text-white" href="/signup">
+          <a
+            className="bg-brand mt-4 inline-block rounded-md px-4 py-2 text-white"
+            href="/signup"
+          >
             Get Started
           </a>
         </div>
@@ -25,26 +30,24 @@ export default function PricingPage() {
             <li>Advanced world-building modules</li>
             <li>PDF/EPUB export, 3D maps, advanced analytics</li>
           </ul>
-          {flags.payments ? (
-            <form action="/api/checkout" method="post" className="mt-4">
-              <input type="hidden" name="plan" value="monthly" />
-              <Button variant="outline" type="submit">
-                Subscribe
-              </Button>
-            </form>
+          {paymentsEnabled ? (
+            <div className="mt-4 space-y-2">
+              <SubscribeButton plan="monthly" />
+              <SubscribeButton plan="yearly" />
+            </div>
           ) : (
-            <Button
-              variant="outline"
-              className="mt-4"
-              disabled
+            <p
+              className="mt-4 text-sm text-fg/40"
               title="Payments disabled via feature flag"
             >
               Payments disabled
-            </Button>
+            </p>
           )}
         </div>
       </div>
-      <p className="mt-8 text-[color:var(--fg)]/70">Team plans coming later.</p>
+      <p className="mt-8 text-[color:var(--fg)]/70">
+        Team plans coming later.
+      </p>
     </main>
   );
 }

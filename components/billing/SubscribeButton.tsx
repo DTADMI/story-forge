@@ -1,10 +1,18 @@
 "use client";
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 type Plan = "monthly" | "yearly" | "lifetime";
 
-export function SubscribeButton({ plan, disabled }: { plan: Plan; disabled?: boolean }) {
+export function SubscribeButton({
+  plan,
+  disabled,
+}: {
+  plan: Plan;
+  disabled?: boolean;
+}) {
+  const t = useTranslations();
   const [loading, setLoading] = React.useState(false);
   return (
     <Button
@@ -35,12 +43,12 @@ export function SubscribeButton({ plan, disabled }: { plan: Plan; disabled?: boo
       }}
     >
       {loading
-        ? "Processing…"
+        ? t("pricing.processing")
         : plan === "lifetime"
-          ? "Buy lifetime"
+          ? t("pricing.buyLifetime")
           : plan === "yearly"
-            ? "Subscribe yearly"
-            : "Subscribe monthly"}
+            ? t("pricing.subscribeYearly")
+            : t("pricing.subscribeMonthly")}
     </Button>
   );
 }

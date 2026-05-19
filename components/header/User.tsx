@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createBrowserClient } from "@/lib/supabase/client";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 export default function HeaderUser() {
+  const t = useTranslations();
   const supabase = createBrowserClient();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ export default function HeaderUser() {
   if (!user) {
     return (
       <Link href="/signin" style={{ fontWeight: 600 }}>
-        Sign in
+        {t("common.signIn")}
       </Link>
     );
   }
@@ -27,7 +29,9 @@ export default function HeaderUser() {
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <span style={{ color: "#374151", fontSize: 14 }}>{user.email}</span>
       <button
-        onClick={() => supabase.auth.signOut().then(() => (window.location.href = "/"))}
+        onClick={() =>
+          supabase.auth.signOut().then(() => (window.location.href = "/"))
+        }
         style={{
           border: 0,
           background: "transparent",
@@ -35,7 +39,7 @@ export default function HeaderUser() {
           cursor: "pointer",
         }}
       >
-        Sign out
+        {t("common.signOut")}
       </button>
     </div>
   );

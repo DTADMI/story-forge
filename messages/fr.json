@@ -1,0 +1,68 @@
+{
+  "common": {
+    "signIn": "Connexion",
+    "signUp": "Inscription",
+    "signOut": "Déconnexion",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "projects": "Projets",
+    "settings": "Paramètres",
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "search": "Rechercher",
+    "noResults": "Aucun résultat trouvé",
+    "back": "Retour",
+    "next": "Suivant",
+    "submit": "Envoyer",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "error": "Une erreur est survenue",
+    "success": "Succès",
+    "retry": "Réessayer"
+  },
+  "auth": {
+    "signInTitle": "Connectez-vous à StoryForge",
+    "signUpTitle": "Créez votre compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "hasAccount": "Vous avez déjà un compte ?",
+    "signingIn": "Connexion en cours...",
+    "continueWithGoogle": "Continuer avec Google",
+    "continueWithGithub": "Continuer avec GitHub",
+    "or": "ou"
+  },
+  "nav": {
+    "home": "Accueil",
+    "explore": "Explorer",
+    "pricing": "Tarifs"
+  },
+  "pricing": {
+    "title": "Choisissez votre formule",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "lifetime": "À vie",
+    "subscribeMonthly": "S'abonner mensuellement",
+    "subscribeYearly": "S'abonner annuellement",
+    "buyLifetime": "Acheter à vie",
+    "processing": "Traitement en cours..."
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bon retour",
+    "myProjects": "Mes projets",
+    "startWriting": "Commencer à écrire",
+    "continueWriting": "Continuer à écrire"
+  },
+  "projects": {
+    "title": "Projets",
+    "newProject": "Nouveau projet",
+    "noProjects": "Aucun projet pour le moment",
+    "createFirst": "Créez votre premier projet"
+  }
+}
