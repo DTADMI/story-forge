@@ -11,7 +11,7 @@ interface JoinLeaveButtonProps {
   isPrivate: boolean;
 }
 
-export function JoinLeaveButton({ groupId, isMember, isPrivate }: JoinLeaveButtonProps) {
+export function JoinLeaveButton({ groupId, isMember }: JoinLeaveButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [memberStatus, setMemberStatus] = useState(isMember);
   const router = useRouter();

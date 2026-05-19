@@ -65,6 +65,7 @@ model User {
   sentMessages     Message[]  @relation("SentMessages")
   receivedMessages Message[]  @relation("ReceivedMessages")
   notifications    Notification[]
+  auditEvents      AuditEvent[]
 
   blockedUsers UserBlock[] @relation("Blocker")
   blockedBy    UserBlock[] @relation("Blocked")
@@ -496,7 +497,7 @@ model GroupMember {
   @@unique([groupId, userId])
 }
 
-// NextAuth.js models
+// Legacy NextAuth.js models — kept for existing data compatibility (Auth migrated to Supabase)
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -531,6 +532,35 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// Audit trail for security-sensitive operations
+model AuditEvent {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  action     String   // e.g., "project.create", "user.update", "billing.checkout"
+  entityId   String?
+  entityType String?
+  metadata   Json     @default("{}")
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+}
+
+// Feature flags — persisted in DB and synced to Redis
+model FeatureFlag {
+  id          String  @id
+  name        String
+  description String?
+  type        String  @default("boolean")
+  enabled     Boolean @default(false)
+  value       Json    @default("false")
+  category    String  @default("core")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Message {

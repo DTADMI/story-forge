@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { errorResponse, validationError, notFound } from "@/lib/error-response";
+import { validationError, notFound } from "@/lib/error-response";
 import { auditLog } from "@/lib/audit";
 import { withErrorHandler } from "@/lib/api-handler";
 

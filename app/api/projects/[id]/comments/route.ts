@@ -3,7 +3,7 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const user = await requireUser();
+  await requireUser();
   const { id } = await params;
 
   const comments = await prisma.comment.findMany({

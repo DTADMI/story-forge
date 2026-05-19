@@ -75,7 +75,7 @@ export function RelationshipGraph({ centralCharacter, relatedCharacters }: Relat
         })}
 
         {/* Relationship strength labels */}
-        {nodes.map((node, i) => {
+        {nodes.map((node, _i) => {
           const midX = centerX + (node.x - centerX) * 0.65;
           const midY = centerY + (node.y - centerY) * 0.65;
           return (

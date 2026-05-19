@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import { MessageThread } from "./message-thread";
 import Link from "next/link";
+import NextImage from "next/image";
 
 export default async function MessageDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getUser();
@@ -49,7 +50,7 @@ export default async function MessageDetailPage({ params }: { params: Promise<{ 
         </Link>
         <div className="h-8 w-8 rounded-full bg-brand/10 flex items-center justify-center text-sm font-bold text-brand">
           {partner.image ? (
-            <img src={partner.image} alt="" className="h-8 w-8 rounded-full object-cover" />
+            <NextImage src={partner.image} alt="" width={32} height={32} unoptimized className="h-8 w-8 rounded-full object-cover" />
           ) : (
             (partner.username || partner.name || "?").charAt(0).toUpperCase()
           )}

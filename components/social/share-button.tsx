@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/components/toast";
-import { Share2, Copy, X, Link2 } from "lucide-react";
+import { Share2, X, Link2 } from "lucide-react";
 
 interface ShareButtonProps {
   type: "project" | "character" | "location";

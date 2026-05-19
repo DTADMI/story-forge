@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAiAdapter, resolveProvider } from "@/lib/ai";
+import { getAiAdapter } from "@/lib/ai";
 
 interface SuggestRequest {
   feature: "suggest" | "character" | "plot" | "style";
@@ -40,8 +40,6 @@ export async function POST(request: NextRequest) {
       temperature: 0.8,
       max_tokens: 500,
       response_format: { type: "json_object" },
-      featureId: feature,
-      allowFreeFallback: true,
     });
 
     let result: Record<string, unknown>;

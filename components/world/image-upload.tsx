@@ -128,6 +128,7 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
       >
         {preview ? (
           <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={preview}
               alt={`${entityType} image`}

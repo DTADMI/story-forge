@@ -1,9 +1,10 @@
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { AvatarDefault } from "@/components/assets/avatar-default";
 import { Card } from "@/components/ui/card";
-import Link from "next/link";
+import NextImage from "next/image";
 import { AvatarUploadForm } from "./avatar-upload-form";
 import { ScopeSelector } from "./scope-selector";
 
@@ -40,9 +41,12 @@ export default async function ProfilePage() {
         <div className="flex items-center gap-6">
           <div className="relative">
             {profile.image ? (
-              <img
+              <NextImage
                 src={profile.image}
                 alt={profile.username || "Avatar"}
+                width={80}
+                height={80}
+                unoptimized
                 className="h-20 w-20 rounded-full object-cover border-2 border-fg/10"
               />
             ) : (

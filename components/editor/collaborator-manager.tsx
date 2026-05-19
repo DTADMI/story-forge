@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/components/toast";
-import { Plus, X, Search, UserPlus, Shield } from "lucide-react";
+import { Plus, X, Search, UserPlus } from "lucide-react";
 
 interface Collaborator {
   id: string;
@@ -139,15 +139,6 @@ export function CollaboratorManager({ projectId }: CollaboratorManagerProps) {
     } catch {
       toast({ title: "Failed to update role", variant: "destructive" });
     }
-  };
-
-  const roleBadge = (role: string) => {
-    const variants: Record<string, string> = {
-      owner: "bg-brand/20 text-brand text-xs px-1.5 py-0.5 rounded",
-      editor: "bg-blue-500/20 text-blue-400 text-xs px-1.5 py-0.5 rounded",
-      viewer: "bg-fg/10 text-fg/50 text-xs px-1.5 py-0.5 rounded",
-    };
-    return <span className={variants[role] || variants.viewer}>{role}</span>;
   };
 
   return (

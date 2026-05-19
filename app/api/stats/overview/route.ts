@@ -11,7 +11,7 @@ export async function GET() {
     characterCount,
     badgeCount,
     currentStreak,
-    longestStreak,
+    ,
     goalsCompleted,
   ] = await Promise.all([
     // Total words

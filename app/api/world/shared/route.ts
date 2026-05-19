@@ -81,7 +81,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Entity not found" }, { status: 404 });
   }
 
-  const { id, createdAt, updatedAt, isShared: _, sharedFromProjectId: __, ...data } = source;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id: _id, createdAt: _c, updatedAt: _u, isShared: _, sharedFromProjectId: __, ...data } = source;
 
   const copy = await (model as any).create({
     data: {

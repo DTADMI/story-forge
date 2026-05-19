@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
+import NextImage from "next/image";
 
 export default async function MessagesPage() {
   const user = await getUser();
@@ -75,9 +76,12 @@ export default async function MessagesPage() {
               <Card className="p-4 hover:bg-fg/5 transition-colors cursor-pointer flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-brand/10 flex items-center justify-center text-sm font-bold text-brand shrink-0">
                   {conv.partner.image ? (
-                    <img
+                    <NextImage
                       src={conv.partner.image}
                       alt=""
+                      width={40}
+                      height={40}
+                      unoptimized
                       className="h-10 w-10 rounded-full object-cover"
                     />
                   ) : (

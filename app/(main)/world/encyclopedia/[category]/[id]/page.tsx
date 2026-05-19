@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import NextImage from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { EncyclopediaEntryDelete } from "./delete";
 
@@ -100,11 +101,12 @@ export default async function EncyclopediaEntryDetailPage({
 
       {/* Image */}
       {(entry.metadata as any)?.imageUrl && (
-        <div className="mb-6">
-          <img
+        <div className="relative w-full h-64 mb-6">
+          <NextImage
             src={(entry.metadata as any).imageUrl}
             alt={entry.title}
-            className="w-full max-h-96 object-cover rounded-lg border border-fg/10"
+            fill
+            className="object-cover rounded-lg border border-fg/10"
           />
         </div>
       )}

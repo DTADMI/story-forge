@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { errorResponse, notFound } from "@/lib/error-response";
+import { notFound } from "@/lib/error-response";
 import { generateEpub } from "@/lib/export-epub";
 import { generatePdfHtml } from "@/lib/export-pdf";
 

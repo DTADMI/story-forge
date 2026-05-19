@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { EmptyState } from "@/components/empty-state";
 import Link from "next/link";
-import { Image } from "lucide-react";
+import NextImage from "next/image";
+import { Image as ImageIcon } from "lucide-react";
 
 export default async function GalleryPage() {
   const user = await getUser();
@@ -46,7 +47,7 @@ export default async function GalleryPage() {
 
       {items.length === 0 ? (
         <EmptyState
-          icon={<Image className="h-6 w-6 text-fg/30" />}
+          icon={<ImageIcon className="h-6 w-6 text-fg/30" />}
           title="No images yet"
           description="Upload images to your characters and locations to see them here."
           action={{ label: "Go to World", href: "/world" }}
@@ -56,10 +57,11 @@ export default async function GalleryPage() {
           {items.map((item) => (
             <Link key={`${item.type}-${item.id}`} href={item.href}>
               <div className="group relative aspect-square overflow-hidden rounded-lg border border-fg/10 bg-fg/5">
-                <img
+                <NextImage
                   src={item.url}
                   alt={item.name}
-                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                  fill
+                  className="object-cover transition-transform group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-3">
                   <div>

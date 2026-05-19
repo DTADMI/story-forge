@@ -3,8 +3,6 @@ interface ChatCompletionParams {
   temperature?: number;
   max_tokens?: number;
   response_format?: { type: string };
-  featureId?: string;
-  allowFreeFallback?: boolean;
 }
 
 interface ChatCompletionResponse {

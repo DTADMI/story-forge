@@ -27,6 +27,7 @@ export default async function GroupDetailPage({ params }: { params: Promise<{ id
   if (!group) notFound();
 
   const isMember = group.members.some((m) => m.userId === user.id);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isAdmin = group.members.some((m) => m.userId === user.id && m.role === "admin");
 
   return (

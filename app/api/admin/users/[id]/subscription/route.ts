@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireUser } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 
