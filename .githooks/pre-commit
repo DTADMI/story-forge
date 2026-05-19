@@ -4,9 +4,9 @@ set -euo pipefail
 echo "==> StoryForge pre-commit checks"
 
 echo "-> Checking formatting..."
-pnpm -C web format:check 2>&1 || echo "[WARN] Formatting issues found — run 'pnpm format' before pushing"
+pnpm format:check 2>&1 || echo "[WARN] Formatting issues found — run 'pnpm format' before pushing"
 
 echo "-> Running tests..."
-pnpm -C web test:run 2>&1 || echo "[WARN] Tests failed — review before pushing"
+pnpm test:run 2>&1 || echo "[WARN] Tests failed — review before pushing"
 
 echo "-> Pre-commit checks complete"
