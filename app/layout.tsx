@@ -10,6 +10,8 @@ import { Providers } from "@/components/providers";
 import { ToastProvider } from "@/components/toast";
 import { SkipLink } from "@/components/a11y/skip-link";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "StoryForge",
   description: "Gamified writing platform",

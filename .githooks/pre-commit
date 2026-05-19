@@ -6,7 +6,16 @@ echo "==> StoryForge pre-commit checks"
 echo "-> Checking formatting..."
 pnpm format:check 2>&1 || echo "[WARN] Formatting issues found — run 'pnpm format' before pushing"
 
+echo "-> Running lint..."
+pnpm lint 2>&1 || echo "[WARN] Lint issues found — review before pushing"
+
+echo "-> Checking types..."
+pnpm typecheck 2>&1 || echo "[WARN] Type errors found — review before pushing"
+
 echo "-> Running tests..."
 pnpm test:run 2>&1 || echo "[WARN] Tests failed — review before pushing"
+
+echo "-> Building..."
+pnpm build 2>&1 || echo "[WARN] Build failed — review before pushing"
 
 echo "-> Pre-commit checks complete"
