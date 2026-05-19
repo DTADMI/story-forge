@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { withErrorHandler } from "@/lib/api-handler";
+import { z } from "zod";
+
+const createNotificationSchema = z.object({
+  type: z.enum(["comment", "cheer", "follow", "badge", "message", "group_invite"]),
+  title: z.string().min(1, "Title is required").max(200),
+  body: z.string().max(1000).optional(),
+  entityId: z.string().optional(),
+  entityType: z.string().optional(),
+});
 
 export const GET = withErrorHandler(async () => {
   const user = await requireUser();
@@ -18,16 +27,11 @@ export const GET = withErrorHandler(async () => {
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
   const body = await request.json();
-  const { type, title, body: bodyText, entityId, entityType } = body;
 
-  if (!type || !title) {
-    return NextResponse.json({ error: "type and title are required" }, { status: 400 });
-  }
-
-  const validTypes = ["comment", "cheer", "follow", "badge", "message", "group_invite"];
-  if (!validTypes.includes(type)) {
+  const parsed = createNotificationSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: `Invalid type. Must be one of: ${validTypes.join(", ")}` },
+      { error: "Validation failed", detail: parsed.error.issues.map((i) => i.message).join("; ") },
       { status: 400 }
     );
   }
@@ -35,11 +39,11 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const notification = await prisma.notification.create({
     data: {
       userId: user.id,
-      type,
-      title,
-      body: bodyText || null,
-      entityId: entityId || null,
-      entityType: entityType || null,
+      type: parsed.data.type,
+      title: parsed.data.title,
+      body: parsed.data.body || null,
+      entityId: parsed.data.entityId || null,
+      entityType: parsed.data.entityType || null,
     },
   });
 

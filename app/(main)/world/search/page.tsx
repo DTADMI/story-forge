@@ -58,15 +58,21 @@ export default function WorldSearchPage() {
   const [results, setResults] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const doSearch = useCallback(async (q: string) => {
     if (!q.trim()) {
       setResults({});
       return;
     }
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
     setLoading(true);
     try {
-      const res = await fetch(`/api/world/search?q=${encodeURIComponent(q.trim())}`);
+      const res = await fetch(`/api/world/search?q=${encodeURIComponent(q.trim())}`, {
+        signal: controller.signal,
+      });
       if (res.ok) {
         const data = await res.json();
         setResults(data.results || {});

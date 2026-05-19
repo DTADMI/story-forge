@@ -12,23 +12,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   });
   if (!project) return notFound("Project not found");
 
-  // Auto-save current version if content changed
-  const lastVersion = await prisma.projectVersion.findFirst({
-    where: { projectId: id },
-    orderBy: { createdAt: "desc" },
-  });
-
-  if (project.content && (!lastVersion || lastVersion.content !== project.content)) {
-    await prisma.projectVersion.create({
-      data: {
-        projectId: id,
-        userId: user.id,
-        content: project.content,
-        wordCount: project.wordCount,
-        label: `Auto-saved ${new Date().toLocaleDateString()}`,
-      },
-    });
-  }
+  // Auto-save disabled in GET to avoid write side-effects.
+  // The editor's autosave-indicator handles saving.
+  // To force a save, POST to this endpoint with { versionId }.
 
   const versions = await prisma.projectVersion.findMany({
     where: { projectId: id },

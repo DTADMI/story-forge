@@ -1,19 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
 
-const GOAL_TYPES = [
-  "words_per_day",
-  "pages_per_week",
-  "scenes_completed",
-  "panels_per_day",
-] as const;
+const createGoalSchema = z.object({
+  target: z.number().min(1, "Target must be at least 1"),
+  type: z.enum(["words_per_day", "pages_per_week", "scenes_completed", "panels_per_day"]).optional(),
+  cadence: z.enum(["daily", "weekly"]).optional(),
+});
 
 export async function POST(request: NextRequest) {
   const user = await requireUser();
-  const { target, type, cadence } = await request.json();
-  const goalType = GOAL_TYPES.includes(type) ? type : "words_per_day";
-  const goalCadence = cadence === "weekly" ? "weekly" : "daily";
+  const body = await request.json();
+
+  const parsed = createGoalSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", detail: parsed.error.issues.map((i) => i.message).join("; ") },
+      { status: 400 }
+    );
+  }
+
+  const goalType = parsed.data.type ?? "words_per_day";
+  const goalCadence = parsed.data.cadence ?? "daily";
 
   // Deactivate existing goals of the same type
   await prisma.goal.updateMany({
@@ -25,7 +34,7 @@ export async function POST(request: NextRequest) {
     data: {
       userId: user.id,
       type: goalType,
-      target: Number(target) || 500,
+      target: parsed.data.target,
       cadence: goalCadence,
     },
   });

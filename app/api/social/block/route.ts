@@ -1,17 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const blockSchema = z.object({
+  targetUserId: z.string().min(1, "targetUserId is required"),
+});
 
 export async function POST(request: NextRequest) {
   const user = await requireUser();
-  const body: { targetUserId: string } = await request.json();
+  const body = await request.json();
 
-  if (!body.targetUserId || body.targetUserId === user.id) {
+  const parsed = blockSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: "Invalid target user" }, { status: 400 });
+  }
+  if (parsed.data.targetUserId === user.id) {
+    return NextResponse.json({ error: "Cannot block yourself" }, { status: 400 });
   }
 
   const existing = await prisma.userBlock.findUnique({
-    where: { blockerId_blockedId: { blockerId: user.id, blockedId: body.targetUserId } },
+    where: { blockerId_blockedId: { blockerId: user.id, blockedId: parsed.data.targetUserId } },
   });
 
   if (existing) {

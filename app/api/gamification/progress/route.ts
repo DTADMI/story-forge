@@ -2,15 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { withErrorHandler } from "@/lib/api-handler";
+import { z } from "zod";
+
+const logProgressSchema = z.object({
+  value: z.number().min(0),
+  goalId: z.string().optional(),
+});
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
-  const { value, goalId } = await request.json();
+  const body = await request.json();
+
+  const parsed = logProgressSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", detail: parsed.error.issues.map((i) => i.message).join("; ") },
+      { status: 400 }
+    );
+  }
+
   const log = await prisma.progressLog.create({
-    data: { userId: user.id, goalId: goalId || undefined, value: Number(value) || 0 },
+    data: { userId: user.id, goalId: parsed.data.goalId || undefined, value: parsed.data.value },
   });
-  // Award 1 Ink per 500 words
-  const words = Number(value) || 0;
+  const words = parsed.data.value;
   const inkEarned = Math.floor(words / 500);
   if (inkEarned > 0) {
     const wallet = await prisma.inkPot.upsert({

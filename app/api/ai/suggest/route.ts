@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAiAdapter } from "@/lib/ai";
+import { checkRateLimit, RateLimitTiers } from "@/lib/rate-limit";
 
 interface SuggestRequest {
   feature: "suggest" | "character" | "plot" | "style";
@@ -19,6 +20,13 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
+    const rateKey = `${RateLimitTiers.AI.keyPrefix}:${ip}`;
+    const { allowed } = await checkRateLimit(rateKey, RateLimitTiers.AI.maxRequests);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests. Try again later." }, { status: 429 });
+    }
+
     const body = (await request.json()) as SuggestRequest;
     const { feature, context, multiple } = body;
 

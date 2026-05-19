@@ -2,8 +2,23 @@ import Link from "next/link";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { getUser } from "@/lib/supabase/server";
+import { getCached, setCached, buildCacheKey } from "@/lib/cache";
 import { prisma } from "@/lib/prisma";
 import { BarChart3, Activity, Trophy } from "lucide-react";
+
+async function getUserAdminStatus(userId: string): Promise<boolean> {
+  const cacheKey = buildCacheKey("user", userId, "isAdmin");
+  const cached = await getCached<boolean>(cacheKey);
+  if (cached !== null) return cached;
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  const isAdmin = dbUser?.role === "admin";
+  await setCached(cacheKey, isAdmin, 300);
+  return isAdmin;
+}
 
 export async function Header() {
   const user = await getUser();
@@ -11,11 +26,7 @@ export async function Header() {
   let isUserAdmin = false;
   if (user) {
     try {
-      const dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { role: true },
-      });
-      isUserAdmin = dbUser?.role === "admin";
+      isUserAdmin = await getUserAdminStatus(user.id);
     } catch {
       // user not found in DB
     }

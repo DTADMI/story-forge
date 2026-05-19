@@ -210,6 +210,8 @@ model Character {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Location {
@@ -229,6 +231,8 @@ model Location {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model TimelineEvent {
@@ -255,6 +259,8 @@ model TimelineEvent {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Dialogue {
@@ -270,6 +276,8 @@ model Dialogue {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model EncyclopediaEntry {

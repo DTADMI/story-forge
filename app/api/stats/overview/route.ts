@@ -5,42 +5,23 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   const user = await requireUser();
 
-  const [
-    totalWords,
-    projectCount,
-    characterCount,
-    badgeCount,
-    currentStreak,
-    ,
-    goalsCompleted,
-  ] = await Promise.all([
-    // Total words
-    prisma.project.aggregate({ where: { userId: user.id }, _sum: { wordCount: true } }),
-    // Project count
-    prisma.project.count({ where: { userId: user.id } }),
-    // Character count
-    prisma.character.count({ where: { userId: user.id } }),
-    // Badge count
-    prisma.userBadge.count({ where: { userId: user.id } }),
-    // Current streak (simplified — last 90 days)
-    prisma.progressLog.findMany({
-      where: { userId: user.id },
-      orderBy: { timestamp: "desc" },
-      take: 90,
-    }),
-    // Longest streak will reuse the same data
-    prisma.progressLog.findMany({
-      where: { userId: user.id },
-      orderBy: { timestamp: "desc" },
-      take: 365,
-    }),
-    // Goals
-    prisma.goal.count({ where: { userId: user.id } }),
-  ]);
+  const [totalWords, projectCount, characterCount, badgeCount, streakData, goalsCompleted] =
+    await Promise.all([
+      prisma.project.aggregate({ where: { userId: user.id }, _sum: { wordCount: true } }),
+      prisma.project.count({ where: { userId: user.id } }),
+      prisma.character.count({ where: { userId: user.id } }),
+      prisma.userBadge.count({ where: { userId: user.id } }),
+      prisma.progressLog.findMany({
+        where: { userId: user.id },
+        orderBy: { timestamp: "desc" },
+        select: { timestamp: true, value: true },
+        take: 365,
+      }),
+      prisma.goal.count({ where: { userId: user.id } }),
+    ]);
 
-  // Calculate streaks
   const daysWithProgress = new Set(
-    currentStreak.map((l) => l.timestamp.toISOString().split("T")[0])
+    streakData.map((l) => l.timestamp.toISOString().split("T")[0])
   );
   let streak = 0;
   let maxStreak = 0;
@@ -61,7 +42,6 @@ export async function GET() {
   }
   if (streak === 0) streak = currentRun;
 
-  // Word count per day for last 30 days
   const last30Days = new Map<string, number>();
   for (let i = 0; i < 30; i++) {
     const d = new Date(today);
@@ -69,23 +49,17 @@ export async function GET() {
     last30Days.set(d.toISOString().split("T")[0], 0);
   }
 
-  const recentLogs = await prisma.progressLog.findMany({
-    where: {
-      userId: user.id,
-      timestamp: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
-    },
-  });
-
-  for (const log of recentLogs) {
+  for (const log of streakData) {
     const day = log.timestamp.toISOString().split("T")[0];
-    last30Days.set(day, (last30Days.get(day) || 0) + log.value);
+    if (last30Days.has(day)) {
+      last30Days.set(day, (last30Days.get(day) || 0) + log.value);
+    }
   }
 
   const trend = Array.from(last30Days.entries())
     .map(([date, words]) => ({ date, words }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
-  // Genre breakdown
   const projects = await prisma.project.findMany({
     where: { userId: user.id },
     select: { genre: true, wordCount: true },

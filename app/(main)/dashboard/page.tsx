@@ -27,6 +27,7 @@ export default async function DashboardPage() {
       where: { userId: user.id },
       orderBy: { timestamp: "desc" },
       take: 90,
+      select: { timestamp: true },
     }),
   ]);
 
