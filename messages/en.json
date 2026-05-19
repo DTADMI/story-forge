@@ -1,4 +1,25 @@
 {
+  "home": {
+    "title": "StoryForge",
+    "description": "A gamified writing platform that helps you build worlds, track characters and relationships, and share your stories with the right audience. Stay motivated with streaks, goals, and gems — all while protecting your wellbeing.",
+    "cta": {
+      "signIn": "Sign in",
+      "pricing": "Pricing",
+      "publicFeed": "Public Feed"
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "step1": "Create projects and pick your preferred genre. Organize your story into entities like Characters, Locations, Timelines, Dialogues, and more.",
+      "step2": "Control visibility with privacy scopes: private, friends, public‑auth, or public‑anyone.",
+      "step3": "Earn gems when you hit your goals and use them to customize your experience or send gifts to friends."
+    },
+    "tryBasics": {
+      "title": "Try the basics",
+      "description": "Explore our components and styling on the demo page, or browse the public feed to see sample stories shared by the community.",
+      "componentsDemo": "Components demo",
+      "publicFeed": "Public feed"
+    }
+  },
   "common": {
     "signIn": "Sign In",
     "signUp": "Sign Up",
