@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     user: { update: vi.fn() },
+    auditEvent: { findFirst: vi.fn(), create: vi.fn() },
   },
 }));
 
@@ -65,6 +66,7 @@ describe("Billing Webhook API", () => {
       type: "checkout.session.completed",
       data: {
         object: {
+          id: "cs_test_123",
           client_reference_id: "user-1",
         },
       },
@@ -74,11 +76,12 @@ describe("Billing Webhook API", () => {
       id: "user-1",
       subscriptionStatus: "active",
     });
+    (prisma.auditEvent.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     const { POST } = await import("@/app/api/billing/webhook/route");
     const res = await POST(mockRequest(JSON.stringify({
       type: "checkout.session.completed",
-      data: { object: { client_reference_id: "user-1" } },
+      data: { object: { id: "cs_test_123", client_reference_id: "user-1" } },
     })));
 
     expect(res.status).toBe(200);

@@ -9,8 +9,8 @@ export default async function WorldPage() {
   if (!user) redirect("/signin");
 
   const [characters, locations, timeline] = await Promise.all([
-    prisma.character.findMany({ where: { userId: user.id }, orderBy: { name: "asc" } }),
-    prisma.location.findMany({ where: { userId: user.id }, orderBy: { name: "asc" } }),
+    prisma.character.findMany({ where: { userId: user.id }, orderBy: { name: "asc" }, take: 50 }),
+    prisma.location.findMany({ where: { userId: user.id }, orderBy: { name: "asc" }, take: 50 }),
     prisma.timelineEvent.findMany({
       where: { userId: user.id },
       orderBy: { date: "asc" },

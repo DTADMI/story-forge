@@ -22,7 +22,13 @@ export async function POST(request: NextRequest) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const userId = session.client_reference_id;
-    if (userId) {
+    if (userId && session.id) {
+      const idempotencyKey = `stripe_checkout_${session.id}`;
+      const existing = await prisma.auditEvent.findFirst({
+        where: { action: "stripe.checkout.completed", entityId: idempotencyKey },
+      });
+      if (existing) return NextResponse.json({ received: true, deduplicated: true });
+
       await prisma.user.update({
         where: { id: userId },
         data: {
@@ -30,6 +36,16 @@ export async function POST(request: NextRequest) {
           subscriptionExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         },
       });
+
+      await prisma.auditEvent.create({
+        data: {
+          userId,
+          action: "stripe.checkout.completed",
+          entityId: idempotencyKey,
+          entityType: "stripe_session",
+          metadata: { sessionId: session.id, mode: session.mode },
+        },
+      } as any);
     }
   }
 

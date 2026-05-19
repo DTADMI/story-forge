@@ -1,5 +1,5 @@
 function Pulse({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return <div className={`animate-pulse rounded-md bg-fg/10 ${className || ""}`} />;
+  return <div className={`animate-pulse rounded-md bg-fg/10 ${className || ""}`} style={style} />;
 }
 
 export function SkeletonCard({ lines = 3 }: { lines?: number }) {

@@ -7,6 +7,28 @@
  */
 import { getRedis } from "./redis";
 
+// Lazy-import Prisma to avoid build-time coupling for client components
+async function getPrismaFeatureFlags(): Promise<FeatureFlag[]> {
+  try {
+    const { prisma } = await import("./prisma");
+    const rows = await prisma.featureFlag.findMany();
+    if (rows.length > 0) {
+      return rows.map((r) => ({
+        id: r.id,
+        name: r.name,
+        description: r.description ?? "",
+        type: (r.type as FlagType) ?? "boolean",
+        enabled: r.enabled,
+        value: r.value as boolean | number | string[],
+        category: (r.category as FeatureFlag["category"]) ?? "core",
+      }));
+    }
+  } catch {
+    // DB unavailable
+  }
+  return [];
+}
+
 export type FlagType = "boolean" | "percentage" | "user_list" | "subscription_tier";
 
 export interface FeatureFlag {
@@ -219,6 +241,15 @@ function normalizeKey(key: string): string {
 }
 
 export async function loadFlags(): Promise<FeatureFlag[]> {
+  // 1. Try DB-backed feature flags first (admin dashboard persisted)
+  try {
+    const dbFlags = await getPrismaFeatureFlags();
+    if (dbFlags.length > 0) return dbFlags;
+  } catch {
+    // DB unavailable — fall through
+  }
+
+  // 2. Try Redis cache
   try {
     const redis = getRedis();
     const stored = await redis.get(REDIS_KEY);
