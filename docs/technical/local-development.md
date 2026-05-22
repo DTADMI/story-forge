@@ -143,3 +143,39 @@ Flags are managed in `lib/flags.ts` and can be toggled via:
 - Admin dashboard: `/admin/flags`
 
 See `docs/technical/feature-flags-testing.md` for details.
+
+## Vercel Deployment
+
+### Required Environment Variables
+
+Set these in **Vercel Project Settings → Environment Variables**:
+
+| Variable | Critical | Source |
+|---|---|---|
+| `DATABASE_URL` | **Build + Runtime** | Supabase Dashboard → Project Settings → Database → Connection string (use Session pooler for serverless) |
+| `NEXT_PUBLIC_SUPABASE_URL` | **Runtime** | Supabase Dashboard → Project Settings → API → Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | **Runtime** | Supabase Dashboard → Project Settings → API → anon/public key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Runtime (admin only) | Supabase Dashboard → Project Settings → API → service_role key |
+| `NEXT_PUBLIC_SITE_URL` | Runtime | Your Vercel deployment URL (e.g., `https://story-forge-teal.vercel.app`) |
+
+### Why DATABASE_URL is Critical for Build
+
+The Prisma client generation (`prisma generate`) runs during `pnpm build`. It requires `DATABASE_URL` to resolve the schema datasource. The Next.js build also imports `lib/prisma.ts` which references `DATABASE_URL`. Without it, the build fails with `TypeError: The "path" argument must be of type string. Received undefined`.
+
+### Build Command
+
+```bash
+pnpm build
+# Which runs: prisma generate --schema prisma/schema.prisma && next build --webpack
+```
+
+### Troubleshooting
+
+**Build fails with `ERR_INVALID_ARG_TYPE` / `path argument must be of type string`:**
+→ `DATABASE_URL` is not set in Vercel environment variables. Add it.
+
+**App returns 500 after successful deploy:**
+→ Check Vercel Runtime Logs. Most likely `DATABASE_URL` or Supabase env vars are missing at runtime.
+
+**Prisma client types not found:**
+→ Ensure `prisma generate` runs before `next build`. The default `pnpm build` script handles this.

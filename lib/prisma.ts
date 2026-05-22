@@ -6,10 +6,39 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-export const prisma = global.prisma ?? new PrismaClient({ adapter });
+let prismaClient: PrismaClient | null = null;
 
-if (process.env.NODE_ENV !== "production") {
-  global.prisma = prisma;
+function createPrismaClient(): PrismaClient {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error(
+      "DATABASE_URL environment variable is required. Set it in your Vercel project settings or .env file."
+    );
+  }
+
+  const pool = new Pool({ connectionString: databaseUrl });
+  const adapter = new PrismaPg(pool);
+
+  if (process.env.NODE_ENV === "production") {
+    return new PrismaClient({ adapter });
+  }
+
+  // Development: reuse client across hot reloads
+  if (!global.prisma) {
+    global.prisma = new PrismaClient({ adapter });
+  }
+  return global.prisma;
 }
+
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    if (!prismaClient) {
+      prismaClient = createPrismaClient();
+    }
+    const value = (prismaClient as unknown as Record<string | symbol, unknown>)[prop];
+    if (typeof value === "function") {
+      return value.bind(prismaClient);
+    }
+    return value;
+  },
+});
