@@ -1,36 +1,35 @@
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { Card } from "@/components/ui/card";
 import { SettingsForm } from "./settings-form";
 
-export default async function ProfileSettingsPage() {
+export default async function SettingsPage() {
   const user = await getUser();
   if (!user) redirect("/signin");
 
   const profile = await prisma.user.findUnique({
     where: { id: user.id },
+    select: { settings: true },
   });
 
-  if (!profile) redirect("/signin");
-
-  const settings = (profile.settings as Record<string, unknown>) ?? {};
-  const defaultScope = (settings.defaultPublicationScope as string) || "PRIVATE";
-  const breakReminders = (settings.breakReminders as boolean) ?? false;
-  const writingCap = (settings.writingCap as number) ?? null;
+  const s = (profile?.settings as Record<string, unknown>) || {};
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-10">
-      <h1 className="text-2xl font-extrabold mb-6">Profile Settings</h1>
-      <SettingsForm
-        userId={profile.id}
-        initialName={profile.name ?? ""}
-        initialUsername={profile.username ?? ""}
-        initialBio={profile.bio ?? ""}
-        initialWebsite={profile.website ?? ""}
-        initialDefaultScope={defaultScope}
-        initialBreakReminders={breakReminders}
-        initialWritingCap={writingCap}
-      />
-    </main>
+    <div className="container mx-auto max-w-2xl px-4 py-10 space-y-8">
+      <h1 className="font-display text-3xl font-extrabold tracking-tight">Settings</h1>
+      <Card className="p-6">
+        <SettingsForm
+          userId={user.id}
+          initialName={(user.user_metadata?.name as string) || ""}
+          initialUsername={(user.user_metadata?.username as string) || ""}
+          initialBio={(s.bio as string) || ""}
+          initialWebsite={(s.website as string) || ""}
+          initialDefaultScope={(s.defaultPublicationScope as string) || "PRIVATE"}
+          initialBreakReminders={(s.breakReminders as boolean) || false}
+          initialWritingCap={(s.writingCap as number) || null}
+        />
+      </Card>
+    </div>
   );
 }

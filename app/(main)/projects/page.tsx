@@ -1,101 +1,90 @@
 import { getUser } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import Link from "next/link";
-import { apiFetch } from "@/lib/api";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/empty-state";
+import { Plus, BookOpen, Lock, Globe, Users, Eye } from "lucide-react";
 
-type Project = {
-  id: string;
-  title: string;
-  description?: string;
-  defaultScope: "private" | "friends" | "public-auth" | "public-anyone";
+const scopeIcons: Record<string, typeof Lock> = {
+  PRIVATE: Lock,
+  FRIENDS: Users,
+  PUBLIC_AUTHENTICATED: Eye,
+  PUBLIC_ANYONE: Globe,
 };
-
-async function getProjects(): Promise<Project[]> {
-  const res = await apiFetch("/api/projects", { cache: "no-store" as any });
-  if (!res.ok) return [] as Project[];
-  return res.json();
-}
-
-async function createProject(_userId: string, formData: FormData) {
-  "use server";
-  const title = String(formData.get("title") || "").trim();
-  const description = String(formData.get("description") || "").trim() || undefined;
-  const defaultScope = String(formData.get("defaultScope") || "private") as Project["defaultScope"];
-  if (!title) return;
-  await apiFetch("/api/projects", {
-    method: "POST",
-    body: JSON.stringify({ title, description, defaultScope }),
-  });
-}
 
 export default async function ProjectsPage() {
   const user = await getUser();
-  const userId = user?.id as string | undefined;
-  const projects = userId ? await getProjects() : [];
+  if (!user) redirect("/signin");
+
+  const projects = await prisma.project.findMany({
+    where: { userId: user.id },
+    orderBy: { updatedAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      wordCount: true,
+      genre: true,
+      defaultScope: true,
+      updatedAt: true,
+    },
+  });
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
-      <header className="mb-6">
-        <h1 className="text-2xl font-extrabold">Your Projects</h1>
-        <p className="text-[color:var(--fg)]/70">
-          Manage your writing projects and their privacy scopes.
-        </p>
-      </header>
+    <div className="container mx-auto max-w-4xl px-4 py-10 space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-extrabold tracking-tight">My Projects</h1>
+          <p className="text-muted-foreground mt-1">
+            {projects.length} project{projects.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+        <Link href="/projects/new">
+          <Button>
+            <Plus className="h-4 w-4 mr-1.5" /> New Project
+          </Button>
+        </Link>
+      </div>
 
-      {userId && (
-        <form
-          action={createProject.bind(null, userId)}
-          className="border-fg/15 mb-6 grid gap-3 rounded-lg border p-4"
-        >
-          <div>
-            <label className="block text-sm font-medium">Title</label>
-            <input
-              name="title"
-              required
-              className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Description</label>
-            <textarea
-              name="description"
-              className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Default scope</label>
-            <select
-              name="defaultScope"
-              className="border-fg/20 mt-1 w-full rounded-md border px-3 py-2 text-sm"
-            >
-              <option value="private">private</option>
-              <option value="friends">friends</option>
-              <option value="public-auth">public-auth</option>
-              <option value="public-anyone">public-anyone</option>
-            </select>
-          </div>
-          <div>
-            <button className="bg-brand rounded-md px-4 py-2 text-white">Create Project</button>
-          </div>
-        </form>
+      {projects.length === 0 ? (
+        <EmptyState
+          title="No projects yet"
+          description="Start writing your first story."
+          action={{ label: "Create Project", href: "/projects/new" }}
+        />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {projects.map((p) => {
+            const Icon = scopeIcons[p.defaultScope] || Lock;
+            return (
+              <Link key={p.id} href={`/projects/${p.id}`}>
+                <Card className="p-5 hover:border-primary/30 hover:shadow-sm transition-all duration-200 h-full">
+                  <div className="flex items-start justify-between mb-2">
+                    <h2 className="font-display font-semibold line-clamp-1">{p.title}</h2>
+                    <Icon className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
+                  </div>
+                  {p.description && (
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                      {p.description}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <BookOpen className="h-3 w-3" /> {p.wordCount?.toLocaleString() || 0} words
+                    </span>
+                    {p.genre && (
+                      <span className="border border-border rounded px-1.5 py-0.5">{p.genre}</span>
+                    )}
+                    <span className="ml-auto">{new Date(p.updatedAt).toLocaleDateString()}</span>
+                  </div>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
       )}
-
-      <ul className="grid gap-4">
-        {projects.map((p) => (
-          <li key={p.id} className="rounded-lg border border-[color:var(--fg)]/15 p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">
-                <Link className="hover:underline" href={`/projects/${p.id}`}>
-                  {p.title}
-                </Link>
-              </h2>
-              <span className="text-xs tracking-wide text-[color:var(--fg)]/50 uppercase">
-                {p.defaultScope}
-              </span>
-            </div>
-            {p.description && <p className="mt-2 text-sm">{p.description}</p>}
-          </li>
-        ))}
-      </ul>
-    </main>
+    </div>
   );
 }

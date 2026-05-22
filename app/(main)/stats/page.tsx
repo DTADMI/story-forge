@@ -110,7 +110,7 @@ export default async function StatsPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10 space-y-8">
-      <h1 className="text-2xl font-extrabold">Writing Statistics</h1>
+      <h1 className="text-2xl font-display">Writing Statistics</h1>
 
       {projectCount === 0 ? (
         <Card className="p-8">
@@ -127,7 +127,7 @@ export default async function StatsPage() {
               <Card key={s.label} className="p-4 text-center">
                 <s.icon className="h-4 w-4 mx-auto text-fg/30 mb-1" />
                 <p className="text-2xl font-bold">{s.value}</p>
-                <p className="text-xs text-fg/40">{s.label}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
               </Card>
             ))}
           </div>
@@ -151,7 +151,7 @@ export default async function StatsPage() {
                 </div>
               ))}
             </div>
-            <div className="flex justify-between mt-2 text-xs text-fg/40">
+            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
               <span>30 days ago</span>
               <span>Today</span>
             </div>
@@ -173,7 +173,7 @@ export default async function StatsPage() {
                           style={{ width: `${(words / (totalWords._sum.wordCount || 1)) * 100}%` }}
                         />
                       </div>
-                      <span className="text-xs text-fg/40 w-16 text-right">
+                      <span className="text-xs text-muted-foreground w-16 text-right">
                         {words.toLocaleString()}
                       </span>
                     </div>
