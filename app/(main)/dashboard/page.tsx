@@ -150,59 +150,79 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-10 space-y-8">
+    <main className="container mx-auto max-w-5xl px-4 py-10 space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold">Dashboard</h1>
-        <p className="text-fg/60 mt-1">
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground mt-1">
           Welcome back{user.email ? `, ${user.email.split("@")[0]}` : ""}. Keep the ink flowing.
         </p>
       </div>
 
-      {/* Gamification Stats Row */}
+      {/* Gamification Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Card className="p-4 text-center">
-          <Flame className="h-5 w-5 text-orange-500 mx-auto mb-1" />
-          <p className="text-2xl font-extrabold text-orange-500">{streakCount}</p>
-          <p className="text-xs text-fg/40">Day Streak</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <Droplets className="h-5 w-5 text-blue-500 mx-auto mb-1" />
-          <p className="text-2xl font-extrabold text-blue-500">
-            {(inkBalance?.balance ?? 0).toLocaleString()}
-          </p>
-          <p className="text-xs text-fg/40">Ink Balance</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <Award className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
-          <p className="text-2xl font-extrabold text-yellow-500">{badgeCount}</p>
-          <p className="text-xs text-fg/40">Badges</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <BarChart3 className="h-5 w-5 text-green-500 mx-auto mb-1" />
-          <p className="text-2xl font-extrabold text-green-500">{totalWords.toLocaleString()}</p>
-          <p className="text-xs text-fg/40">Total Words</p>
-        </Card>
+        {[
+          {
+            icon: Flame,
+            value: streakCount,
+            label: "Day Streak",
+            color: "text-orange-500",
+            bg: "bg-orange-500/10",
+          },
+          {
+            icon: Droplets,
+            value: (inkBalance?.balance ?? 0).toLocaleString(),
+            label: "Ink Balance",
+            color: "text-blue-500",
+            bg: "bg-blue-500/10",
+          },
+          {
+            icon: Award,
+            value: badgeCount,
+            label: "Badges",
+            color: "text-yellow-500",
+            bg: "bg-yellow-500/10",
+          },
+          {
+            icon: BarChart3,
+            value: totalWords.toLocaleString(),
+            label: "Total Words",
+            color: "text-green-500",
+            bg: "bg-green-500/10",
+          },
+        ].map((stat) => (
+          <Card
+            key={stat.label}
+            className="p-4 text-center hover:border-primary/20 transition-colors"
+          >
+            <div
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${stat.bg} mb-2`}
+            >
+              <stat.icon className={`h-5 w-5 ${stat.color}`} />
+            </div>
+            <p className={`font-display text-2xl font-extrabold ${stat.color}`}>{stat.value}</p>
+            <p className="text-xs text-muted-foreground">{stat.label}</p>
+          </Card>
+        ))}
       </div>
 
-      {/* Active Goal Progress */}
       {activeGoal && (
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Target className="h-4 w-4 text-brand" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                <Target className="h-4 w-4 text-primary" />
+              </div>
               <span className="text-sm font-medium">
                 Daily Goal: {activeGoal.target.toLocaleString()} words
               </span>
             </div>
-            <span className="text-sm font-mono text-fg/50">
+            <span className="text-sm font-mono text-muted-foreground">
               {goalProgress.toLocaleString()} / {activeGoal.target.toLocaleString()}
             </span>
           </div>
-          <div className="h-2 bg-fg/10 rounded-full overflow-hidden">
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                goalProgress >= activeGoal.target ? "bg-green-500" : "bg-brand"
-              }`}
+              className={`h-full rounded-full transition-all duration-500 ${goalProgress >= activeGoal.target ? "bg-green-500" : "bg-primary"}`}
               style={{ width: `${Math.min(100, (goalProgress / activeGoal.target) * 100)}%` }}
             />
           </div>
@@ -211,16 +231,18 @@ export default async function DashboardPage() {
 
       {sections.map((section) => (
         <div key={section.label}>
-          <h2 className="text-sm font-bold text-fg/40 uppercase tracking-wide mb-3">
+          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
             {section.label}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {section.items.map((item) => (
               <Link key={item.href} href={item.href}>
-                <Card className="p-4 hover:bg-fg/3 transition-colors h-full">
-                  <item.icon className="h-5 w-5 text-fg/30 mb-2" />
-                  <h3 className="font-medium text-sm">{item.label}</h3>
-                  <p className="text-xs text-fg/40 mt-0.5">{item.desc}</p>
+                <Card className="p-4 hover:border-primary/30 hover:shadow-sm transition-all duration-200 h-full">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted mb-3">
+                    <item.icon className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <h3 className="font-display font-medium text-sm">{item.label}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
                 </Card>
               </Link>
             ))}

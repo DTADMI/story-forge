@@ -23,8 +23,8 @@ export default async function WorldPage() {
     <main className="mx-auto max-w-5xl px-6 py-10 space-y-12">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold">World Building</h1>
-          <p className="text-fg/60 mt-1">
+          <h1 className="text-3xl font-display">World Building</h1>
+          <p className="text-foreground/60 mt-1">
             Manage your story&apos;s characters, locations, timeline, dialogue, and more.
           </p>
         </div>
@@ -36,13 +36,13 @@ export default async function WorldPage() {
             <div className="flex gap-3">
               <Link
                 href="/world/characters"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 View All
               </Link>
               <Link
                 href="/world/characters/new"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 + New
               </Link>
@@ -50,17 +50,17 @@ export default async function WorldPage() {
           </div>
           <div className="space-y-4">
             {characters.length === 0 ? (
-              <p className="text-sm text-fg/40">No characters yet.</p>
+              <p className="text-sm text-foreground/40">No characters yet.</p>
             ) : (
               characters.map((c) => (
                 <Card key={c.id} className="p-4 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold">{c.name}</h3>
-                    {c.traits && <p className="text-xs text-fg/60 italic">{c.traits}</p>}
+                    {c.traits && <p className="text-xs text-foreground/60 italic">{c.traits}</p>}
                   </div>
                   <Link
                     href={`/world/characters/${c.id}`}
-                    className="text-xs text-fg/40 hover:text-brand"
+                    className="text-xs text-foreground/40 hover:text-primary"
                   >
                     Edit
                   </Link>
@@ -75,13 +75,13 @@ export default async function WorldPage() {
             <div className="flex gap-3">
               <Link
                 href="/world/locations"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 View All
               </Link>
               <Link
                 href="/world/locations/new"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 + New
               </Link>
@@ -89,19 +89,19 @@ export default async function WorldPage() {
           </div>
           <div className="space-y-4">
             {locations.length === 0 ? (
-              <p className="text-sm text-fg/40">No locations yet.</p>
+              <p className="text-sm text-foreground/40">No locations yet.</p>
             ) : (
               locations.map((l) => (
                 <Card key={l.id} className="p-4 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold">{l.name}</h3>
                     {l.description && (
-                      <p className="text-xs text-fg/60 line-clamp-1">{l.description}</p>
+                      <p className="text-xs text-foreground/60 line-clamp-1">{l.description}</p>
                     )}
                   </div>
                   <Link
                     href={`/world/locations/${l.id}`}
-                    className="text-xs text-fg/40 hover:text-brand"
+                    className="text-xs text-foreground/40 hover:text-primary"
                   >
                     Edit
                   </Link>
@@ -113,16 +113,19 @@ export default async function WorldPage() {
         <section className="md:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Timeline</h2>
-            <Link href="/world/timeline" className="text-sm text-brand font-medium hover:underline">
+            <Link
+              href="/world/timeline"
+              className="text-sm text-primary font-medium hover:underline"
+            >
               View All ({timeline.length})
             </Link>
           </div>
           {timeline.length === 0 ? (
             <Card className="p-6 text-center">
-              <p className="text-sm text-fg/40">No timeline events yet.</p>
+              <p className="text-sm text-foreground/40">No timeline events yet.</p>
               <Link
                 href="/world/timeline/new"
-                className="text-sm text-brand font-medium hover:underline mt-1 inline-block"
+                className="text-sm text-primary font-medium hover:underline mt-1 inline-block"
               >
                 + Create your first event
               </Link>
@@ -132,11 +135,11 @@ export default async function WorldPage() {
               <Card key={event.id} className="p-4 mb-3 flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-sm">{event.title}</h3>
-                  {event.date && <span className="text-xs text-fg/40">{event.date}</span>}
+                  {event.date && <span className="text-xs text-foreground/40">{event.date}</span>}
                 </div>
                 <Link
                   href={`/world/timeline/${event.id}`}
-                  className="text-xs text-fg/40 hover:text-brand"
+                  className="text-xs text-foreground/40 hover:text-primary"
                 >
                   Edit
                 </Link>
@@ -149,18 +152,18 @@ export default async function WorldPage() {
             <h2 className="text-xl font-bold">Dialogue Scenes</h2>
             <Link
               href="/world/dialogues"
-              className="text-sm text-brand font-medium hover:underline"
+              className="text-sm text-primary font-medium hover:underline"
             >
               View All
             </Link>
           </div>
           <Card className="p-6 text-center">
-            <p className="text-sm text-fg/40">
+            <p className="text-sm text-foreground/40">
               Scripted dialogue for screenplays, comics, and scenes.
             </p>
             <Link
               href="/world/dialogues/new"
-              className="text-sm text-brand font-medium hover:underline mt-1 inline-block"
+              className="text-sm text-primary font-medium hover:underline mt-1 inline-block"
             >
               + Create a dialogue scene
             </Link>
@@ -173,20 +176,20 @@ export default async function WorldPage() {
             <div className="flex gap-3">
               <Link
                 href="/world/organizations"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 View All
               </Link>
               <Link
                 href="/world/organizations/new"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 + New
               </Link>
             </div>
           </div>
           <Card className="p-6 text-center">
-            <p className="text-sm text-fg/40">
+            <p className="text-sm text-foreground/40">
               Manage guilds, factions, governments, and groups in your world.
             </p>
           </Card>
@@ -197,20 +200,20 @@ export default async function WorldPage() {
             <div className="flex gap-3">
               <Link
                 href="/world/species"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 View All
               </Link>
               <Link
                 href="/world/species/new"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 + New
               </Link>
             </div>
           </div>
           <Card className="p-6 text-center">
-            <p className="text-sm text-fg/40">
+            <p className="text-sm text-foreground/40">
               Define the peoples, creatures, and races of your world.
             </p>
           </Card>
@@ -221,20 +224,20 @@ export default async function WorldPage() {
             <div className="flex gap-3">
               <Link
                 href="/world/calendar"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 View All
               </Link>
               <Link
                 href="/world/calendar/new"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 + New
               </Link>
             </div>
           </div>
           <Card className="p-6 text-center">
-            <p className="text-sm text-fg/40">
+            <p className="text-sm text-foreground/40">
               Create custom calendar systems with unique months and days.
             </p>
           </Card>
@@ -243,19 +246,19 @@ export default async function WorldPage() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Eras</h2>
             <div className="flex gap-3">
-              <Link href="/world/era" className="text-sm text-brand font-medium hover:underline">
+              <Link href="/world/era" className="text-sm text-primary font-medium hover:underline">
                 View All
               </Link>
               <Link
                 href="/world/era/new"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 + New
               </Link>
             </div>
           </div>
           <Card className="p-6 text-center">
-            <p className="text-sm text-fg/40">
+            <p className="text-sm text-foreground/40">
               Organize your timeline into distinct ages and periods.
             </p>
           </Card>
@@ -266,18 +269,18 @@ export default async function WorldPage() {
             <h2 className="text-xl font-bold">Encyclopedia</h2>
             <Link
               href="/world/encyclopedia"
-              className="text-sm text-brand font-medium hover:underline"
+              className="text-sm text-primary font-medium hover:underline"
             >
               Browse
             </Link>
           </div>
           <Card className="p-6 text-center">
-            <p className="text-sm text-fg/40">
+            <p className="text-sm text-foreground/40">
               Research notes, magic systems, flora & fauna, cultures, and more.
             </p>
             <Link
               href="/world/encyclopedia"
-              className="text-sm text-brand font-medium hover:underline mt-1 inline-block"
+              className="text-sm text-primary font-medium hover:underline mt-1 inline-block"
             >
               Explore the encyclopedia
             </Link>
@@ -290,16 +293,19 @@ export default async function WorldPage() {
             <div className="flex gap-3">
               <Link
                 href="/world/timeline/viz"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 Timeline Viz
               </Link>
-              <Link href="/world/galaxy" className="text-sm text-brand font-medium hover:underline">
+              <Link
+                href="/world/galaxy"
+                className="text-sm text-primary font-medium hover:underline"
+              >
                 Galaxy View
               </Link>
               <Link
                 href="/world/gallery"
-                className="text-sm text-brand font-medium hover:underline"
+                className="text-sm text-primary font-medium hover:underline"
               >
                 Image Gallery
               </Link>

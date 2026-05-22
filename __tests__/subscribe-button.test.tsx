@@ -2,23 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-const mockT = vi.fn((key: string) => {
-  const labels: Record<string, string> = {
-    "pricing.processing": "Processing...",
-    "pricing.buyLifetime": "Buy lifetime",
-    "pricing.subscribeYearly": "Subscribe yearly",
-    "pricing.subscribeMonthly": "Subscribe monthly",
-  };
-  return labels[key] || key;
-});
-
-vi.mock("next-intl", () => ({
-  useTranslations: () => mockT,
-}));
-
 vi.mock("@/components/ui/button", () => ({
-  Button: ({ children, onClick, disabled, ...props }: any) => (
-    <button onClick={onClick} disabled={disabled} {...props}>
+  Button: ({ children, onClick, disabled }: any) => (
+    <button onClick={onClick} disabled={disabled}>
       {children}
     </button>
   ),
@@ -41,17 +27,17 @@ describe("SubscribeButton", () => {
 
   it("renders monthly label for monthly plan", () => {
     render(<SubscribeButton plan="monthly" />);
-    expect(screen.getByText("Subscribe monthly")).toBeInTheDocument();
+    expect(screen.getByText("Subscribe Monthly")).toBeInTheDocument();
   });
 
   it("renders yearly label for yearly plan", () => {
     render(<SubscribeButton plan="yearly" />);
-    expect(screen.getByText("Subscribe yearly")).toBeInTheDocument();
+    expect(screen.getByText("Subscribe Yearly")).toBeInTheDocument();
   });
 
   it("renders lifetime label for lifetime plan", () => {
     render(<SubscribeButton plan="lifetime" />);
-    expect(screen.getByText("Buy lifetime")).toBeInTheDocument();
+    expect(screen.getByText("Buy Lifetime")).toBeInTheDocument();
   });
 
   it("is disabled when disabled prop is true", () => {
@@ -82,7 +68,7 @@ describe("SubscribeButton", () => {
     vi.stubGlobal("fetch", mockFetch);
 
     render(<SubscribeButton plan="monthly" />);
-    await user.click(screen.getByText("Subscribe monthly"));
+    await user.click(screen.getByText("Subscribe Monthly"));
 
     expect(mockFetch).toHaveBeenCalledWith("/api/billing/checkout", {
       method: "POST",
@@ -105,7 +91,7 @@ describe("SubscribeButton", () => {
     window.alert = vi.fn();
 
     render(<SubscribeButton plan="monthly" />);
-    await user.click(screen.getByText("Subscribe monthly"));
+    await user.click(screen.getByText("Subscribe Monthly"));
 
     await vi.waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith("Invalid plan");
@@ -122,7 +108,7 @@ describe("SubscribeButton", () => {
     vi.stubGlobal("fetch", vi.fn().mockReturnValue(fetchPromise));
 
     render(<SubscribeButton plan="monthly" />);
-    const clickPromise = user.click(screen.getByText("Subscribe monthly"));
+    const clickPromise = user.click(screen.getByText("Subscribe Monthly"));
 
     await waitFor(() => {
       expect(screen.getByText("Processing...")).toBeInTheDocument();
