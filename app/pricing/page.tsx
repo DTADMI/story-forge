@@ -88,9 +88,9 @@ export default function PricingPage() {
 
       <section className="container mx-auto max-w-5xl px-4 py-16">
         <div className="grid gap-6 lg:grid-cols-3">
-          {tiers.map((tier) => (
+          {tiers.map((tier, i) => (
             <Card
-              key={tier.name}
+              key={`${tier.name}-${i}`}
               className={`relative flex flex-col p-6 ${tier.featured ? "border-primary/50 ring-1 ring-primary/20 shadow-md" : ""}`}
             >
               {tier.featured && (
