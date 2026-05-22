@@ -63,6 +63,7 @@ story-forge/
 - Avoid editing generated output, `.next/`, `dist/`, or generated Prisma client files.
 - Keep new product behavior behind feature flags and update docs accordingly.
 - Growth ideas, themes, and events must remain feature-flag gated and controllable from the admin dashboard.
+- **Never use `--no-verify`, `--no-gpg-sign`, or any hook-skipping flag on git commits or pushes.** The pre-commit hook runs `pnpm -C web lint`, `pnpm build`, and `pnpm -C web test:run`. These must pass before every commit. If a hook takes too long, increase the tool timeout — do not bypass the hook.
 
 ### Content Platform Rules
 

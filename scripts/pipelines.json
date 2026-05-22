@@ -1,0 +1,69 @@
+{
+  "gamification": {
+    "description": "Writing → Progress → Rewards → Display",
+    "steps": [
+      { "file": "components/editor/autosave-indicator.tsx", "action": "calls POST /api/gamification/progress" },
+      { "file": "components/editor/storyboard.tsx", "action": "calls POST /api/gamification/progress" },
+      { "file": "app/api/gamification/progress/route.ts", "action": "handles POST — logs progress, earns ink, awards badges, checks goals" },
+      { "file": "app/api/gamification/wallet/route.ts", "action": "handles GET — returns ink balance" },
+      { "file": "app/api/gamification/badges/route.ts", "action": "handles GET — returns earned badges" },
+      { "file": "app/api/gamification/streak/route.ts", "action": "handles GET — calculates streak" },
+      { "file": "app/api/gamification/goals/route.ts", "action": "handles GET/POST" },
+      { "file": "app/api/gamification/goals/[id]/route.ts", "action": "handles PATCH/DELETE" },
+      { "file": "app/(main)/dashboard/page.tsx", "action": "displays streak, ink balance, badge count, goal progress" },
+      { "file": "app/(main)/leaderboard/page.tsx", "action": "displays ranked word counts" },
+      { "file": "app/(main)/stats/page.tsx", "action": "displays total words, streaks, badges, trends" },
+      { "file": "app/(main)/goals/page.tsx", "action": "displays and creates goals" },
+      { "file": "app/api/stats/overview/route.ts", "action": "returns aggregated stats" },
+      { "file": "app/api/leaderboard/route.ts", "action": "returns ranked leaderboard" }
+    ]
+  },
+  "auth": {
+    "description": "Sign Up → Verify → Sign In → Protected Routes",
+    "steps": [
+      { "file": "app/(auth)/signup/page.tsx", "action": "calls supabase.auth.signUp + POST /api/auth/signup" },
+      { "file": "app/api/auth/signup/route.ts", "action": "handles POST — sends verification email" },
+      { "file": "app/api/auth/verify/route.ts", "action": "handles GET — confirms email token" },
+      { "file": "app/(auth)/signin/page.tsx", "action": "calls supabase.auth.signInWithPassword + OAuth" },
+      { "file": "app/api/auth/callback/route.ts", "action": "handles GET — exchanges OAuth code" },
+      { "file": "app/(main)/layout.tsx", "action": "guards protected routes via getUser()" }
+    ]
+  },
+  "social": {
+    "description": "Follow → Activity → Feed → Groups → Messages",
+    "steps": [
+      { "file": "components/social/follow-button.tsx", "action": "calls POST /api/social/follow" },
+      { "file": "app/api/social/follow/route.ts", "action": "handles POST — toggle follow" },
+      { "file": "app/api/social/followers/route.ts", "action": "handles GET — list followers" },
+      { "file": "app/api/social/following/route.ts", "action": "handles GET — list following" },
+      { "file": "app/api/activity/feed/route.ts", "action": "handles GET — followed users' activity" },
+      { "file": "app/api/social/groups/route.ts", "action": "handles GET/POST" },
+      { "file": "app/(main)/groups/page.tsx", "action": "displays groups" },
+      { "file": "app/api/messages/route.ts", "action": "handles GET/POST" },
+      { "file": "app/(main)/messages/page.tsx", "action": "displays messages" },
+      { "file": "app/api/notifications/route.ts", "action": "handles GET/POST" },
+      { "file": "app/(main)/notifications/page.tsx", "action": "displays notifications" }
+    ]
+  },
+  "worldBuilding": {
+    "description": "Create → Edit → Visualize World Entities",
+    "steps": [
+      { "file": "app/(main)/world/characters/new/page.tsx", "action": "calls POST /api/world/characters" },
+      { "file": "app/(main)/world/characters/[id]/page.tsx", "action": "reads GET + calls PATCH /api/world/characters/{id}" },
+      { "file": "app/(main)/world/locations/new/page.tsx", "action": "calls POST /api/world/locations" },
+      { "file": "app/(main)/world/timeline/new/page.tsx", "action": "calls POST /api/world/timeline" },
+      { "file": "app/(main)/world/era/new/page.tsx", "action": "calls POST /api/world/era" },
+      { "file": "app/(main)/world/galaxy/page.tsx", "action": "reads GET /api/world/galaxy" }
+    ]
+  },
+  "export": {
+    "description": "Editor → Export Dropdown → Download",
+    "steps": [
+      { "file": "components/editor/project-editor.tsx", "action": "renders ExportDropdown" },
+      { "file": "components/editor/export-dropdown.tsx", "action": "links to GET /api/projects/{id}/export" },
+      { "file": "app/api/projects/[id]/export/route.ts", "action": "handles GET — returns markdown/epub/pdf" },
+      { "file": "lib/export-epub.ts", "action": "generates EPUB buffer" },
+      { "file": "lib/export-pdf.ts", "action": "generates PDF buffer" }
+    ]
+  }
+}

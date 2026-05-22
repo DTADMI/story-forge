@@ -82,7 +82,14 @@ export async function POST(request: NextRequest) {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id: _id, createdAt: _c, updatedAt: _u, isShared: _, sharedFromProjectId: __, ...data } = source;
+  const {
+    id: _id,
+    createdAt: _c,
+    updatedAt: _u,
+    isShared: _,
+    sharedFromProjectId: __,
+    ...data
+  } = source;
 
   const copy = await (model as any).create({
     data: {

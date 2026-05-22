@@ -36,11 +36,10 @@ export default function SignInPage() {
     });
   };
 
+  const errorId = "signin-error";
   return (
     <main className="mx-auto max-w-md px-6 py-16">
-      <h1 className="text-3xl font-extrabold text-center mb-8">
-        {t("auth.signInTitle")}
-      </h1>
+      <h1 className="text-3xl font-extrabold text-center mb-8">{t("auth.signInTitle")}</h1>
 
       {/* OAuth */}
       <div className="mb-6 space-y-2">
@@ -76,11 +75,13 @@ export default function SignInPage() {
         <hr className="flex-1 border-fg/10" />
       </div>
 
-      <form onSubmit={handleSignIn} className="space-y-4">
+      <form
+        aria-describedby={error || undefined ? errorId : undefined}
+        onSubmit={handleSignIn}
+        className="space-y-4"
+      >
         <div>
-          <label className="block text-sm font-medium mb-1">
-            {t("auth.email")}
-          </label>
+          <label className="block text-sm font-medium mb-1">{t("auth.email")}</label>
           <input
             type="email"
             value={email}
@@ -90,9 +91,7 @@ export default function SignInPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">
-            {t("auth.password")}
-          </label>
+          <label className="block text-sm font-medium mb-1">{t("auth.password")}</label>
           <input
             type="password"
             value={password}
@@ -101,7 +100,11 @@ export default function SignInPage() {
             className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
           />
         </div>
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && (
+          <p id={errorId} role="alert" className="text-sm text-red-500">
+            {error}
+          </p>
+        )}
         <button
           type="submit"
           disabled={loading}

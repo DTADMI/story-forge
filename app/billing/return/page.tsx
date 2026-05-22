@@ -15,10 +15,7 @@ export default async function BillingReturnPage({
           <p className="text-fg/70 mt-2">
             Thanks for upgrading! Your premium features will unlock shortly.
           </p>
-          <Link
-            href="/"
-            className="bg-brand mt-6 inline-block rounded-md px-4 py-2 text-white"
-          >
+          <Link href="/" className="bg-brand mt-6 inline-block rounded-md px-4 py-2 text-white">
             Go to dashboard
           </Link>
         </>

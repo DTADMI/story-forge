@@ -16,10 +16,7 @@ export default function PricingPage() {
             <li>Basic world-building tools</li>
             <li>Community features</li>
           </ul>
-          <a
-            className="bg-brand mt-4 inline-block rounded-md px-4 py-2 text-white"
-            href="/signup"
-          >
+          <a className="bg-brand mt-4 inline-block rounded-md px-4 py-2 text-white" href="/signup">
             Get Started
           </a>
         </div>
@@ -36,18 +33,13 @@ export default function PricingPage() {
               <SubscribeButton plan="yearly" />
             </div>
           ) : (
-            <p
-              className="mt-4 text-sm text-fg/40"
-              title="Payments disabled via feature flag"
-            >
+            <p className="mt-4 text-sm text-fg/40" title="Payments disabled via feature flag">
               Payments disabled
             </p>
           )}
         </div>
       </div>
-      <p className="mt-8 text-[color:var(--fg)]/70">
-        Team plans coming later.
-      </p>
+      <p className="mt-8 text-[color:var(--fg)]/70">Team plans coming later.</p>
     </main>
   );
 }

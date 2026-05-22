@@ -5,13 +5,7 @@ import { Button } from "@/components/ui/button";
 
 type Plan = "monthly" | "yearly" | "lifetime";
 
-export function SubscribeButton({
-  plan,
-  disabled,
-}: {
-  plan: Plan;
-  disabled?: boolean;
-}) {
+export function SubscribeButton({ plan, disabled }: { plan: Plan; disabled?: boolean }) {
   const t = useTranslations();
   const [loading, setLoading] = React.useState(false);
   return (

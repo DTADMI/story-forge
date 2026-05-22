@@ -25,7 +25,7 @@ export default async function WorldPage() {
         <div>
           <h1 className="text-3xl font-extrabold">World Building</h1>
           <p className="text-fg/60 mt-1">
-            Manage your story&apos;s characters, locations, timeline, and dialogue.
+            Manage your story&apos;s characters, locations, timeline, dialogue, and more.
           </p>
         </div>
       </header>
@@ -33,12 +33,20 @@ export default async function WorldPage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Characters</h2>
-            <Link
-              href="/world/characters/new"
-              className="text-sm text-brand font-medium hover:underline"
-            >
-              + New Character
-            </Link>
+            <div className="flex gap-3">
+              <Link
+                href="/world/characters"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                View All
+              </Link>
+              <Link
+                href="/world/characters/new"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                + New
+              </Link>
+            </div>
           </div>
           <div className="space-y-4">
             {characters.length === 0 ? (
@@ -64,12 +72,20 @@ export default async function WorldPage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Locations</h2>
-            <Link
-              href="/world/locations/new"
-              className="text-sm text-brand font-medium hover:underline"
-            >
-              + New Location
-            </Link>
+            <div className="flex gap-3">
+              <Link
+                href="/world/locations"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                View All
+              </Link>
+              <Link
+                href="/world/locations/new"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                + New
+              </Link>
+            </div>
           </div>
           <div className="space-y-4">
             {locations.length === 0 ? (
@@ -148,6 +164,100 @@ export default async function WorldPage() {
             >
               + Create a dialogue scene
             </Link>
+          </Card>
+        </section>
+
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Organizations & Factions</h2>
+            <div className="flex gap-3">
+              <Link
+                href="/world/organizations"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                View All
+              </Link>
+              <Link
+                href="/world/organizations/new"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                + New
+              </Link>
+            </div>
+          </div>
+          <Card className="p-6 text-center">
+            <p className="text-sm text-fg/40">
+              Manage guilds, factions, governments, and groups in your world.
+            </p>
+          </Card>
+        </section>
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Species & Races</h2>
+            <div className="flex gap-3">
+              <Link
+                href="/world/species"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                View All
+              </Link>
+              <Link
+                href="/world/species/new"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                + New
+              </Link>
+            </div>
+          </div>
+          <Card className="p-6 text-center">
+            <p className="text-sm text-fg/40">
+              Define the peoples, creatures, and races of your world.
+            </p>
+          </Card>
+        </section>
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Calendars</h2>
+            <div className="flex gap-3">
+              <Link
+                href="/world/calendar"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                View All
+              </Link>
+              <Link
+                href="/world/calendar/new"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                + New
+              </Link>
+            </div>
+          </div>
+          <Card className="p-6 text-center">
+            <p className="text-sm text-fg/40">
+              Create custom calendar systems with unique months and days.
+            </p>
+          </Card>
+        </section>
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Eras</h2>
+            <div className="flex gap-3">
+              <Link href="/world/era" className="text-sm text-brand font-medium hover:underline">
+                View All
+              </Link>
+              <Link
+                href="/world/era/new"
+                className="text-sm text-brand font-medium hover:underline"
+              >
+                + New
+              </Link>
+            </div>
+          </div>
+          <Card className="p-6 text-center">
+            <p className="text-sm text-fg/40">
+              Organize your timeline into distinct ages and periods.
+            </p>
           </Card>
         </section>
 

@@ -42,6 +42,20 @@ export function AutosaveIndicator({
 
         if (!res.ok) throw new Error("Save failed");
 
+        // Log progress to gamification pipeline (words written)
+        const delta = wordCount !== undefined ? wc - wordCount : wc;
+        if (delta > 0) {
+          try {
+            await fetch("/api/gamification/progress", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ value: Math.max(0, delta) }),
+            });
+          } catch {
+            // progress logging is non-critical
+          }
+        }
+
         if (mountedRef.current) {
           setStatus("saved");
           lastSavedRef.current = contentToSave;

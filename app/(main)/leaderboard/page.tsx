@@ -7,27 +7,53 @@ import { SkeletonList } from "@/components/skeleton";
 import { Trophy, Medal, Flame } from "lucide-react";
 import Link from "next/link";
 
-export default async function LeaderboardPage() {
+export default async function LeaderboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ period?: string }>;
+}) {
   const user = await getUser();
   if (!user) redirect("/signin");
+  const { period = "weekly" } = await searchParams;
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-10 space-y-8">
-      <h1 className="text-2xl font-extrabold">Leaderboard</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-extrabold">Leaderboard</h1>
+        <div className="flex gap-1 border border-fg/10 rounded-md p-0.5">
+          {(["weekly", "monthly", "alltime"] as const).map((p) => (
+            <a
+              key={p}
+              href={`/leaderboard?period=${p}`}
+              className={`px-3 py-1 text-xs font-medium rounded ${
+                period === p ? "bg-brand text-white" : "text-fg/50 hover:text-fg"
+              }`}
+            >
+              {p === "weekly" ? "Week" : p === "monthly" ? "Month" : "All Time"}
+            </a>
+          ))}
+        </div>
+      </div>
       <Suspense fallback={<SkeletonList count={10} />}>
-        <LeaderboardContent userId={user.id} />
+        <LeaderboardContent userId={user.id} period={period} />
       </Suspense>
     </main>
   );
 }
 
-async function LeaderboardContent({ userId }: { userId: string }) {
+async function LeaderboardContent({ userId, period }: { userId: string; period: string }) {
   const { prisma } = await import("@/lib/prisma");
 
-  const dateFilter = new Date(
-    // eslint-disable-next-line react-hooks/purity
-    Date.now() - 7 * 24 * 60 * 60 * 1000
-  );
+  let dateFilter: Date;
+  const now = new Date();
+  if (period === "monthly") {
+    dateFilter = new Date(now.getFullYear(), now.getMonth(), 1);
+  } else if (period === "alltime") {
+    dateFilter = new Date(0);
+  } else {
+    dateFilter = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  }
+
   const logs = await prisma.progressLog.groupBy({
     by: ["userId"],
     where: { timestamp: { gte: dateFilter } },
@@ -55,12 +81,15 @@ async function LeaderboardContent({ userId }: { userId: string }) {
     .slice(0, 30)
     .map((e, i) => ({ ...e, rank: i + 1 }));
 
+  const periodLabel =
+    period === "weekly" ? "Weekly" : period === "monthly" ? "Monthly" : "All-Time";
+
   if (leaderboard.length === 0) {
     return (
       <Card className="p-8">
         <EmptyState
           title="No entries yet"
-          description="Start writing to appear on the leaderboard! Weekly rankings reset every Monday."
+          description={`Start writing to appear on the ${periodLabel.toLowerCase()} leaderboard!`}
         />
       </Card>
     );
@@ -72,7 +101,7 @@ async function LeaderboardContent({ userId }: { userId: string }) {
     <Card className="overflow-hidden">
       <div className="p-3 border-b border-fg/10 bg-fg/3">
         <span className="text-xs font-medium text-fg/50 uppercase tracking-wide">
-          Weekly Top Writers
+          {periodLabel} Top Writers
         </span>
       </div>
       <div className="divide-y divide-fg/5">

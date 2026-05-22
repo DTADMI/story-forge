@@ -13,7 +13,9 @@ export async function GET() {
     if (stored && typeof stored === "object") {
       return NextResponse.json(stored);
     }
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
   return NextResponse.json([]);
 }
 
@@ -23,7 +25,9 @@ export async function PUT(request: NextRequest) {
   try {
     const redis = getRedis();
     await redis.set(REDIS_KEY, JSON.stringify(flags));
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
 
   auditLog({
     userId: "admin",

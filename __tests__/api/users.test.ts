@@ -97,10 +97,7 @@ describe("Users API", () => {
       });
 
       const { PATCH } = await import("@/app/api/users/[id]/route");
-      const res = await PATCH(
-        mockRequest({ name: "Updated Name" }),
-        mockParams("user-1")
-      );
+      const res = await PATCH(mockRequest({ name: "Updated Name" }), mockParams("user-1"));
       const data = await res.json();
 
       expect(res.status).toBe(200);
@@ -115,10 +112,7 @@ describe("Users API", () => {
       (requireUser as ReturnType<typeof vi.fn>).mockResolvedValue({ id: "user-1" });
 
       const { PATCH } = await import("@/app/api/users/[id]/route");
-      const res = await PATCH(
-        mockRequest({ name: "Hacker" }),
-        mockParams("user-2")
-      );
+      const res = await PATCH(mockRequest({ name: "Hacker" }), mockParams("user-2"));
       expect(res.status).toBe(403);
       expect(prisma.user.update).not.toHaveBeenCalled();
     });
@@ -155,10 +149,7 @@ describe("Users API", () => {
       (requireUser as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Unauthorized"));
 
       const { PATCH } = await import("@/app/api/users/[id]/route");
-      const res = await PATCH(
-        mockRequest({ name: "Test" }),
-        mockParams("user-1")
-      );
+      const res = await PATCH(mockRequest({ name: "Test" }), mockParams("user-1"));
       expect(res.status).toBe(401);
     });
   });

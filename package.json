@@ -29,7 +29,12 @@
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
-    "dev:local": "pnpm docker:up && pnpm supabase:start && pnpm dev"
+    "dev:local": "pnpm docker:up && pnpm supabase:start && pnpm dev",
+    "verify:integration": "powershell -ExecutionPolicy Bypass -File scripts/verify-integration.ps1",
+    "verify:flags": "powershell -ExecutionPolicy Bypass -File scripts/verify-feature-flags.ps1",
+    "verify:pipelines": "powershell -ExecutionPolicy Bypass -File scripts/verify-pipelines.ps1",
+    "verify:all": "pnpm verify:integration && pnpm verify:flags && pnpm verify:pipelines",
+    "verify": "node scripts/verify.mjs --all"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",

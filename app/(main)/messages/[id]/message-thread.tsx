@@ -61,7 +61,9 @@ export function MessageThread({
           setMessages(remote);
           fetch(`/api/messages/${partnerId}`, { method: "PATCH" }).catch(() => {});
         }
-      } catch { /* noop */ }
+      } catch {
+        /* noop */
+      }
     }, 10000);
     return () => clearInterval(interval);
   }, [partnerId, messages]);

@@ -83,8 +83,8 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
     name: "Projects V2",
     description: "Next-gen project editor",
     type: "boolean",
-    enabled: false,
-    value: false,
+    enabled: true,
+    value: true,
     category: "core",
   },
   {
@@ -110,8 +110,8 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
     name: "Real-time Collab",
     description: "Live co-authoring",
     type: "boolean",
-    enabled: false,
-    value: false,
+    enabled: true,
+    value: true,
     category: "core",
   },
   {

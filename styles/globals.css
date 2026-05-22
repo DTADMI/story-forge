@@ -44,16 +44,16 @@
   --elev-2: 0 2px 8px 0 rgb(0 0 0 / 0.08);
 }
 
-/* Dark theme */
+/* Dark theme — values synced with docs/design-tokens.json */
 .dark {
-  --fg: #f4f4f5;
-  --bg: #0b0b0f;
-  --brand: #3f7cff; /* Royal Blue (brightened) */
-  --accent: #ff6a4a; /* Auburn (brightened) */
-  --success: #22c55e; /* Green */
-  --warning: #f59e0b; /* Orange */
-  --info: #8b5cf6; /* Purple */
-  --ring: #ffd166; /* Gold */
+  --fg: #f7f7fb;
+  --bg: #0b0f16;
+  --brand: #5b86ff; /* Royal Blue (brightened) */
+  --accent: #ff6a3b; /* Auburn (brightened) */
+  --success: #2dd4a3; /* Royal Green */
+  --warning: #f59e0b; /* Royal Orange */
+  --info: #a78bfa; /* Purple */
+  --ring: #ffd86a; /* Gold */
 }
 
 /* Base typography and focus styles for a11y */

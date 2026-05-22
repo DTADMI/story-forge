@@ -13,13 +13,24 @@ import {
   Flame,
   Bell,
   Globe,
+  Droplets,
+  Award,
 } from "lucide-react";
 
 export default async function DashboardPage() {
   const user = await getUser();
   if (!user) redirect("/signin");
 
-  const [projectCount, unreadMessages, unreadNotifications, streak] = await Promise.all([
+  const [
+    projectCount,
+    unreadMessages,
+    unreadNotifications,
+    streakData,
+    inkBalance,
+    badgeCount,
+    goals,
+    projectWordTotal,
+  ] = await Promise.all([
     prisma.project.count({ where: { userId: user.id } }),
     prisma.message.count({ where: { receiverId: user.id, read: false } }),
     prisma.notification.count({ where: { userId: user.id, read: false } }),
@@ -29,9 +40,16 @@ export default async function DashboardPage() {
       take: 90,
       select: { timestamp: true },
     }),
+    prisma.inkPot.findUnique({
+      where: { userId: user.id },
+      select: { balance: true },
+    }),
+    prisma.userBadge.count({ where: { userId: user.id } }),
+    prisma.goal.findMany({ where: { userId: user.id } }),
+    prisma.project.aggregate({ where: { userId: user.id }, _sum: { wordCount: true } }),
   ]);
 
-  const days = new Set(streak.map((l) => l.timestamp.toISOString().split("T")[0]));
+  const days = new Set(streakData.map((l) => l.timestamp.toISOString().split("T")[0]));
   let streakCount = 0;
   const today = new Date();
   for (let i = 0; i < 365; i++) {
@@ -40,6 +58,21 @@ export default async function DashboardPage() {
     if (days.has(d.toISOString().split("T")[0])) streakCount++;
     else break;
   }
+
+  // Get active goal progress
+  const activeGoal = goals.find((g) => g.type === "words_per_day");
+  let goalProgress = 0;
+  if (activeGoal) {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayLogs = await prisma.progressLog.aggregate({
+      where: { userId: user.id, timestamp: { gte: todayStart } },
+      _sum: { value: true },
+    });
+    goalProgress = todayLogs._sum.value ?? 0;
+  }
+
+  const totalWords = projectWordTotal._sum.wordCount ?? 0;
 
   const sections = [
     {
@@ -51,14 +84,14 @@ export default async function DashboardPage() {
           desc: `${projectCount} project${projectCount !== 1 ? "s" : ""}`,
           icon: BookOpen,
         },
-        {
-          href: "/projects/new" in String ? "/projects" : "/projects",
-          label: "New Project",
-          desc: "Start writing",
-          icon: BookOpen,
-        },
         { href: "/goals", label: "Writing Goals", desc: "Set daily targets", icon: Target },
         { href: "/stats", label: "Statistics", desc: `${streakCount}-day streak`, icon: BarChart3 },
+        {
+          href: "/leaderboard",
+          label: "Leaderboard",
+          desc: "Weekly rankings",
+          icon: Trophy,
+        },
       ],
     },
     {
@@ -82,7 +115,12 @@ export default async function DashboardPage() {
           desc: "Lore, magic, cultures",
           icon: BookOpen,
         },
-        { href: "/world/gallery", label: "Image Gallery", desc: "Visual references", icon: Globe },
+        {
+          href: "/world/gallery",
+          label: "Image Gallery",
+          desc: "Visual references",
+          icon: Globe,
+        },
       ],
     },
     {
@@ -101,8 +139,12 @@ export default async function DashboardPage() {
           icon: Bell,
         },
         { href: "/groups", label: "Groups", desc: "Writing communities", icon: Users },
-        { href: "/feed/activity", label: "Activity Feed", desc: "Friends' updates", icon: Globe },
-        { href: "/leaderboard", label: "Leaderboard", desc: "Weekly rankings", icon: Trophy },
+        {
+          href: "/feed/activity",
+          label: "Activity Feed",
+          desc: "Friends' updates",
+          icon: Globe,
+        },
       ],
     },
   ];
@@ -114,20 +156,65 @@ export default async function DashboardPage() {
         <p className="text-fg/60 mt-1">
           Welcome back{user.email ? `, ${user.email.split("@")[0]}` : ""}. Keep the ink flowing.
         </p>
-        {streakCount > 0 && (
-          <div className="inline-flex items-center gap-1 mt-2 text-sm text-orange-500 font-medium">
-            <Flame className="h-4 w-4" />
-            {streakCount}-day writing streak!
-          </div>
-        )}
       </div>
+
+      {/* Gamification Stats Row */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Card className="p-4 text-center">
+          <Flame className="h-5 w-5 text-orange-500 mx-auto mb-1" />
+          <p className="text-2xl font-extrabold text-orange-500">{streakCount}</p>
+          <p className="text-xs text-fg/40">Day Streak</p>
+        </Card>
+        <Card className="p-4 text-center">
+          <Droplets className="h-5 w-5 text-blue-500 mx-auto mb-1" />
+          <p className="text-2xl font-extrabold text-blue-500">
+            {(inkBalance?.balance ?? 0).toLocaleString()}
+          </p>
+          <p className="text-xs text-fg/40">Ink Balance</p>
+        </Card>
+        <Card className="p-4 text-center">
+          <Award className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
+          <p className="text-2xl font-extrabold text-yellow-500">{badgeCount}</p>
+          <p className="text-xs text-fg/40">Badges</p>
+        </Card>
+        <Card className="p-4 text-center">
+          <BarChart3 className="h-5 w-5 text-green-500 mx-auto mb-1" />
+          <p className="text-2xl font-extrabold text-green-500">{totalWords.toLocaleString()}</p>
+          <p className="text-xs text-fg/40">Total Words</p>
+        </Card>
+      </div>
+
+      {/* Active Goal Progress */}
+      {activeGoal && (
+        <Card className="p-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Target className="h-4 w-4 text-brand" />
+              <span className="text-sm font-medium">
+                Daily Goal: {activeGoal.target.toLocaleString()} words
+              </span>
+            </div>
+            <span className="text-sm font-mono text-fg/50">
+              {goalProgress.toLocaleString()} / {activeGoal.target.toLocaleString()}
+            </span>
+          </div>
+          <div className="h-2 bg-fg/10 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${
+                goalProgress >= activeGoal.target ? "bg-green-500" : "bg-brand"
+              }`}
+              style={{ width: `${Math.min(100, (goalProgress / activeGoal.target) * 100)}%` }}
+            />
+          </div>
+        </Card>
+      )}
 
       {sections.map((section) => (
         <div key={section.label}>
           <h2 className="text-sm font-bold text-fg/40 uppercase tracking-wide mb-3">
             {section.label}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {section.items.map((item) => (
               <Link key={item.href} href={item.href}>
                 <Card className="p-4 hover:bg-fg/3 transition-colors h-full">

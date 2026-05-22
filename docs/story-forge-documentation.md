@@ -31,23 +31,27 @@ features (follow/followers, groups, public feed) with mental wellbeing safeguard
 ### Primary Stack
 
 - **Frontend:** Next.js 16 (App Router) + React 19.2 + TypeScript
-- **Backend:** NestJS 11.1 (Node.js + TypeScript)
-- **Database:** PostgreSQL with Prisma ORM (Prisma 7.2 + Driver Adapters)
-- **Infrastructure:** Vercel + Railway + Supabase
+- **Backend:** Next.js API Route Handlers (App Router) + TypeScript
+- **Auth:** Supabase Auth (email/password + OAuth) via @supabase/ssr
+- **Database:** PostgreSQL with Prisma ORM (Prisma 7.2 + Driver Adapters) on Supabase Postgres
+- **Cache:** Upstash Redis (feature flags, rate limiting, query caching)
+- **Storage:** Supabase Storage (media + private-media buckets)
+- **Infrastructure:** Vercel + Supabase + Upstash
 
 ### Why This Stack?
 
-- **Full-Stack Type Safety:** Shared types between frontend and backend
-- **Developer Experience:** Modern tooling and great TypeScript support
-- **Scalability:** Easy to scale from MVP to production
+- **Full-Stack Type Safety:** End-to-end TypeScript from DB to UI
+- **Developer Experience:** Single project, single build pipeline, modern tooling
+- **Scalability:** Vercel serverless + Supabase managed Postgres
 - **Ecosystem:** Rich set of libraries and tools
-- **Cost-Effective:** Generous free tiers available
+- **Cost-Effective:** Generous free tiers available (Vercel, Supabase, Upstash)
+- **Real-time:** Supabase Realtime for live collaboration features
 
 ## Technology Comparison
 
 ### Backend Options
 
-#### 1. TypeScript/Node.js (NestJS)
+#### 1. TypeScript/Node.js (Next.js API Route Handlers)
 
 **Pros:**
 
@@ -108,7 +112,7 @@ features (follow/followers, groups, public feed) with mental wellbeing safeguard
 
 ### Recommendation
 
-We recommend **TypeScript with NestJS** for:
+We recommend **TypeScript with Next.js App Router** for:
 
 1. Full-stack consistency
 2. Excellent real-time support
@@ -170,7 +174,7 @@ We recommend **TypeScript with NestJS** for:
 
 ### Backend
 
-- **NestJS**
+- **Next.js App Router API Route Handlers**
   - TypeScript support
   - Modular architecture
   - Built-in dependency injection
@@ -595,7 +599,7 @@ erDiagram
 
 ### GraphQL (Optional)
 
-If collaboration with mobile or external partners grows, expose a GraphQL gateway (NestJS GraphQL) for read-heavy queries like story feeds and search, while retaining REST for mutations requiring strict idempotency and rate limiting.
+If collaboration with mobile or external partners grows, expose a GraphQL gateway for read-heavy queries like story feeds and search, while retaining REST for mutations requiring strict idempotency and rate limiting.
 
 ## Access Scopes & Privacy Model
 
@@ -609,7 +613,7 @@ Every shareable resource supports a default scope plus per-item overrides.
 Implementation
 
 - Table `RESOURCE_SCOPE` stores overrides per resource.
-- Guard composables in NestJS check scope against requester context.
+- API handler wrappers check scope against requester context.
 - Feed queries include scope filters to ensure only eligible content is returned.
 
 ## Gamification & Social

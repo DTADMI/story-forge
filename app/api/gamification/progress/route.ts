@@ -7,6 +7,7 @@ import { z } from "zod";
 const logProgressSchema = z.object({
   value: z.number().min(0),
   goalId: z.string().optional(),
+  type: z.string().optional(),
 });
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
@@ -24,6 +25,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const log = await prisma.progressLog.create({
     data: { userId: user.id, goalId: parsed.data.goalId || undefined, value: parsed.data.value },
   });
+
   const words = parsed.data.value;
   const inkEarned = Math.floor(words / 500);
   if (inkEarned > 0) {
@@ -36,21 +38,82 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       data: { userId: user.id, potId: wallet.id, amount: inkEarned, reason: "Writing progress" },
     });
   }
-  // Check milestones
+
+  // Award word-count badges
   const totalWords = await prisma.progressLog.aggregate({
     where: { userId: user.id },
     _sum: { value: true },
   });
   const total = totalWords._sum.value ?? 0;
-  const badges = await prisma.badge.findMany({
-    where: { threshold: { lte: total } },
+  const wordBadges = await prisma.badge.findMany({
+    where: { threshold: { lte: total }, type: "total_words" },
   });
-  for (const badge of badges) {
+  for (const badge of wordBadges) {
     await prisma.userBadge.upsert({
       where: { userId_badgeId: { userId: user.id, badgeId: badge.id } },
       create: { userId: user.id, badgeId: badge.id },
       update: {},
     });
   }
-  return NextResponse.json({ log, inkEarned, totalWords: total });
+
+  // Award streak badges
+  const recentLogs = await prisma.progressLog.findMany({
+    where: { userId: user.id },
+    orderBy: { timestamp: "desc" },
+    take: 90,
+    select: { timestamp: true },
+  });
+  const daysSet = new Set(recentLogs.map((l) => l.timestamp.toISOString().split("T")[0]));
+  let streakCount = 0;
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    if (daysSet.has(d.toISOString().split("T")[0])) streakCount++;
+    else break;
+  }
+  const streakBadges = await prisma.badge.findMany({
+    where: { threshold: { lte: streakCount }, type: "streak" },
+  });
+  for (const badge of streakBadges) {
+    await prisma.userBadge.upsert({
+      where: { userId_badgeId: { userId: user.id, badgeId: badge.id } },
+      create: { userId: user.id, badgeId: badge.id },
+      update: {},
+    });
+  }
+
+  // Check goal completion
+  const activeGoals = await prisma.goal.findMany({ where: { userId: user.id } });
+  for (const goal of activeGoals) {
+    const periodStart = new Date();
+    if (goal.cadence === "daily") {
+      periodStart.setHours(0, 0, 0, 0);
+    } else if (goal.cadence === "weekly") {
+      periodStart.setDate(periodStart.getDate() - periodStart.getDay());
+      periodStart.setHours(0, 0, 0, 0);
+    }
+    const periodProgress = await prisma.progressLog.aggregate({
+      where: { userId: user.id, timestamp: { gte: periodStart }, goalId: goal.id },
+      _sum: { value: true },
+    });
+    const progress = periodProgress._sum.value ?? 0;
+    if (progress >= goal.target) {
+      try {
+        await prisma.activity.create({
+          data: {
+            userId: user.id,
+            type: "goal_complete",
+            entityId: goal.id,
+            entityType: "goal",
+            metadata: { goalType: goal.type, target: goal.target, achieved: progress },
+          },
+        });
+      } catch {
+        // activity creation is non-critical
+      }
+    }
+  }
+
+  return NextResponse.json({ log, inkEarned, totalWords: total, streakDays: streakCount });
 });

@@ -5,7 +5,9 @@ import { z } from "zod";
 
 const createGoalSchema = z.object({
   target: z.number().min(1, "Target must be at least 1"),
-  type: z.enum(["words_per_day", "pages_per_week", "scenes_completed", "panels_per_day"]).optional(),
+  type: z
+    .enum(["words_per_day", "pages_per_week", "scenes_completed", "panels_per_day"])
+    .optional(),
   cadence: z.enum(["daily", "weekly"]).optional(),
 });
 
@@ -47,5 +49,24 @@ export async function GET() {
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
   });
-  return NextResponse.json(goals);
+
+  // Enrich goals with current period progress
+  const enriched = await Promise.all(
+    goals.map(async (goal) => {
+      const periodStart = new Date();
+      if (goal.cadence === "daily") {
+        periodStart.setHours(0, 0, 0, 0);
+      } else if (goal.cadence === "weekly") {
+        periodStart.setDate(periodStart.getDate() - periodStart.getDay());
+        periodStart.setHours(0, 0, 0, 0);
+      }
+      const periodProgress = await prisma.progressLog.aggregate({
+        where: { userId: user.id, timestamp: { gte: periodStart }, goalId: goal.id },
+        _sum: { value: true },
+      });
+      return { ...goal, currentProgress: periodProgress._sum.value ?? 0 };
+    })
+  );
+
+  return NextResponse.json(enriched);
 }

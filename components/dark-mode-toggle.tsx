@@ -32,12 +32,16 @@ export function DarkModeToggle() {
     >
       {theme === "dark" ? (
         <>
-          <span aria-hidden className="text-base leading-none">🌙</span>
+          <span aria-hidden className="text-base leading-none">
+            🌙
+          </span>
           <span>Dark</span>
         </>
       ) : (
         <>
-          <span aria-hidden className="text-base leading-none">☀️</span>
+          <span aria-hidden className="text-base leading-none">
+            ☀️
+          </span>
           <span>Light</span>
         </>
       )}

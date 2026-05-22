@@ -23,11 +23,13 @@ export const metadata = {
   },
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
   const messages = await getMessages();
 
@@ -44,6 +46,7 @@ export default async function RootLayout({
               <Header />
               <main
                 id="main-content"
+                tabIndex={-1}
                 aria-label="Main content"
                 className="min-h-[calc(100vh-200px)]"
               >

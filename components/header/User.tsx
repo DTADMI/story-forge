@@ -29,9 +29,7 @@ export default function HeaderUser() {
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <span style={{ color: "#374151", fontSize: 14 }}>{user.email}</span>
       <button
-        onClick={() =>
-          supabase.auth.signOut().then(() => (window.location.href = "/"))
-        }
+        onClick={() => supabase.auth.signOut().then(() => (window.location.href = "/"))}
         style={{
           border: 0,
           background: "transparent",

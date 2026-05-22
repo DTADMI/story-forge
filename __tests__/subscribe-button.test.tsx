@@ -62,8 +62,12 @@ describe("SubscribeButton", () => {
   it("calls checkout API on click and redirects on success", async () => {
     let currentUrl = window.location.href;
     const mockLocation = {
-      get href() { return currentUrl; },
-      set href(v: string) { currentUrl = v; },
+      get href() {
+        return currentUrl;
+      },
+      set href(v: string) {
+        currentUrl = v;
+      },
     };
     Object.defineProperty(window, "location", {
       configurable: true,

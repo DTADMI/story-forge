@@ -50,7 +50,14 @@ export default async function MessageDetailPage({ params }: { params: Promise<{ 
         </Link>
         <div className="h-8 w-8 rounded-full bg-brand/10 flex items-center justify-center text-sm font-bold text-brand">
           {partner.image ? (
-            <NextImage src={partner.image} alt="" width={32} height={32} unoptimized className="h-8 w-8 rounded-full object-cover" />
+            <NextImage
+              src={partner.image}
+              alt=""
+              width={32}
+              height={32}
+              unoptimized
+              className="h-8 w-8 rounded-full object-cover"
+            />
           ) : (
             (partner.username || partner.name || "?").charAt(0).toUpperCase()
           )}

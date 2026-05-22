@@ -1,8 +1,9 @@
-  "use client";
+"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { Editor } from "@/components/editor/editor";
 import { AiWritingButton } from "@/components/ai/ai-writing";
+import { ExportDropdown } from "@/components/editor/export-dropdown";
 
 interface ProjectEditorProps {
   project: {
@@ -11,6 +12,8 @@ interface ProjectEditorProps {
     description?: string;
     content?: string;
     defaultScope: string;
+    wordCount?: number;
+    panelCount?: number;
     settings?: any;
   };
   userPreferences?: {
@@ -25,6 +28,11 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
   const [showLinkedEntities, setShowLinkedEntities] = useState(false);
   const [characters, setCharacters] = useState<{ id: string; name: string }[]>([]);
   const [locations, setLocations] = useState<{ id: string; name: string }[]>([]);
+  const [activeGoal, setActiveGoal] = useState<{
+    type: string;
+    target: number;
+    currentProgress: number;
+  } | null>(null);
   const [linkedCharIds, setLinkedCharIds] = useState<string[]>(
     project.settings?.linkedEntities?.characters || []
   );
@@ -45,6 +53,28 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
         .catch(() => {});
     }
   }, [showLinkedEntities, project.id]);
+
+  // Load active goal for progress display
+  useEffect(() => {
+    fetch("/api/gamification/goals")
+      .then((r) => r.json())
+      .then((goals) => {
+        if (Array.isArray(goals) && goals.length > 0) {
+          const wordsGoal = goals.find((g: { type: string }) => g.type === "words_per_day");
+          if (wordsGoal) {
+            setActiveGoal({
+              type: wordsGoal.type,
+              target: wordsGoal.target,
+              currentProgress: wordsGoal.currentProgress ?? 0,
+            });
+          }
+        }
+      })
+      .catch(() => {});
+  }, [project.id]);
+
+  // Compute live word count
+  const liveWordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
 
   useEffect(() => {
     if (!userPreferences?.breakReminders) return;
@@ -139,6 +169,23 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
           >
             {showLinkedEntities ? "Hide Linked Entities" : "Linked Entities"}
           </button>
+          <ExportDropdown projectId={project.id} />
+          <span className="text-xs text-fg/40 font-mono">
+            {liveWordCount.toLocaleString()} words
+            {project.panelCount && project.panelCount > 0 ? ` · ${project.panelCount} panels` : ""}
+          </span>
+          {activeGoal && (
+            <span
+              className={`text-xs font-mono ${
+                activeGoal.currentProgress >= activeGoal.target ? "text-green-500" : "text-fg/50"
+              }`}
+              title={`${activeGoal.currentProgress} / ${activeGoal.target} words today`}
+            >
+              {activeGoal.currentProgress >= activeGoal.target ? "✓ " : ""}
+              {activeGoal.currentProgress.toLocaleString()} / {activeGoal.target.toLocaleString()}{" "}
+              today
+            </span>
+          )}
           {saving && <span className="text-sm text-fg/50 animate-pulse">Saving...</span>}
         </div>
       </div>

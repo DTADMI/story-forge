@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { email } = body;
+    const { email, password, name } = body;
 
     if (!email) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
@@ -24,13 +24,29 @@ export async function POST(request: NextRequest) {
 
     const admin = createOptionalAdminClient();
     if (admin) {
+      // Find user if they were already created by the client-side signUp()
       const { data } = await admin.auth.admin.listUsers();
-      const targetUser = data?.users?.find((u) => u.email === email);
+      const targetUser = data?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase());
+
       if (targetUser) {
+        // Update existing user with verification token
         await admin.auth.admin.updateUserById(targetUser.id, {
           user_metadata: {
             ...targetUser.user_metadata,
             verification_token: token,
+            verification_token_expires: new Date(Date.now() + 86400000).toISOString(),
+          },
+        });
+      } else if (password) {
+        // Create user if they don't exist yet (fallback for API-only signup)
+        await admin.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: false,
+          user_metadata: {
+            name: name || undefined,
+            verification_token: token,
+            verification_token_expires: new Date(Date.now() + 86400000).toISOString(),
           },
         });
       }

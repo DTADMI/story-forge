@@ -44,11 +44,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Format check
+        run: pnpm format:check
+
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Test
-        run: pnpm test
+        run: pnpm test:run
 
       - name: Build
         run: pnpm build
+
+      - name: Verify integration
+        run: node scripts/verify.mjs --all

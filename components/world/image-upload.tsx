@@ -19,6 +19,43 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Client-side EXIF stripping via canvas redraw
+  function stripExif(file: File): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        const canvas = document.createElement("canvas");
+        const maxDim = 1200;
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width >= height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { reject(new Error("Canvas unavailable")); return; }
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          if (!blob) { reject(new Error("Canvas toBlob failed")); return; }
+          resolve(new File([blob], file.name, { type: "image/webp" }));
+        }, "image/webp", 0.85);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("Image load failed"));
+      };
+      img.src = objectUrl;
+    });
+  }
+
   const uploadFile = useCallback(
     async (file: File) => {
       const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -45,11 +82,13 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
       setProgress(0);
 
       try {
-        const localPreview = URL.createObjectURL(file);
+        // Strip EXIF data by redrawing on canvas
+        const stripped = await stripExif(file);
+        const localPreview = URL.createObjectURL(stripped);
         setPreview(localPreview);
 
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", stripped, file.name);
 
         const xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", (e) => {
@@ -71,7 +110,9 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
               try {
                 const err = JSON.parse(xhr.responseText);
                 message = err.error || message;
-              } catch { /* noop */ }
+              } catch {
+                /* noop */
+              }
               reject(new Error(message));
             }
           };

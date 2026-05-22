@@ -61,6 +61,17 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
           }),
         });
         if (!res.ok) throw new Error("Failed to save");
+
+        // Log panel/scene progress to gamification pipeline
+        try {
+          await fetch("/api/gamification/progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ value: updated.length, type: "panels" }),
+          });
+        } catch {
+          // progress logging is non-critical
+        }
       } catch {
         toast({
           title: "Failed to save storyboard",

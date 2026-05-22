@@ -46,30 +46,40 @@ export function Editor({ content, onChange, onSave }: EditorProps) {
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`p-1 rounded ${editor.isActive("bold") ? "bg-brand text-white" : "hover:bg-fg/5"}`}
+          title="Bold"
+          aria-label="Bold"
         >
-          Bold
+          <strong>B</strong>
         </button>
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`p-1 rounded ${editor.isActive("italic") ? "bg-brand text-white" : "hover:bg-fg/5"}`}
+          title="Italic"
+          aria-label="Italic"
         >
-          Italic
+          <em>I</em>
         </button>
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={`p-1 rounded ${editor.isActive("heading", { level: 1 }) ? "bg-brand text-white" : "hover:bg-fg/5"}`}
+          title="Heading 1"
+          aria-label="Heading 1"
         >
           H1
         </button>
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={`p-1 rounded ${editor.isActive("heading", { level: 2 }) ? "bg-brand text-white" : "hover:bg-fg/5"}`}
+          title="Heading 2"
+          aria-label="Heading 2"
         >
           H2
         </button>
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`p-1 rounded ${editor.isActive("bulletList") ? "bg-brand text-white" : "hover:bg-fg/5"}`}
+          title="Bullet List"
+          aria-label="Bullet List"
         >
           List
         </button>

@@ -53,9 +53,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     console.error("Checkout error:", error);
-    return NextResponse.json(
-      { message: "Failed to create checkout session" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Failed to create checkout session" }, { status: 500 });
   }
 }

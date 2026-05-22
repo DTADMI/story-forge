@@ -96,8 +96,8 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
     name: "Projects V2",
     description: "Next-generation project editor with advanced features",
     type: "boolean",
-    enabled: false,
-    value: false,
+    enabled: true,
+    value: true,
     category: "core",
   },
   {
@@ -114,8 +114,8 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
     name: "Design System V2",
     description: "Updated design system with new tokens and components",
     type: "boolean",
-    enabled: true,
-    value: true,
+    enabled: false,
+    value: false,
     category: "core",
   },
   {
@@ -195,17 +195,17 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
     name: "Version History",
     description: "Save and restore previous versions of projects",
     type: "boolean",
-    enabled: false,
-    value: false,
+    enabled: true,
+    value: true,
     category: "core",
   },
   {
     id: "search",
     name: "Search",
-    description: "Full-text search across projects",
+    description: "Full-text search across projects and world entities",
     type: "boolean",
-    enabled: false,
-    value: false,
+    enabled: true,
+    value: true,
     category: "core",
   },
 ];
@@ -255,5 +255,3 @@ export function isEnabledSync(key: string): boolean {
   const flag = flags.find((f) => f.id === normalizeKey(key));
   return flag?.enabled ?? false;
 }
-
-

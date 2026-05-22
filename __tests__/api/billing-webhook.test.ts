@@ -20,10 +20,12 @@ import { prisma } from "@/lib/prisma";
 function mockRequest(body: string, signature?: string) {
   return {
     text: () => Promise.resolve(body),
-    headers: new Map(Object.entries({
-      "stripe-signature": signature || "test_sig",
-      "content-type": "application/json",
-    })) as unknown as Headers,
+    headers: new Map(
+      Object.entries({
+        "stripe-signature": signature || "test_sig",
+        "content-type": "application/json",
+      })
+    ) as unknown as Headers,
   } as unknown as Request;
 }
 
@@ -79,10 +81,14 @@ describe("Billing Webhook API", () => {
     (prisma.auditEvent.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
     const { POST } = await import("@/app/api/billing/webhook/route");
-    const res = await POST(mockRequest(JSON.stringify({
-      type: "checkout.session.completed",
-      data: { object: { id: "cs_test_123", client_reference_id: "user-1" } },
-    })));
+    const res = await POST(
+      mockRequest(
+        JSON.stringify({
+          type: "checkout.session.completed",
+          data: { object: { id: "cs_test_123", client_reference_id: "user-1" } },
+        })
+      )
+    );
 
     expect(res.status).toBe(200);
     const data = await res.json();
@@ -104,10 +110,14 @@ describe("Billing Webhook API", () => {
     });
 
     const { POST } = await import("@/app/api/billing/webhook/route");
-    const res = await POST(mockRequest(JSON.stringify({
-      type: "checkout.session.completed",
-      data: { object: {} },
-    })));
+    const res = await POST(
+      mockRequest(
+        JSON.stringify({
+          type: "checkout.session.completed",
+          data: { object: {} },
+        })
+      )
+    );
 
     expect(res.status).toBe(200);
     expect(prisma.user.update).not.toHaveBeenCalled();
@@ -120,9 +130,13 @@ describe("Billing Webhook API", () => {
     });
 
     const { POST } = await import("@/app/api/billing/webhook/route");
-    const res = await POST(mockRequest(JSON.stringify({
-      type: "invoice.payment_succeeded",
-    })));
+    const res = await POST(
+      mockRequest(
+        JSON.stringify({
+          type: "invoice.payment_succeeded",
+        })
+      )
+    );
 
     expect(res.status).toBe(200);
     expect(prisma.user.update).not.toHaveBeenCalled();

@@ -205,7 +205,11 @@ async function updateSettings(id: string, formData: FormData) {
 
   await prisma.project.update({
     where: { id },
-    data: { title: title || undefined, description: description || undefined, defaultScope: defaultScope as any },
+    data: {
+      title: title || undefined,
+      description: description || undefined,
+      defaultScope: defaultScope as any,
+    },
   });
   redirect(`/projects/${id}`);
 }
