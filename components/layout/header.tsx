@@ -21,14 +21,20 @@ async function getUserAdminStatus(userId: string): Promise<boolean> {
 }
 
 export async function Header() {
-  const user = await getUser();
-
+  let user = null;
   let isUserAdmin = false;
+
+  try {
+    user = await getUser();
+  } catch {
+    // Supabase unavailable — render unauthenticated header
+  }
+
   if (user) {
     try {
       isUserAdmin = await getUserAdminStatus(user.id);
     } catch {
-      // user not found in DB
+      // DB unavailable — render without admin links
     }
   }
 
