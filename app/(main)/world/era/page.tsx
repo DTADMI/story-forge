@@ -43,13 +43,13 @@ export default async function ErasPage({
 
       {projects.length > 1 && (
         <div className="flex flex-wrap gap-2">
-          <Button variant={!projectId ? "primary" : "outline"} size="sm" asChild>
+          <Button variant={!projectId ? "default" : "outline"} size="sm" asChild>
             <Link href="/world/era">All Projects</Link>
           </Button>
           {projects.map((p) => (
             <Button
               key={p.id}
-              variant={projectId === p.id ? "primary" : "outline"}
+              variant={projectId === p.id ? "default" : "outline"}
               size="sm"
               asChild
             >

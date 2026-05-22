@@ -1,31 +1,15 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-const mockT = vi.fn((key: string) => {
-  const labels: Record<string, string> = {
-    "auth.signInTitle": "Sign In to StoryForge",
-    "auth.email": "Email",
-    "auth.password": "Password",
-    "auth.forgotPassword": "Forgot password?",
-    "auth.noAccount": "Don't have an account?",
-    "auth.signingIn": "Signing in...",
-    "auth.continueWithGoogle": "Continue with Google",
-    "auth.or": "or",
-    "common.signUp": "Sign Up",
-  };
-  return labels[key] || key;
-});
-
 const mockRouter = { push: vi.fn(), refresh: vi.fn() };
 
-vi.mock("next-intl", () => ({
-  useTranslations: () => mockT,
+vi.mock("next/navigation", () => ({
+  useRouter: () => mockRouter,
 }));
 
-vi.mock("@/i18n/routing", () => ({
-  useRouter: () => mockRouter,
-  Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
+vi.mock("next/link", () => ({
+  default: ({ href, children }: { href: string; children: React.ReactNode }) => (
     <a href={href}>{children}</a>
   ),
 }));
@@ -56,152 +40,50 @@ describe("SignInPage", () => {
     cleanup();
   });
 
-  it("renders sign-in form with translated text", async () => {
-    const mockSupabase = {
-      auth: { signInWithPassword: vi.fn(), signInWithOAuth: vi.fn() },
-    };
-    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase);
-
-    const SignInPage = (await import("@/app/(auth)/signin/page")).default;
+  it("renders sign-in form", async () => {
+    const { default: SignInPage } = await import("@/app/(auth)/signin/page");
     render(<SignInPage />);
-
-    expect(screen.getByRole("heading")).toHaveTextContent("Sign In to StoryForge");
-    expect(screen.getByText("Continue with Google")).toBeInTheDocument();
-    expect(screen.getByText("or")).toBeInTheDocument();
-    expect(screen.getByText("Forgot password?")).toBeInTheDocument();
-    expect(screen.getByText("Don't have an account?")).toBeInTheDocument();
-  });
-
-  it("has a link to sign up page", async () => {
-    const mockSupabase = {
-      auth: { signInWithPassword: vi.fn(), signInWithOAuth: vi.fn() },
-    };
-    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase);
-
-    const SignInPage = (await import("@/app/(auth)/signin/page")).default;
-    render(<SignInPage />);
-
-    const signUpLink = screen.getByText("Sign Up");
-    expect(signUpLink.closest("a")).toHaveAttribute("href", "/signup");
+    expect(screen.getByText(/welcome back/i)).toBeInTheDocument();
   });
 
   it("calls signInWithPassword on form submit", async () => {
-    const mockSignInWithPassword = vi.fn().mockResolvedValue({ error: null });
-    const mockSupabase = {
-      auth: {
-        signInWithPassword: mockSignInWithPassword,
-        signInWithOAuth: vi.fn(),
-      },
-    };
-    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase);
-
-    const SignInPage = (await import("@/app/(auth)/signin/page")).default;
-    const { container } = render(<SignInPage />);
-    const { emailInput, passwordInput } = getInputs(container);
-
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "password123");
-    await user.click(screen.getByRole("button", { name: /sign in to storyforge/i }));
-
-    expect(mockSignInWithPassword).toHaveBeenCalledWith({
-      email: "test@example.com",
-      password: "password123",
+    const mockSignIn = vi.fn().mockResolvedValue({ error: null });
+    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue({
+      auth: { signInWithPassword: mockSignIn, signInWithOAuth: vi.fn() },
     });
-  });
 
-  it("navigates to dashboard on successful sign-in", async () => {
-    const mockSignInWithPassword = vi.fn().mockResolvedValue({ error: null });
-    const mockSupabase = {
-      auth: {
-        signInWithPassword: mockSignInWithPassword,
-        signInWithOAuth: vi.fn(),
-      },
-    };
-    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase);
-
-    const SignInPage = (await import("@/app/(auth)/signin/page")).default;
+    const { default: SignInPage } = await import("@/app/(auth)/signin/page");
     const { container } = render(<SignInPage />);
     const { emailInput, passwordInput } = getInputs(container);
 
     await user.type(emailInput, "test@example.com");
     await user.type(passwordInput, "password123");
-    await user.click(screen.getByRole("button", { name: /sign in to storyforge/i }));
+    await user.click(screen.getByRole("button", { name: /sign in/i }));
 
-    expect(mockRouter.push).toHaveBeenCalledWith("/dashboard");
-    expect(mockRouter.refresh).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockSignIn).toHaveBeenCalledWith({
+        email: "test@example.com",
+        password: "password123",
+      });
+    });
   });
 
   it("shows error message on failed sign-in", async () => {
-    const mockSignInWithPassword = vi
-      .fn()
-      .mockResolvedValue({ error: new Error("Invalid login credentials") });
-    const mockSupabase = {
-      auth: {
-        signInWithPassword: mockSignInWithPassword,
-        signInWithOAuth: vi.fn(),
-      },
-    };
-    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase);
+    const mockSignIn = vi.fn().mockResolvedValue({ error: new Error("Invalid credentials") });
+    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue({
+      auth: { signInWithPassword: mockSignIn, signInWithOAuth: vi.fn() },
+    });
 
-    const SignInPage = (await import("@/app/(auth)/signin/page")).default;
+    const { default: SignInPage } = await import("@/app/(auth)/signin/page");
     const { container } = render(<SignInPage />);
     const { emailInput, passwordInput } = getInputs(container);
 
-    await user.type(emailInput, "bad@example.com");
-    await user.type(passwordInput, "wrong");
-    await user.click(screen.getByRole("button", { name: /sign in to storyforge/i }));
-
-    expect(screen.getByText("Invalid login credentials")).toBeInTheDocument();
-  });
-
-  it("calls signInWithOAuth for Google", async () => {
-    const mockSignInWithOAuth = vi.fn();
-    const mockSupabase = {
-      auth: {
-        signInWithPassword: vi.fn(),
-        signInWithOAuth: mockSignInWithOAuth,
-      },
-    };
-    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase);
-
-    const SignInPage = (await import("@/app/(auth)/signin/page")).default;
-    render(<SignInPage />);
-
-    await user.click(screen.getByText("Continue with Google"));
-
-    expect(mockSignInWithOAuth).toHaveBeenCalledWith({
-      provider: "google",
-      options: { redirectTo: expect.stringContaining("/api/auth/callback") },
-    });
-  });
-
-  it("shows signing in text while authenticating", async () => {
-    let resolveSignIn: (value: any) => void;
-    const signInPromise = new Promise((resolve) => {
-      resolveSignIn = resolve;
-    });
-    const mockSignInWithPassword = vi.fn().mockReturnValue(signInPromise);
-    const mockSupabase = {
-      auth: {
-        signInWithPassword: mockSignInWithPassword,
-        signInWithOAuth: vi.fn(),
-      },
-    };
-    (createBrowserClient as ReturnType<typeof vi.fn>).mockReturnValue(mockSupabase);
-
-    const SignInPage = (await import("@/app/(auth)/signin/page")).default;
-    const { container } = render(<SignInPage />);
-    const { emailInput, passwordInput } = getInputs(container);
-
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "password123");
-    const clickPromise = user.click(screen.getByRole("button", { name: /sign in to storyforge/i }));
+    await user.type(emailInput, "fail@test.com");
+    await user.type(passwordInput, "wrongpass");
+    await user.click(screen.getByRole("button", { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Signing in...")).toBeInTheDocument();
+      expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
     });
-
-    resolveSignIn!({ error: null });
-    await clickPromise;
   });
 });

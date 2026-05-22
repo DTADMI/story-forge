@@ -1,226 +1,123 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Brand tokens (light) — values inspired by docs/design-tokens.json */
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-inter), "Inter", "Geist", "Geist Fallback", sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
+  --font-display: var(--font-space-grotesk), "Space Grotesk", "Geist", sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand: var(--primary);
+  --color-brand-foreground: var(--primary-foreground);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
 :root {
-  --fg: #0b0b0f;
-  --bg: #ffffff;
-  --brand: #0e3fa9; /* Royal Blue */
-  --accent: #b4371e; /* Auburn */
-  --success: #16794e; /* Royal Green */
-  --warning: #d97706; /* Royal Orange */
-  --info: #6d28d9; /* Purple */
-  --ring: #d4af37; /* Gold */
+  --radius: 0.75rem;
 
-  --radius-lg: 12px;
-  --radius-md: 10px;
-  --radius-sm: 8px;
+  --background: #fafbfc;
+  --foreground: #1a202c;
+  --card: #ffffff;
+  --card-foreground: #1a202c;
+  --popover: #ffffff;
+  --popover-foreground: #1a202c;
+  --primary: #276749;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f7f5;
+  --secondary-foreground: #1a202c;
+  --muted: #e6eef0;
+  --muted-foreground: #475569;
+  --accent: rgba(30, 64, 175, 0.18);
+  --accent-foreground: #1e40af;
+  --destructive: #c53030;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #276749;
 
-  /* Typography scale */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
-    "Apple Color Emoji", "Segoe UI Emoji";
-  --text-xs: 0.75rem; /* 12px */
-  --text-sm: 0.875rem; /* 14px */
-  --text-base: 1rem; /* 16px */
-  --text-lg: 1.125rem; /* 18px */
-  --text-xl: 1.25rem; /* 20px */
-  --text-2xl: 1.5rem; /* 24px */
-  --leading-tight: 1.25;
-  --leading-normal: 1.5;
-
-  /* Spacing scale */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-
-  /* Elevation */
-  --elev-0: 0 0 #0000;
-  --elev-1: 0 1px 2px 0 rgb(0 0 0 / 0.06);
-  --elev-2: 0 2px 8px 0 rgb(0 0 0 / 0.08);
+  --brand-1: #276749;
+  --brand-2: #1e40af;
+  --brand-3: #6b46c1;
+  --brand-4: #c2410c;
+  --brand-5: #9b2c2c;
 }
 
-/* Dark theme — values synced with docs/design-tokens.json */
 .dark {
-  --fg: #f7f7fb;
-  --bg: #0b0f16;
-  --brand: #5b86ff; /* Royal Blue (brightened) */
-  --accent: #ff6a3b; /* Auburn (brightened) */
-  --success: #2dd4a3; /* Royal Green */
-  --warning: #f59e0b; /* Royal Orange */
-  --info: #a78bfa; /* Purple */
-  --ring: #ffd86a; /* Gold */
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+  --primary: #4ade80;
+  --primary-foreground: #0b1f12;
+  --secondary: #1e293b;
+  --secondary-foreground: #f1f5f9;
+  --muted: #334155;
+  --muted-foreground: #cbd5e1;
+  --accent: rgba(147, 197, 253, 0.22);
+  --accent-foreground: #bfdbfe;
+  --destructive: #f87171;
+  --destructive-foreground: #0f172a;
+  --border: #334155;
+  --input: #334155;
+  --ring: #4ade80;
 }
 
-/* Base typography and focus styles for a11y */
-html {
-  color-scheme: light dark;
-}
-body {
-  background-color: var(--bg);
-  color: var(--fg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-family: var(--font-sans);
-}
-
-:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-/* Map CSS variables to utility-like classes so we can use semantic tokens
-   with Tailwind utility names without custom config. */
-.bg-bg {
-  background-color: var(--bg);
-}
-
-.text-fg {
-  color: var(--fg);
-}
-
-.bg-brand {
-  background-color: var(--brand);
-}
-
-.text-brand {
-  color: var(--brand);
-}
-
-.ring-brand {
-  --tw-ring-color: var(--ring);
-}
-
-.border-brand {
-  border-color: var(--brand);
-}
-
-/* Typography utilities */
-.text-xs {
-  font-size: var(--text-xs);
-  line-height: var(--leading-normal);
-}
-
-.text-sm {
-  font-size: var(--text-sm);
-  line-height: var(--leading-normal);
-}
-
-.text-base {
-  font-size: var(--text-base);
-  line-height: var(--leading-normal);
-}
-
-.text-lg {
-  font-size: var(--text-lg);
-  line-height: var(--leading-normal);
-}
-
-.text-xl {
-  font-size: var(--text-xl);
-  line-height: var(--leading-tight);
-}
-
-.text-2xl {
-  font-size: var(--text-2xl);
-  line-height: var(--leading-tight);
-}
-
-/* Elevation utilities */
-.shadow-elev-0 {
-  box-shadow: var(--elev-0);
-}
-
-.shadow-elev-1 {
-  box-shadow: var(--elev-1);
-}
-
-.shadow-elev-2 {
-  box-shadow: var(--elev-2);
-}
-
-/* Basic prose spacing for marketing pages */
-.prose-lite p {
-  margin: 0.75rem 0;
-}
-
-.prose-lite h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  margin: 1rem 0;
-}
-
-.prose-lite h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 1rem 0;
-}
-
-.prose-lite ul {
-  list-style: disc;
-  padding-left: 1.25rem;
-  margin: 0.5rem 0;
-}
-
-/* Reduced motion respect */
-@media (prefers-reduced-motion: reduce) {
+@layer base {
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    border-color: var(--border);
+    outline-color: color-mix(in srgb, var(--ring) 50%, transparent);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Inline animation utilities (replaces tailwindcss-animate dependency) */
-@keyframes slide-in-right {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
+@layer base {
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  a:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
 
-@keyframes slide-out-right {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
-  to {
-    opacity: 1;
-  }
-}
-
-.animate-in {
-  animation-duration: 0.2s;
-  animation-fill-mode: both;
-}
-
-.slide-in-from-right {
-  animation-name: slide-in-right;
-}
-
-.slide-out-to-right {
-  animation-name: slide-out-right;
-}
-
-.fade-in {
-  animation-name: fade-in;
 }

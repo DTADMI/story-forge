@@ -30,7 +30,7 @@ export function FollowButton({ targetUserId, initialIsFollowing }: FollowButtonP
   }
 
   return (
-    <Button onClick={toggle} disabled={isLoading} variant={isFollowing ? "outline" : "primary"}>
+    <Button onClick={toggle} disabled={isLoading} variant={isFollowing ? "outline" : "default"}>
       {isFollowing ? "Unfollow" : "Follow"}
     </Button>
   );

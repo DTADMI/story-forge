@@ -34,7 +34,7 @@ export default function ComponentsDemoUIPage() {
           <Badge>Default</Badge>
           <Badge variant="secondary">Secondary</Badge>
           <Badge variant="outline">Outline</Badge>
-          <Badge variant="muted">Muted</Badge>
+          <Badge variant="secondary">Muted</Badge>
         </div>
 
         <Card className="shadow-elev-1">

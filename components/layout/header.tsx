@@ -1,107 +1,43 @@
 import Link from "next/link";
-import { DarkModeToggle } from "@/components/dark-mode-toggle";
-import { NotificationBell } from "@/components/notifications/notification-bell";
-import { getUser } from "@/lib/supabase/server";
-import { getCached, setCached, buildCacheKey } from "@/lib/cache";
-import { prisma } from "@/lib/prisma";
-import { BarChart3, Activity, Trophy } from "lucide-react";
+import { BookOpen, Menu, X } from "lucide-react";
 
-async function getUserAdminStatus(userId: string): Promise<boolean> {
-  const cacheKey = buildCacheKey("user", userId, "isAdmin");
-  const cached = await getCached<boolean>(cacheKey);
-  if (cached !== null) return cached;
-
-  const dbUser = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { role: true },
-  });
-  const isAdmin = dbUser?.role === "admin";
-  await setCached(cacheKey, isAdmin, 300);
-  return isAdmin;
-}
-
-export async function Header() {
-  let user = null;
-  let isUserAdmin = false;
-
-  try {
-    user = await getUser();
-  } catch {
-    // Supabase unavailable — render unauthenticated header
-  }
-
-  if (user) {
-    try {
-      isUserAdmin = await getUserAdminStatus(user.id);
-    } catch {
-      // DB unavailable — render without admin links
-    }
-  }
-
+export function Header() {
   return (
-    <header className="border-fg/10 bg-bg/80 sticky top-0 z-40 border-b backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="text-brand text-lg font-extrabold">
-            StoryForge
+    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-display text-lg font-bold text-brand-1 dark:text-primary"
+        >
+          <BookOpen className="h-5 w-5" />
+          <span>StoryForge</span>
+        </Link>
+
+        <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
+          <Link href="/feed" className="text-foreground/70 hover:text-foreground transition-colors">
+            Explore
           </Link>
-          <nav className="hidden gap-4 text-sm sm:flex">
-            <Link href="/feed" className="hover:text-brand transition-colors">
-              Feed
-            </Link>
-            <Link href="/world/galaxy" className="hover:text-brand transition-colors">
-              Galaxy
-            </Link>
-            <Link href="/pricing" className="hover:text-brand transition-colors">
-              Pricing
-            </Link>
-            <Link href="/about" className="hover:text-brand transition-colors">
-              About
-            </Link>
-            <Link href="/faq" className="hover:text-brand transition-colors">
-              FAQ
-            </Link>
-          </nav>
-        </div>
+          <Link
+            href="/pricing"
+            className="text-foreground/70 hover:text-foreground transition-colors"
+          >
+            Pricing
+          </Link>
+        </nav>
+
         <div className="flex items-center gap-3">
-          <DarkModeToggle />
-          {user ? (
-            <div className="flex items-center gap-3">
-              <NotificationBell />
-              <Link
-                href="/feed/activity"
-                className="text-xs hover:text-brand"
-                title="Activity Feed"
-              >
-                <Activity className="h-4 w-4" />
-              </Link>
-              <Link href="/stats" className="text-xs hover:text-brand" title="Writing Stats">
-                <BarChart3 className="h-4 w-4" />
-              </Link>
-              <Link href="/leaderboard" className="text-xs hover:text-brand" title="Leaderboard">
-                <Trophy className="h-4 w-4" />
-              </Link>
-              {isUserAdmin && (
-                <Link
-                  href="/admin/subscriptions"
-                  className="text-xs hover:text-brand"
-                  title="Admin"
-                >
-                  Admin
-                </Link>
-              )}
-              <Link href="/dashboard" className="text-sm hover:text-brand">
-                Dashboard
-              </Link>
-              <Link href="/profile" className="text-sm hover:text-brand">
-                Profile
-              </Link>
-            </div>
-          ) : (
-            <Link href="/signin" className="text-sm hover:text-brand">
-              Sign in
-            </Link>
-          )}
+          <Link
+            href="/signin"
+            className="hidden rounded-md px-4 py-1.5 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors sm:inline-flex"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-md bg-gradient-to-r from-brand-1 to-brand-2 px-4 py-1.5 text-sm font-medium text-white shadow-sm shadow-brand-2/20 hover:shadow-md hover:shadow-brand-2/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+          >
+            Get Started
+          </Link>
         </div>
       </div>
     </header>

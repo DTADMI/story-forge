@@ -5,21 +5,9 @@ const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
-      colors: {
-        // semantic tokens mapped to CSS variables populated from docs/design-tokens.json at runtime
-        bg: "var(--bg)",
-        fg: "var(--fg)",
-        brand: "var(--brand)",
-        accent: "var(--accent)",
-        success: "var(--success)",
-        warning: "var(--warning)",
-        info: "var(--info)",
-        ring: "var(--ring)",
-      },
-      borderRadius: {
-        lg: "var(--radius-lg, 12px)",
-        md: "var(--radius-md, 10px)",
-        sm: "var(--radius-sm, 8px)",
+      fontFamily: {
+        sans: ["var(--font-inter)", "Inter", "sans-serif"],
+        display: ["var(--font-space-grotesk)", "Space Grotesk", "sans-serif"],
       },
     },
   },
