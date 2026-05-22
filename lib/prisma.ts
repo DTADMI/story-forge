@@ -11,12 +11,12 @@ let prismaClient: PrismaClient | null = null;
 function createPrismaClient(): PrismaClient {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
-    // During build (CI/Vercel), Next.js pre-renders pages and may trigger
-    // Prisma imports statically. Return a stub that only fails on actual queries.
-    if (process.env.CI || process.env.VERCEL || process.env.NEXT_PHASE) {
-      console.warn(
-        "[Prisma] DATABASE_URL not set — returning build-safe stub. Queries will fail at runtime if DATABASE_URL is missing."
-      );
+    // GitHub Actions CI has no database. Return a noop stub during CI build
+    // so Next.js page collection doesn't crash.
+    // Vercel runtime always has DATABASE_URL (set in project env vars).
+    // Vercel build also needs it for prisma generate.
+    if (process.env.CI) {
+      console.warn("[Prisma] DATABASE_URL not set — returning CI build-safe stub.");
       return buildSafeStub();
     }
     throw new Error(
