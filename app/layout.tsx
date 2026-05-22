@@ -30,8 +30,20 @@ export const viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await getLocale();
-  const messages = await getMessages();
+  let locale = "en";
+  let messages: Record<string, unknown> = {};
+
+  try {
+    locale = await getLocale();
+  } catch {
+    // next-intl unavailable — use default
+  }
+
+  try {
+    messages = (await getMessages()) as Record<string, unknown>;
+  } catch {
+    // messages unavailable — use empty
+  }
 
   return (
     <html lang={locale} suppressHydrationWarning>
