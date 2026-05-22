@@ -12,7 +12,7 @@ export default function HomePage() {
           <div className="text-center space-y-6">
             <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-balance">
               Forge Your{" "}
-              <span className="bg-gradient-to-r from-brand-1 via-brand-3 to-brand-2 bg-clip-text text-transparent">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-1 via-brand-3 to-brand-2">
                 Story
               </span>
             </h1>

@@ -5,16 +5,19 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border mt-auto">
-      <div className="container mx-auto max-w-6xl px-4 py-8">
-        <div className="grid gap-8 sm:grid-cols-3">
-          <div>
-            <h3 className="font-display text-sm font-semibold text-foreground mb-3">StoryForge</h3>
-            <p className="text-sm text-muted-foreground">
+      <div className="container mx-auto max-w-6xl px-4 py-12">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Brand */}
+          <div className="space-y-3">
+            <h3 className="font-display font-semibold">StoryForge</h3>
+            <p className="text-sm text-muted-foreground max-w-xs">
               A gamified creative writing platform for novelists, screenwriters, and storytellers.
             </p>
           </div>
-          <div>
-            <h3 className="font-display text-sm font-semibold text-foreground mb-3">Product</h3>
+
+          {/* Product */}
+          <div className="space-y-3">
+            <h3 className="font-display text-sm font-semibold">Product</h3>
             <nav className="flex flex-col gap-2 text-sm text-muted-foreground">
               <Link href="/feed" className="hover:text-foreground transition-colors">
                 Explore
@@ -22,25 +25,45 @@ export function Footer() {
               <Link href="/pricing" className="hover:text-foreground transition-colors">
                 Pricing
               </Link>
-              <Link href="/about" className="hover:text-foreground transition-colors">
-                About
-              </Link>
-            </nav>
-          </div>
-          <div>
-            <h3 className="font-display text-sm font-semibold text-foreground mb-3">Support</h3>
-            <nav className="flex flex-col gap-2 text-sm text-muted-foreground">
-              <Link href="/faq" className="hover:text-foreground transition-colors">
-                FAQ
+              <Link href="/components-demo" className="hover:text-foreground transition-colors">
+                Components
               </Link>
               <Link href="/download" className="hover:text-foreground transition-colors">
                 Download
               </Link>
             </nav>
           </div>
+
+          {/* Company */}
+          <div className="space-y-3">
+            <h3 className="font-display text-sm font-semibold">Company</h3>
+            <nav className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <Link href="/about" className="hover:text-foreground transition-colors">
+                About
+              </Link>
+              <Link href="/faq" className="hover:text-foreground transition-colors">
+                FAQ
+              </Link>
+            </nav>
+          </div>
+
+          {/* Legal */}
+          <div className="space-y-3">
+            <h3 className="font-display text-sm font-semibold">Legal</h3>
+            <nav className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <Link href="/not-found" className="hover:text-foreground transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/not-found" className="hover:text-foreground transition-colors">
+                Terms of Service
+              </Link>
+            </nav>
+          </div>
         </div>
-        <div className="mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">
-          &copy; {year} StoryForge. All rights reserved.
+
+        <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <p>&copy; {year} StoryForge. All rights reserved.</p>
+          <p>Built with Next.js, Supabase, and Prisma</p>
         </div>
       </div>
     </footer>

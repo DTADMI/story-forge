@@ -15,9 +15,6 @@ import {
   User,
   Settings,
   LogOut,
-  Globe,
-  Trophy,
-  Bell,
 } from "lucide-react";
 
 interface UserInfo {
