@@ -34,21 +34,26 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   let messages: Record<string, unknown> = {};
 
   try {
-    locale = await getLocale();
+    const loc = await getLocale();
+    if (loc) locale = loc;
   } catch {
     // next-intl unavailable — use default
   }
 
   try {
-    messages = (await getMessages()) as Record<string, unknown>;
+    const msgs = await getMessages();
+    if (msgs && typeof msgs === "object") messages = msgs as Record<string, unknown>;
   } catch {
     // messages unavailable — use empty
   }
 
+  // Ensure messages is never null/undefined for NextIntlClientProvider
+  const safeMessages = messages || {};
+
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale || "en"} suppressHydrationWarning>
       <body className="bg-bg text-fg min-h-screen">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={locale || "en"} messages={safeMessages}>
           <SkipLink />
           <ServiceWorkerRegistration />
           <PWAInstallPrompt />
