@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Characters — StoryForge" };
 
@@ -37,25 +38,31 @@ export default async function CharactersPage({
           <h1 className="text-2xl font-bold tracking-tight">Characters</h1>
           <p className="text-muted-foreground">Build and manage your cast of characters.</p>
         </div>
-        <Button asChild>
-          <Link href="/world/characters/new">New Character</Link>
-        </Button>
+        <Link href="/world/characters/new" className={cn(buttonVariants({ size: "default" }))}>
+          New Character
+        </Link>
       </div>
 
       {projects.length > 1 && (
         <div className="flex flex-wrap gap-2">
-          <Button variant={!projectId ? "default" : "outline"} size="sm" asChild>
-            <Link href="/world/characters">All Projects</Link>
-          </Button>
+          <Link
+            href="/world/characters"
+            className={cn(
+              buttonVariants({ variant: !projectId ? "default" : "outline", size: "sm" })
+            )}
+          >
+            All Projects
+          </Link>
           {projects.map((p) => (
-            <Button
+            <Link
               key={p.id}
-              variant={projectId === p.id ? "default" : "outline"}
-              size="sm"
-              asChild
+              href={`/world/characters?projectId=${p.id}`}
+              className={cn(
+                buttonVariants({ variant: projectId === p.id ? "default" : "outline", size: "sm" })
+              )}
             >
-              <Link href={`/world/characters?projectId=${p.id}`}>{p.title}</Link>
-            </Button>
+              {p.title}
+            </Link>
           ))}
         </div>
       )}

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BookOpen, Users, Trophy } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 export default function HomePage() {
@@ -23,12 +22,18 @@ export default function HomePage() {
               protecting your wellbeing.
             </p>
             <div className="flex items-center justify-center gap-4 pt-4">
-              <Button size="lg" asChild>
-                <Link href="/signup">Start Writing Free</Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/feed">Explore Stories</Link>
-              </Button>
+              <Link
+                href="/signup"
+                className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium min-h-10 px-6 py-2.5 bg-gradient-to-r from-brand-1 to-brand-2 text-white shadow-sm shadow-brand-2/20 hover:shadow-md hover:shadow-brand-2/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Start Writing Free
+              </Link>
+              <Link
+                href="/feed"
+                className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium min-h-10 px-6 py-2.5 border border-input bg-card text-foreground shadow-xs hover:border-primary/40 hover:bg-primary/10 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Explore Stories
+              </Link>
             </div>
           </div>
         </div>
@@ -84,9 +89,12 @@ export default function HomePage() {
             Join writers from around the world who are building better habits.
           </p>
           <div className="mt-6">
-            <Button size="lg" asChild>
-              <Link href="/signup">Create Your Account</Link>
-            </Button>
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium min-h-10 px-6 py-2.5 bg-gradient-to-r from-brand-1 to-brand-2 text-white shadow-sm shadow-brand-2/20 hover:shadow-md hover:shadow-brand-2/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+            >
+              Create Your Account
+            </Link>
           </div>
         </div>
       </section>

@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/empty-state";
 
 export const metadata: Metadata = { title: "Locations — StoryForge" };
@@ -37,23 +38,18 @@ export default async function LocationsPage({
           <h1 className="text-2xl font-bold tracking-tight">Locations</h1>
           <p className="text-muted-foreground">Map out the places that shape your world.</p>
         </div>
-        <Button asChild>
+        <Button>
           <Link href="/world/locations/new">New Location</Link>
         </Button>
       </div>
 
       {projects.length > 1 && (
         <div className="flex flex-wrap gap-2">
-          <Button variant={!projectId ? "default" : "outline"} size="sm" asChild>
+          <Button variant={!projectId ? "default" : "outline"} size="sm">
             <Link href="/world/locations">All Projects</Link>
           </Button>
           {projects.map((p) => (
-            <Button
-              key={p.id}
-              variant={projectId === p.id ? "default" : "outline"}
-              size="sm"
-              asChild
-            >
+            <Button key={p.id} variant={projectId === p.id ? "default" : "outline"} size="sm">
               <Link href={`/world/locations?projectId=${p.id}`}>{p.title}</Link>
             </Button>
           ))}

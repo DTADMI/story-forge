@@ -3,8 +3,10 @@ import Link from "next/link";
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Eras — StoryForge" };
 
@@ -36,23 +38,18 @@ export default async function ErasPage({
           <h1 className="text-2xl font-bold tracking-tight">Eras</h1>
           <p className="text-muted-foreground">Periods and ages in your world&apos;s timeline.</p>
         </div>
-        <Button asChild>
+        <Button>
           <Link href="/world/era/new">New Era</Link>
         </Button>
       </div>
 
       {projects.length > 1 && (
         <div className="flex flex-wrap gap-2">
-          <Button variant={!projectId ? "default" : "outline"} size="sm" asChild>
+          <Button variant={!projectId ? "default" : "outline"} size="sm">
             <Link href="/world/era">All Projects</Link>
           </Button>
           {projects.map((p) => (
-            <Button
-              key={p.id}
-              variant={projectId === p.id ? "default" : "outline"}
-              size="sm"
-              asChild
-            >
+            <Button key={p.id} variant={projectId === p.id ? "default" : "outline"} size="sm">
               <Link href={`/world/era?projectId=${p.id}`}>{p.title}</Link>
             </Button>
           ))}
