@@ -41,12 +41,22 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext("2d");
-        if (!ctx) { reject(new Error("Canvas unavailable")); return; }
+        if (!ctx) {
+          reject(new Error("Canvas unavailable"));
+          return;
+        }
         ctx.drawImage(img, 0, 0, width, height);
-        canvas.toBlob((blob) => {
-          if (!blob) { reject(new Error("Canvas toBlob failed")); return; }
-          resolve(new File([blob], file.name, { type: "image/webp" }));
-        }, "image/webp", 0.85);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(new Error("Canvas toBlob failed"));
+              return;
+            }
+            resolve(new File([blob], file.name, { type: "image/webp" }));
+          },
+          "image/webp",
+          0.85
+        );
       };
       img.onerror = () => {
         URL.revokeObjectURL(objectUrl);
