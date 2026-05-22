@@ -126,4 +126,11 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  .gradient-text {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline;
+  }
 }
