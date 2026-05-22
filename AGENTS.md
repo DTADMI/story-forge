@@ -128,7 +128,31 @@ story-forge/
 
 - Active Codex lifecycle hooks live in `.codex/hooks.json`.
 - Repo Git hooks live in `.githooks/` and are installed by `node scripts/install-git-hooks.mjs`.
-- The pre-commit hook runs `pnpm -C web lint`, `pnpm build`, and `pnpm -C web test:run`.
+- The pre-commit hook runs `format:check`, `prisma generate`, `lint`, `typecheck`, `test:run`, and `build` — ALL must pass before a commit is created.
+- Run `pnpm run-all-checks` locally to verify everything passes before committing.
+- **Never use `--no-verify` or any hook-skipping flag on commits or pushes.**
+- CI mirrors the same checks: `format:check` → `prisma generate` → `typecheck` → `test:run` → `build` → `verify`.
+- If a commit causes CI to fail, fix it immediately — do not stack more commits on top of a broken CI pipeline.
+
+### Pre-Commit Requirement (Strict)
+
+Before every commit, the pre-commit hook runs ALL of these (hard failure on any):
+
+| Step | Command | Why |
+|---|---|---|
+| Format | `pnpm format:check` | Ensures Prettier compliance — no style drift |
+| Prisma | `prisma generate` | Regenerates types so tsc can resolve DB models |
+| Lint | `pnpm lint` | 0 errors required (warnings allowed) |
+| Typecheck | `pnpm typecheck` | `tsc --noEmit` — catches type errors, missing imports, case mismatches |
+| Tests | `pnpm test:run` | All tests must pass |
+| Build | `pnpm build` | Production build must succeed |
+
+To run all checks manually before committing:
+```bash
+pnpm run-all-checks
+```
+
+If any step fails, the commit is **blocked**. Fix the errors and try again.
 
 ## MCP And Plugin Boundaries
 

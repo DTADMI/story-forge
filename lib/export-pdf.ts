@@ -84,8 +84,8 @@ export function generatePdfBuffer(htmlContent: string, title: string, author: st
 
   // Title page
   wrappedLines.push("");
-  wrappedLines.push(title);
-  wrappedLines.push(`by ${author}`);
+  wrappedLines.push(safeTitle);
+  wrappedLines.push(`by ${safeAuthor}`);
   wrappedLines.push("");
   wrappedLines.push("");
 

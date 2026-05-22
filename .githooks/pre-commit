@@ -2,20 +2,34 @@
 set -euo pipefail
 
 echo "==> StoryForge pre-commit checks"
+echo ""
 
-echo "-> Checking formatting..."
-pnpm format:check 2>&1 || echo "[WARN] Formatting issues found — run 'pnpm format' before pushing"
+# Each check fails the commit if it doesn't pass.
+# Run 'pnpm run-all-checks' locally to verify before committing.
 
-echo "-> Running lint..."
-pnpm lint 2>&1 || echo "[WARN] Lint issues found — review before pushing"
+echo "-> Formatting..."
+pnpm format:check
+echo "   OK"
 
-echo "-> Checking types..."
-pnpm typecheck 2>&1 || echo "[WARN] Type errors found — review before pushing"
+echo "-> Generating Prisma client..."
+pnpm exec prisma generate --schema prisma/schema.prisma > /dev/null 2>&1
+echo "   OK"
 
-echo "-> Running tests..."
-pnpm test:run 2>&1 || echo "[WARN] Tests failed — review before pushing"
+echo "-> Linting..."
+pnpm lint
+echo "   OK"
+
+echo "-> Typecheck..."
+pnpm typecheck
+echo "   OK"
+
+echo "-> Testing..."
+pnpm test:run
+echo "   OK"
 
 echo "-> Building..."
-pnpm build 2>&1 || echo "[WARN] Build failed — review before pushing"
+pnpm build > /dev/null 2>&1
+echo "   OK"
 
-echo "-> Pre-commit checks complete"
+echo ""
+echo "-> All pre-commit checks passed"

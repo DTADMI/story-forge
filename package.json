@@ -34,7 +34,8 @@
     "verify:flags": "powershell -ExecutionPolicy Bypass -File scripts/verify-feature-flags.ps1",
     "verify:pipelines": "powershell -ExecutionPolicy Bypass -File scripts/verify-pipelines.ps1",
     "verify:all": "pnpm verify:integration && pnpm verify:flags && pnpm verify:pipelines",
-    "verify": "node scripts/verify.mjs --all"
+    "verify": "node scripts/verify.mjs --all",
+    "run-all-checks": "pnpm format:check && pnpm exec prisma generate --schema prisma/schema.prisma && pnpm lint && pnpm typecheck && pnpm test:run && pnpm build && pnpm verify"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",
