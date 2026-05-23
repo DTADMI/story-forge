@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { Editor } from "@/components/editor/editor";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AiWritingButton } from "@/components/ai/ai-writing";
+import { Editor } from "@/components/editor/editor";
 import { ExportDropdown } from "@/components/editor/export-dropdown";
+import { useToast } from "@/components/toast";
+import { fetchJson, fetchVoid } from "@/lib/client-api";
+import { useApiQuery } from "@/lib/query-hooks";
 
 interface ProjectEditorProps {
   project: {
@@ -14,7 +18,12 @@ interface ProjectEditorProps {
     defaultScope: string;
     wordCount?: number;
     panelCount?: number;
-    settings?: any;
+    settings?: {
+      linkedEntities?: {
+        characters?: string[];
+        locations?: string[];
+      };
+    };
   };
   userPreferences?: {
     breakReminders?: boolean;
@@ -23,162 +32,115 @@ interface ProjectEditorProps {
 
 export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) {
   const [content, setContent] = useState(project.content || "");
-  const [saving, setSaving] = useState(false);
   const [lastBreak, setLastBreak] = useState(() => Date.now());
   const [showLinkedEntities, setShowLinkedEntities] = useState(false);
-  const [characters, setCharacters] = useState<{ id: string; name: string }[]>([]);
-  const [locations, setLocations] = useState<{ id: string; name: string }[]>([]);
-  const [activeGoal, setActiveGoal] = useState<{
-    type: string;
-    target: number;
-    currentProgress: number;
-  } | null>(null);
   const [linkedCharIds, setLinkedCharIds] = useState<string[]>(
     project.settings?.linkedEntities?.characters || []
   );
   const [linkedLocIds, setLinkedLocIds] = useState<string[]>(
     project.settings?.linkedEntities?.locations || []
   );
-
-  useEffect(() => {
-    if (showLinkedEntities) {
-      Promise.all([
-        fetch("/api/world/characters?projectId=" + project.id).then((r) => r.json()),
-        fetch("/api/world/locations?projectId=" + project.id).then((r) => r.json()),
-      ])
-        .then(([chars, locs]) => {
-          setCharacters(chars);
-          setLocations(locs);
-        })
-        .catch(() => {});
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const charactersQuery = useApiQuery<{ id: string; name: string }[]>(
+    ["world", "characters", project.id],
+    `/api/world/characters?projectId=${project.id}`,
+    {
+      enabled: showLinkedEntities,
     }
-  }, [showLinkedEntities, project.id]);
-
-  // Load active goal for progress display
-  useEffect(() => {
-    fetch("/api/gamification/goals")
-      .then((r) => r.json())
-      .then((goals) => {
-        if (Array.isArray(goals) && goals.length > 0) {
-          const wordsGoal = goals.find((g: { type: string }) => g.type === "words_per_day");
-          if (wordsGoal) {
-            setActiveGoal({
-              type: wordsGoal.type,
-              target: wordsGoal.target,
-              currentProgress: wordsGoal.currentProgress ?? 0,
-            });
-          }
+  );
+  const locationsQuery = useApiQuery<{ id: string; name: string }[]>(
+    ["world", "locations", project.id],
+    `/api/world/locations?projectId=${project.id}`,
+    {
+      enabled: showLinkedEntities,
+    }
+  );
+  const goalsQuery = useApiQuery<{ type: string; target: number; currentProgress?: number }[]>(
+    ["gamification", "goals"],
+    "/api/gamification/goals"
+  );
+  const activeGoal = useMemo(() => {
+    const goals = goalsQuery.data ?? [];
+    const wordsGoal = goals.find((goal) => goal.type === "words_per_day");
+    return wordsGoal
+      ? {
+          type: wordsGoal.type,
+          target: wordsGoal.target,
+          currentProgress: wordsGoal.currentProgress ?? 0,
         }
-      })
-      .catch(() => {});
-  }, [project.id]);
-
-  // Compute live word count
-  const liveWordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
+      : null;
+  }, [goalsQuery.data]);
+  const saveProjectMutation = useMutation({
+    mutationFn: (payload: Record<string, unknown>) =>
+      fetchJson(`/api/projects/${project.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      }),
+    onError: () => {
+      toast({ title: "Failed to save project", variant: "destructive" });
+    },
+  });
 
   useEffect(() => {
     if (!userPreferences?.breakReminders) return;
-
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const minsSinceBreak = (now - lastBreak) / 1000 / 60;
-      if (minsSinceBreak >= 45) {
+    const interval = window.setInterval(() => {
+      const minutesSinceBreak = (Date.now() - lastBreak) / 1000 / 60;
+      if (minutesSinceBreak >= 45) {
         if (confirm("You have been writing for 45 minutes. Take a short break to stay fresh!")) {
-          setLastBreak(now);
+          setLastBreak(Date.now());
         } else {
-          setLastBreak(now - 30 * 60 * 1000);
+          setLastBreak(Date.now() - 30 * 60 * 1000);
         }
       }
-    }, 60000);
+    }, 60_000);
 
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
   }, [lastBreak, userPreferences?.breakReminders]);
 
-  async function saveLinkedEntities(updatedChars: string[], updatedLocs: string[]) {
-    try {
-      await fetch(`/api/projects/${project.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          settings: {
-            ...project.settings,
-            linkedEntities: { characters: updatedChars, locations: updatedLocs },
-          },
-        }),
-      });
-    } catch {
-      // ignore
-    }
-  }
-
-  function toggleChar(id: string) {
-    setLinkedCharIds((prev) => {
-      const updated = prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id];
-      saveLinkedEntities(updated, linkedLocIds);
-      return updated;
-    });
-  }
-
-  function toggleLoc(id: string) {
-    setLinkedLocIds((prev) => {
-      const updated = prev.includes(id) ? prev.filter((l) => l !== id) : [...prev, id];
-      saveLinkedEntities(linkedCharIds, updated);
-      return updated;
-    });
-  }
-
-  const handleSave = async (newContent: string) => {
-    setSaving(true);
-    try {
-      const res = await fetch(`/api/projects/${project.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: newContent }),
-      });
-      if (res.ok) {
-        // Success
-      }
-    } catch (err) {
-      console.error("Failed to save", err);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleAiSuggestion = useCallback((suggestion: string) => {
-    setContent((prev) => prev + "\n\n" + suggestion);
-  }, []);
-
+  const liveWordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
   const lastParagraph = content.split(/\n\n+/).pop() ?? content.slice(-500);
+
+  const updateLinkedEntities = useCallback(
+    async (characters: string[], locations: string[]) => {
+      setLinkedCharIds(characters);
+      setLinkedLocIds(locations);
+      await saveProjectMutation.mutateAsync({
+        settings: {
+          ...project.settings,
+          linkedEntities: { characters, locations },
+        },
+      });
+      await queryClient.invalidateQueries({ queryKey: ["projects", project.id, "storyboard"] });
+    },
+    [project.id, project.settings, queryClient, saveProjectMutation]
+  );
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-extrabold">{project.title}</h1>
           <AiWritingButton
             context={lastParagraph}
-            onSuggestion={handleAiSuggestion}
-            feature="suggest"
+            onSuggestion={(suggestion) => setContent((current) => `${current}\n\n${suggestion}`)}
           />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={() => setShowLinkedEntities(!showLinkedEntities)}
-            className="px-3 py-1.5 text-xs border border-fg/20 rounded-md hover:bg-fg/5"
+            onClick={() => setShowLinkedEntities((current) => !current)}
+            className="rounded-md border border-fg/20 px-3 py-1.5 text-xs hover:bg-fg/5"
           >
             {showLinkedEntities ? "Hide Linked Entities" : "Linked Entities"}
           </button>
           <ExportDropdown projectId={project.id} />
-          <span className="text-xs text-fg/40 font-mono">
+          <span className="text-xs font-mono text-fg/40">
             {liveWordCount.toLocaleString()} words
             {project.panelCount && project.panelCount > 0 ? ` · ${project.panelCount} panels` : ""}
           </span>
           {activeGoal && (
             <span
-              className={`text-xs font-mono ${
-                activeGoal.currentProgress >= activeGoal.target ? "text-green-500" : "text-fg/50"
-              }`}
+              className={`text-xs font-mono ${activeGoal.currentProgress >= activeGoal.target ? "text-green-500" : "text-fg/50"}`}
               title={`${activeGoal.currentProgress} / ${activeGoal.target} words today`}
             >
               {activeGoal.currentProgress >= activeGoal.target ? "✓ " : ""}
@@ -186,35 +148,58 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
               today
             </span>
           )}
-          {saving && <span className="text-sm text-fg/50 animate-pulse">Saving...</span>}
+          {saveProjectMutation.isPending && (
+            <span className="animate-pulse text-sm text-fg/50">Saving...</span>
+          )}
         </div>
       </div>
 
       <div className="flex gap-6">
         <div className="flex-1">
-          <Editor content={content} onChange={setContent} onSave={handleSave} />
+          <Editor
+            content={content}
+            onChange={setContent}
+            onSave={async (newContent) => {
+              setContent(newContent);
+              await saveProjectMutation.mutateAsync({ content: newContent });
+              await fetchVoid("/api/gamification/progress", {
+                method: "POST",
+                body: JSON.stringify({
+                  value: newContent.trim().split(/\s+/).length,
+                  type: "words",
+                }),
+              }).catch(() => undefined);
+            }}
+          />
         </div>
 
         {showLinkedEntities && (
           <div className="w-56 shrink-0 space-y-4 border-l border-fg/10 pl-4">
             <div>
-              <h3 className="text-sm font-bold mb-2">Characters</h3>
-              {characters.length === 0 ? (
+              <h3 className="mb-2 text-sm font-bold">Characters</h3>
+              {(charactersQuery.data ?? []).length === 0 ? (
                 <p className="text-xs text-fg/40">No characters in project</p>
               ) : (
                 <div className="space-y-1">
-                  {characters.map((c) => (
+                  {(charactersQuery.data ?? []).map((character) => (
                     <label
-                      key={c.id}
-                      className="flex items-center gap-2 text-xs cursor-pointer hover:bg-fg/5 px-1 py-0.5 rounded"
+                      key={character.id}
+                      className="flex cursor-pointer items-center gap-2 rounded px-1 py-0.5 text-xs hover:bg-fg/5"
                     >
                       <input
                         type="checkbox"
-                        checked={linkedCharIds.includes(c.id)}
-                        onChange={() => toggleChar(c.id)}
+                        checked={linkedCharIds.includes(character.id)}
+                        onChange={() =>
+                          void updateLinkedEntities(
+                            linkedCharIds.includes(character.id)
+                              ? linkedCharIds.filter((id) => id !== character.id)
+                              : [...linkedCharIds, character.id],
+                            linkedLocIds
+                          )
+                        }
                         className="rounded"
                       />
-                      {c.name}
+                      {character.name}
                     </label>
                   ))}
                 </div>
@@ -222,23 +207,30 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
             </div>
 
             <div>
-              <h3 className="text-sm font-bold mb-2">Locations</h3>
-              {locations.length === 0 ? (
+              <h3 className="mb-2 text-sm font-bold">Locations</h3>
+              {(locationsQuery.data ?? []).length === 0 ? (
                 <p className="text-xs text-fg/40">No locations in project</p>
               ) : (
                 <div className="space-y-1">
-                  {locations.map((l) => (
+                  {(locationsQuery.data ?? []).map((location) => (
                     <label
-                      key={l.id}
-                      className="flex items-center gap-2 text-xs cursor-pointer hover:bg-fg/5 px-1 py-0.5 rounded"
+                      key={location.id}
+                      className="flex cursor-pointer items-center gap-2 rounded px-1 py-0.5 text-xs hover:bg-fg/5"
                     >
                       <input
                         type="checkbox"
-                        checked={linkedLocIds.includes(l.id)}
-                        onChange={() => toggleLoc(l.id)}
+                        checked={linkedLocIds.includes(location.id)}
+                        onChange={() =>
+                          void updateLinkedEntities(
+                            linkedCharIds,
+                            linkedLocIds.includes(location.id)
+                              ? linkedLocIds.filter((id) => id !== location.id)
+                              : [...linkedLocIds, location.id]
+                          )
+                        }
                         className="rounded"
                       />
-                      {l.name}
+                      {location.name}
                     </label>
                   ))}
                 </div>

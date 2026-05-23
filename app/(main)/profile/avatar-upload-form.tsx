@@ -1,45 +1,42 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useToast } from "@/components/toast";
+import { useRef } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Upload } from "lucide-react";
+import { useToast } from "@/components/toast";
+import { getErrorMessage } from "@/lib/client-api";
 
 export function AvatarUploadForm({ userId }: { userId: string }) {
-  const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    try {
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch(`/api/users/${userId}/avatar`, {
+      const response = await fetch(`/api/users/${userId}/avatar`, {
         method: "POST",
         body: formData,
       });
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Upload failed");
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        throw new Error(payload?.error || "Upload failed");
       }
 
-      toast({ title: "Avatar updated!" });
-      // Refresh to show new avatar
+      return response.json().catch(() => null);
+    },
+    onSuccess: () => {
+      toast({ title: "Avatar updated." });
       window.location.reload();
-    } catch (err) {
+    },
+    onError: (error) => {
       toast({
-        title: err instanceof Error ? err.message : "Upload failed",
+        title: getErrorMessage(error, "Upload failed"),
         variant: "destructive",
       });
-    } finally {
-      setUploading(false);
-    }
-  }
+    },
+  });
 
   return (
     <>
@@ -47,16 +44,19 @@ export function AvatarUploadForm({ userId }: { userId: string }) {
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        onChange={handleUpload}
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) uploadMutation.mutate(file);
+        }}
         className="hidden"
       />
       <button
         onClick={() => inputRef.current?.click()}
-        disabled={uploading}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border border-fg/20 rounded-md hover:bg-fg/5 disabled:opacity-50"
+        disabled={uploadMutation.isPending}
+        className="inline-flex items-center gap-1.5 rounded-md border border-fg/20 px-3 py-1.5 text-xs hover:bg-fg/5 disabled:opacity-50"
       >
         <Upload className="h-3.5 w-3.5" />
-        {uploading ? "Uploading..." : "Change Avatar"}
+        {uploadMutation.isPending ? "Uploading..." : "Change Avatar"}
       </button>
     </>
   );

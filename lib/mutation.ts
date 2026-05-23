@@ -1,37 +1,38 @@
 "use client";
 
 import { useMutation, useQueryClient, type QueryKey } from "@tanstack/react-query";
+import type { ApiError } from "@/lib/client-api";
 
-interface OptimisticOptions<TData, TVariables> {
+interface OptimisticOptions<TData, TVariables, TQueryData = TData> {
   mutationFn: (variables: TVariables) => Promise<TData>;
   queryKey: QueryKey;
-  updater: (old: TData[] | undefined, variables: TVariables) => TData[];
+  updater: (old: TQueryData | undefined, variables: TVariables) => TQueryData;
   onSuccess?: (data: TData) => void;
-  onError?: (error: Error) => void;
+  onError?: (error: ApiError) => void;
 }
 
-export function useOptimisticMutation<TData, TVariables>({
+export function useOptimisticMutation<TData, TVariables, TQueryData = TData>({
   mutationFn,
   queryKey,
   updater,
   onSuccess,
   onError,
-}: OptimisticOptions<TData, TVariables>) {
+}: OptimisticOptions<TData, TVariables, TQueryData>) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey });
-      const previous = queryClient.getQueryData<TData[]>(queryKey);
-      queryClient.setQueryData<TData[]>(queryKey, (old) => updater(old, variables));
+      const previous = queryClient.getQueryData<TQueryData>(queryKey);
+      queryClient.setQueryData<TQueryData>(queryKey, (old) => updater(old, variables));
       return { previous };
     },
     onError: (error, _variables, context) => {
-      if (context?.previous) {
+      if (context && "previous" in context) {
         queryClient.setQueryData(queryKey, context.previous);
       }
-      onError?.(error as Error);
+      onError?.(error as ApiError);
     },
     onSuccess: (data) => {
       onSuccess?.(data);

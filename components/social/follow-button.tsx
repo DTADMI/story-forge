@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/components/toast";
+import { getErrorMessage } from "@/lib/client-api";
+import { useApiMutation } from "@/lib/query-hooks";
 import { Button } from "../ui/button";
 
 interface FollowButtonProps {
@@ -10,27 +13,30 @@ interface FollowButtonProps {
 
 export function FollowButton({ targetUserId, initialIsFollowing }: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function toggle() {
-    setIsLoading(true);
-    try {
-      const res = await fetch("/api/social/follow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: targetUserId }),
-      });
-      if (res.ok) {
-        const data = await res.json();
+  const { toast } = useToast();
+  const followMutation = useApiMutation<{ following: boolean }, { userId: string }>(
+    "/api/social/follow",
+    {
+      onSuccess: (data) => {
         setIsFollowing(data.following);
-      }
-    } finally {
-      setIsLoading(false);
+      },
+      onError: (error) => {
+        toast({
+          title: "Could not update follow state",
+          description: getErrorMessage(error),
+          variant: "destructive",
+        });
+      },
     }
-  }
+  );
 
   return (
-    <Button onClick={toggle} disabled={isLoading} variant={isFollowing ? "outline" : "default"}>
+    <Button
+      onClick={() => followMutation.mutate({ userId: targetUserId })}
+      disabled={followMutation.isPending}
+      isLoading={followMutation.isPending}
+      variant={isFollowing ? "outline" : "default"}
+    >
       {isFollowing ? "Unfollow" : "Follow"}
     </Button>
   );

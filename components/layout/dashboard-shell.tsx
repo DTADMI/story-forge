@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase/client";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
-import { DashboardSidebar } from "@/components/layout/dashboard-sidebar";
 import { DashboardMobileNav } from "@/components/layout/dashboard-mobile-nav";
+import { DashboardSidebar } from "@/components/layout/dashboard-sidebar";
 import { Sheet } from "@/components/ui/sheet";
 
 interface DashboardShellProps {
@@ -25,10 +25,9 @@ export function DashboardShell({ children, isAdmin = false }: DashboardShellProp
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-svh bg-muted/20">
       <DashboardHeader onMenuToggle={() => setMobileNavOpen(true)} />
 
-      {/* Mobile navigation drawer */}
       <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen} side="left">
         <DashboardMobileNav
           isAdmin={isAdmin}
@@ -37,12 +36,12 @@ export function DashboardShell({ children, isAdmin = false }: DashboardShellProp
         />
       </Sheet>
 
-      {/* Desktop sidebar */}
       <DashboardSidebar isAdmin={isAdmin} />
 
-      {/* Main content */}
-      <main id="main-content" className="min-h-[calc(100vh-3.5rem)] pt-14 md:ml-60">
-        <div className="p-4 sm:p-6 lg:p-8">{children}</div>
+      <main id="main-content" tabIndex={-1} className="pt-16 md:pl-64">
+        <div className="min-h-[calc(100svh-4rem)] overflow-y-auto p-4 sm:p-6 lg:p-8">
+          {children}
+        </div>
       </main>
     </div>
   );

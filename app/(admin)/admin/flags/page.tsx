@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/toast";
+import { fetchJson, getErrorMessage } from "@/lib/client-api";
+import { useApiQuery } from "@/lib/query-hooks";
+import { useOptimisticMutation } from "@/lib/mutation";
 
 interface FeatureFlag {
   id: string;
@@ -135,86 +139,81 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
 ];
 
 export default function AdminFlagsPage() {
-  const [flags, setFlags] = useState<FeatureFlag[]>(DEFAULT_FLAGS);
-  const [saving, setSaving] = useState(false);
-  const [authorized, setAuthorized] = useState(false);
+  const queryClient = useQueryClient();
   const { toast } = useToast();
-
-  useEffect(() => {
-    fetch("/api/admin/flags")
-      .then((r) => {
-        if (r.status === 403) window.location.href = "/signin";
-        else setAuthorized(true);
-        return r.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setFlags(data);
-      })
-      .catch(() => {});
-  }, []);
-
-  if (!authorized) return <div>Checking access...</div>;
-
-  const toggle = async (id: string) => {
-    // Optimistic update: toggle immediately
-    const previousFlags = flags;
-    const updated = flags.map((f) =>
-      f.id === id ? { ...f, enabled: !f.enabled, value: !f.enabled } : f
-    );
-    setFlags(updated);
-
-    setSaving(true);
-    try {
-      const res = await fetch("/api/admin/flags", {
+  const queryKey = ["admin", "flags"];
+  const flagsQuery = useApiQuery<FeatureFlag[]>(queryKey, "/api/admin/flags", {
+    retry: false,
+  });
+  const flags = flagsQuery.data && flagsQuery.data.length > 0 ? flagsQuery.data : DEFAULT_FLAGS;
+  const updateFlagsMutation = useOptimisticMutation<FeatureFlag[], FeatureFlag[], FeatureFlag[]>({
+    mutationFn: (updatedFlags) =>
+      fetchJson<FeatureFlag[]>("/api/admin/flags", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated),
-      });
-      if (!res.ok) throw new Error("Save failed");
-      toast({ title: "Saved", description: `Flag "${id}" updated.` });
-    } catch {
-      // Rollback on failure
-      setFlags(previousFlags);
+        body: JSON.stringify(updatedFlags),
+      }),
+    queryKey,
+    updater: (_current, updatedFlags) => updatedFlags,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+    onError: (error) => {
       toast({
         title: "Save failed",
-        description: "Could not update feature flags. Try again.",
+        description: getErrorMessage(error, "Could not update feature flags. Try again."),
         variant: "destructive",
       });
-    } finally {
-      setSaving(false);
-    }
-  };
+    },
+  });
+  const categories = useMemo(() => [...new Set(flags.map((flag) => flag.category))], [flags]);
 
-  const categories = [...new Set(flags.map((f) => f.category))];
+  if (flagsQuery.isLoading) {
+    return <div>Checking access...</div>;
+  }
+
+  if (flagsQuery.isError) {
+    return <div>{getErrorMessage(flagsQuery.error)}</div>;
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-extrabold">Feature Flags</h1>
-        {saving && <span className="text-sm text-fg/40 animate-pulse">Saving...</span>}
+        {updateFlagsMutation.isPending && (
+          <span className="animate-pulse text-sm text-fg/40">Saving...</span>
+        )}
       </div>
-      {categories.map((cat) => (
-        <Card key={cat} className="p-4">
-          <h2 className="text-sm font-bold text-fg/50 uppercase tracking-wide mb-3">{cat}</h2>
+
+      {categories.map((category) => (
+        <Card key={category} className="p-4">
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-fg/50">{category}</h2>
           <div className="space-y-2">
             {flags
-              .filter((f) => f.category === cat)
-              .map((f) => (
-                <div key={f.id} className="flex items-center justify-between py-1.5">
+              .filter((flag) => flag.category === category)
+              .map((flag) => (
+                <div key={flag.id} className="flex items-center justify-between py-1.5">
                   <div>
-                    <span className="text-sm font-medium">{f.name}</span>
-                    <p className="text-xs text-fg/40">{f.description}</p>
+                    <span className="text-sm font-medium">{flag.name}</span>
+                    <p className="text-xs text-fg/40">{flag.description}</p>
                   </div>
                   <button
-                    onClick={() => toggle(f.id)}
-                    disabled={saving}
+                    onClick={async () => {
+                      const updatedFlags = flags.map((entry) =>
+                        entry.id === flag.id
+                          ? { ...entry, enabled: !entry.enabled, value: !entry.enabled }
+                          : entry
+                      );
+                      await updateFlagsMutation.mutateAsync(updatedFlags);
+                      toast({ title: "Saved", description: `Flag "${flag.id}" updated.` });
+                    }}
+                    disabled={updateFlagsMutation.isPending}
                     className={`relative inline-flex h-6 w-10 items-center rounded-full transition-colors ${
-                      f.enabled ? "bg-brand" : "bg-fg/20"
+                      flag.enabled ? "bg-brand" : "bg-fg/20"
                     }`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        f.enabled ? "translate-x-5" : "translate-x-1"
+                      className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${
+                        flag.enabled ? "translate-x-5" : "translate-x-1"
                       }`}
                     />
                   </button>

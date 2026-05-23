@@ -1,7 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/toast";
+import { fetchJson, fetchVoid } from "@/lib/client-api";
+import { useApiQuery } from "@/lib/query-hooks";
+import { useOptimisticMutation } from "@/lib/mutation";
 
 interface MessageData {
   id: string;
@@ -35,128 +39,80 @@ export function MessageThread({
   partnerId: string;
   partnerName: string;
 }) {
-  const [messages, setMessages] = useState<MessageData[]>(initialMessages);
   const [input, setInput] = useState("");
-  const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const queryKey = ["messages", partnerId];
+  const messagesQuery = useApiQuery<MessageData[]>(queryKey, `/api/messages?with=${partnerId}`, {
+    initialData: initialMessages,
+    refetchInterval: 10_000,
+  });
+  const messages = messagesQuery.data ?? initialMessages;
+  const markReadMutation = useMutation({
+    mutationFn: () => fetchVoid(`/api/messages/${partnerId}`, { method: "PATCH" }),
+  });
+  const sendMessageMutation = useOptimisticMutation<
+    MessageData,
+    { content: string; tempId: string },
+    MessageData[]
+  >({
+    mutationFn: ({ content }) =>
+      fetchJson<MessageData>("/api/messages", {
+        method: "POST",
+        body: JSON.stringify({ receiverId: partnerId, content }),
+      }),
+    queryKey,
+    updater: (current, variables) => [
+      ...(current ?? []),
+      {
+        id: variables.tempId,
+        content: variables.content,
+        createdAt: new Date().toISOString(),
+        read: false,
+        senderId: currentUserId,
+        receiverId: partnerId,
+        sender: { id: currentUserId, name: null, username: null, image: null },
+        receiver: { id: partnerId, name: null, username: null, image: null },
+      },
+    ],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey });
+    },
+    onError: () => {
+      toast({ title: "Failed to send message", variant: "destructive" });
+    },
+  });
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
-    fetch(`/api/messages/${partnerId}`, { method: "PATCH" }).catch(() => {});
+    markReadMutation.mutate();
   }, [partnerId]);
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/messages?with=${partnerId}`);
-        if (!res.ok) return;
-        const remote: MessageData[] = await res.json();
-        const localIds = new Set(messages.map((m) => m.id));
-        const hasNew = remote.some((m) => !localIds.has(m.id));
-        if (hasNew) {
-          setMessages(remote);
-          fetch(`/api/messages/${partnerId}`, { method: "PATCH" }).catch(() => {});
-        }
-      } catch {
-        /* noop */
-      }
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [partnerId, messages]);
-
-  const handleSend = useCallback(async () => {
-    const trimmed = input.trim();
-    if (!trimmed || sending) return;
-
-    setSending(true);
-    setInput("");
-
-    const tempId = "temp-" + Date.now();
-    const optimistic: MessageData = {
-      id: tempId,
-      content: trimmed,
-      createdAt: new Date().toISOString(),
-      read: false,
-      senderId: currentUserId,
-      receiverId: partnerId,
-      sender: {
-        id: currentUserId,
-        name: null,
-        username: null,
-        image: null,
-      },
-      receiver: {
-        id: partnerId,
-        name: null,
-        username: null,
-        image: null,
-      },
-    };
-    setMessages((prev) => [...prev, optimistic]);
-
-    try {
-      const res = await fetch("/api/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ receiverId: partnerId, content: trimmed }),
-      });
-
-      if (!res.ok) {
-        setMessages((prev) => prev.filter((m) => m.id !== tempId));
-        setInput(trimmed);
-        toast({
-          title: "Failed to send message",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const saved: MessageData = await res.json();
-      setMessages((prev) => prev.map((m) => (m.id === tempId ? saved : m)));
-    } catch {
-      setMessages((prev) => prev.filter((m) => m.id !== tempId));
-      setInput(trimmed);
-      toast({
-        title: "Failed to send message",
-        variant: "destructive",
-      });
-    } finally {
-      setSending(false);
-    }
-  }, [input, sending, currentUserId, partnerId, toast]);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
 
   return (
     <>
-      <div className="flex-1 overflow-y-auto space-y-3 py-2">
+      <div className="flex-1 space-y-3 overflow-y-auto py-2">
         {messages.length === 0 && (
-          <p className="text-sm text-fg/40 text-center py-8">No messages yet. Say hello!</p>
+          <p className="py-8 text-center text-sm text-fg/40">No messages yet. Say hello!</p>
         )}
-        {messages.map((msg) => {
-          const isMine = msg.senderId === currentUserId;
+        {messages.map((message) => {
+          const isMine = message.senderId === currentUserId;
           return (
-            <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+            <div key={message.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${
-                  isMine ? "bg-brand text-white rounded-br-md" : "bg-fg/10 text-fg rounded-bl-md"
+                  isMine ? "rounded-br-md bg-brand text-white" : "rounded-bl-md bg-fg/10 text-fg"
                 }`}
               >
-                <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                <p className="break-words whitespace-pre-wrap">{message.content}</p>
                 <span
-                  className={`text-[10px] mt-1 block ${isMine ? "text-white/60" : "text-fg/40"}`}
+                  className={`mt-1 block text-[10px] ${isMine ? "text-white/60" : "text-fg/40"}`}
                 >
-                  {formatTime(msg.createdAt)}
-                  {isMine && (msg.read ? " ✓✓" : " ✓")}
+                  {formatTime(message.createdAt)}
+                  {isMine && (message.read ? " ✓✓" : " ✓")}
                 </span>
               </div>
             </div>
@@ -165,7 +121,7 @@ export function MessageThread({
         <div ref={bottomRef} />
       </div>
 
-      <div className="shrink-0 flex gap-2 pt-3 border-t border-fg/10">
+      <div className="flex shrink-0 gap-2 border-t border-fg/10 pt-3">
         <label htmlFor="message-input" className="sr-only">
           Message {partnerName}
         </label>
@@ -173,16 +129,31 @@ export function MessageThread({
           id="message-input"
           aria-label={`Message ${partnerName}`}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onChange={(event) => setInput(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              const content = input.trim();
+              if (!content || sendMessageMutation.isPending) return;
+              const tempId = `temp-${Date.now()}`;
+              setInput("");
+              sendMessageMutation.mutate({ content, tempId });
+            }
+          }}
           placeholder={`Message ${partnerName}...`}
-          className="flex-1 rounded-lg border border-fg/20 px-4 py-2 text-sm bg-bg focus:outline-none focus:border-brand"
-          disabled={sending}
+          className="flex-1 rounded-lg border border-fg/20 bg-bg px-4 py-2 text-sm focus:border-brand focus:outline-none"
+          disabled={sendMessageMutation.isPending}
         />
         <button
-          onClick={handleSend}
-          disabled={!input.trim() || sending}
-          className="bg-brand text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand/90 disabled:opacity-50"
+          onClick={() => {
+            const content = input.trim();
+            if (!content || sendMessageMutation.isPending) return;
+            const tempId = `temp-${Date.now()}`;
+            setInput("");
+            sendMessageMutation.mutate({ content, tempId });
+          }}
+          disabled={!input.trim() || sendMessageMutation.isPending}
+          className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand/90 disabled:opacity-50"
         >
           Send
         </button>
@@ -191,7 +162,6 @@ export function MessageThread({
   );
 }
 
-function formatTime(iso: string): string {
-  const date = new Date(iso);
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }

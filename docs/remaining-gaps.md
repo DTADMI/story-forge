@@ -1,6 +1,6 @@
 # StoryForge — Remaining Gaps & Implementation Plan
 
-> Last updated: May 22, 2026
+> Last updated: May 23, 2026
 
 ## Audit Summary
 
@@ -15,10 +15,11 @@
 | Infrastructure & DevOps | 7 | 7 | 0 |
 | Security & Compliance | 6 | 5 | 1 |
 | Testing & Quality | 6 | 3 | 3 |
+| TanStack Migration | 2 | 1 | 1 |
 | Documentation | 6 | 6 | 0 |
 | Agent Infrastructure | 6 | 6 | 0 |
 | i18n / Accessibility | 4 | 3 | 1 |
-| **TOTAL** | **96** | **91** | **5** |
+| **TOTAL** | **98** | **92** | **6** |
 
 ---
 
@@ -33,12 +34,45 @@
 | L3 | API test coverage for gamification, social, admin, world-building | 6h | 12 test files exist covering 6 domains; ~24 domains untested |
 | L4 | Panel/page layout templates for comics | 3h | Storyboard component exists; needs template library |
 | L5 | Rotate production environment secrets | 1h | CVE-2025-66478 / CVE-2025-55182 remediation |
+| L6 | Complete client TanStack migration | 6h | Shared layer landed; remaining client fetches are concentrated in world CRUD helpers, AI analysis panels, and a few admin/auth flows |
+
+### Remaining TanStack Migration Scope
+
+| Area | Remaining files |
+|---|---|
+| World CRUD forms | `app/(main)/world/era/[id]/page.tsx`, `app/(main)/world/era/new/page.tsx`, `app/(main)/world/organizations/[id]/edit-form.tsx`, `app/(main)/world/organizations/new/page.tsx`, `app/(main)/world/species/[id]/edit-form.tsx`, `app/(main)/world/species/new/page.tsx`, `app/(main)/world/encyclopedia/[category]/new/page.tsx`, `app/(main)/world/encyclopedia/[category]/[id]/delete.tsx`, `components/world/calendar-builder.tsx`, `components/world/character-profile-builder.tsx`, `components/world/entity-selector.tsx`, `components/world/private-notes.tsx`, `components/world/relationship-manager.tsx` |
+| AI panels | `components/ai/ai-plot.tsx`, `components/ai/ai-style.tsx`, `components/ai/ai-research.tsx` |
+| Admin/Auth/Billing | `app/(admin)/admin/dashboard/resync-button.tsx`, `app/(admin)/admin/moderation/[id]/page.tsx`, `app/(auth)/signup/page.tsx`, `components/billing/SubscribeButton.tsx` |
+| Editor helpers | `components/editor/autosave-indicator.tsx` |
 
 ---
 
-## Completed (May 22, 2026 — Rounds 1-3)
+## Completed (May 23, 2026 — Rounds 1-4)
 
-### Round 3 (this session)
+### Round 4 (this session)
+
+**TanStack foundation:**
+- Added shared client API parsing (`lib/client-api.ts`) with consistent `ApiError`
+- Added shared query client defaults (`lib/query-client.ts`)
+- Expanded query hooks to cover suspense queries and mutations
+- Added reusable query suspense/error boundary (`components/query/query-boundary.tsx`)
+
+**UX shell alignment:**
+- Reworked dashboard shell/header/sidebar/mobile nav to a Quest Hunt-inspired fixed-layout pattern
+- Reduced shell-level layout drift with a dedicated scroll region under a fixed header
+- Added section-specific nav states and stronger mobile navigation hierarchy
+
+**TanStack migration completed in this pass:**
+- Notifications bell
+- Feature flags admin page
+- World search
+- Language / Religion / Magic encyclopedia category flows with lazy-loaded builders + suspense
+- Collaborator manager, project editor, storyboard, direct message thread
+- Group creation, group join/leave, goal creation
+- Profile scope selector, profile settings, avatar upload
+- AI writing suggestion and AI character generation panels
+
+### Round 3 (prior session)
 
 **Critical Fixes:**
 - Signup API: added `createUser` fallback for new users, case-insensitive email matching, 24h token expiry

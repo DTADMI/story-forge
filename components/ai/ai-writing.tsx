@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { isEnabledSync } from "@/lib/flags";
+import { getErrorMessage } from "@/lib/client-api";
+import { useApiMutation } from "@/lib/query-hooks";
 
 interface AiWritingSuggestionProps {
   context: string;
@@ -16,56 +18,47 @@ export function AiWritingButton({
   feature = "suggest",
   className = "",
 }: AiWritingSuggestionProps) {
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiWritingSuggestions")) return null;
-
   const featureLabels: Record<string, string> = {
     suggest: "AI Writing Suggestion",
     character: "AI Character Development",
     plot: "AI Plot Analysis",
     style: "AI Style Check",
   };
-
-  const handleClick = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/ai/suggest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ feature, context }),
-      });
-      if (!res.ok) throw new Error("AI request failed");
-      const data = await res.json();
-      if (data.suggestion) {
-        onSuggestion(data.suggestion);
-      }
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "AI request failed");
-    } finally {
-      setLoading(false);
+  const suggestionMutation = useApiMutation<{ suggestion?: string }, Record<string, unknown>>(
+    "/api/ai/suggest",
+    {
+      onSuccess: (data) => {
+        if (data.suggestion) onSuggestion(data.suggestion);
+      },
+      onError: (mutationError) => {
+        setError(getErrorMessage(mutationError, "AI request failed"));
+      },
     }
-  };
+  );
+
+  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiWritingSuggestions")) return null;
 
   return (
     <div className={className}>
       <button
-        onClick={handleClick}
-        disabled={loading}
-        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md border border-brand/30 text-brand hover:bg-brand/5 disabled:opacity-50 transition-colors"
+        onClick={() => {
+          setError(null);
+          suggestionMutation.mutate({ feature, context });
+        }}
+        disabled={suggestionMutation.isPending}
+        className="inline-flex items-center gap-1 rounded-md border border-brand/30 px-3 py-1.5 text-xs font-medium text-brand transition-colors hover:bg-brand/5 disabled:opacity-50"
         title={featureLabels[feature]}
       >
-        {loading ? (
+        {suggestionMutation.isPending ? (
           <>
-            <span className="inline-block w-3 h-3 border-2 border-brand/30 border-t-brand rounded-full animate-spin" />
+            <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-brand/30 border-t-brand" />
             Thinking...
           </>
         ) : (
           <>
             <svg
-              className="w-3.5 h-3.5"
+              className="h-3.5 w-3.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -81,7 +74,7 @@ export function AiWritingButton({
           </>
         )}
       </button>
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
 }
@@ -94,46 +87,39 @@ interface AiSuggestPanelProps {
 
 export function AiSuggestPanel({ context, onInsert, className = "" }: AiSuggestPanelProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const suggestionsMutation = useApiMutation<{ suggestions?: string[] }, Record<string, unknown>>(
+    "/api/ai/suggest",
+    {
+      onSuccess: (data) => {
+        setSuggestions(data.suggestions ?? []);
+      },
+    }
+  );
 
   if (!isEnabledSync("aiAssist") && !isEnabledSync("aiWritingSuggestions")) return null;
-
-  const fetchSuggestions = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/ai/suggest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ feature: "suggest", context, multiple: true }),
-      });
-      if (!res.ok) throw new Error("AI request failed");
-      const data = await res.json();
-      setSuggestions(data.suggestions ?? []);
-    } catch {
-      // silently fail
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className={`space-y-2 ${className}`}>
       <div className="flex items-center gap-2">
         <button
-          onClick={fetchSuggestions}
-          disabled={loading}
+          onClick={() =>
+            suggestionsMutation.mutate({ feature: "suggest", context, multiple: true })
+          }
+          disabled={suggestionsMutation.isPending}
           className="text-xs text-brand hover:underline disabled:opacity-50"
         >
-          {loading ? "Generating suggestions..." : "Get AI writing suggestions"}
+          {suggestionsMutation.isPending
+            ? "Generating suggestions..."
+            : "Get AI writing suggestions"}
         </button>
       </div>
-      {suggestions.map((s, i) => (
+      {suggestions.map((suggestion, index) => (
         <button
-          key={i}
-          onClick={() => onInsert(s)}
-          className="block w-full text-left text-sm p-2 rounded border border-fg/10 hover:bg-fg/5 hover:border-brand/30 transition-colors"
+          key={index}
+          onClick={() => onInsert(suggestion)}
+          className="block w-full rounded border border-fg/10 p-2 text-left text-sm transition-colors hover:border-brand/30 hover:bg-fg/5"
         >
-          {s}
+          {suggestion}
         </button>
       ))}
     </div>

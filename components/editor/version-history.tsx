@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { getErrorMessage } from "@/lib/client-api";
+import { useApiMutation, useApiQuery } from "@/lib/query-hooks";
 import { useToast } from "@/components/toast";
 
 interface Version {
@@ -11,54 +13,45 @@ interface Version {
 }
 
 export function VersionHistory({ projectId }: { projectId: string }) {
-  const [versions, setVersions] = useState<Version[]>([]);
-  const [loading, setLoading] = useState(true);
   const [restoring, setRestoring] = useState<string | null>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    fetch(`/api/projects/${projectId}/versions`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) setVersions(data);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [projectId]);
-
-  const handleRestore = async (versionId: string) => {
-    setRestoring(versionId);
-    try {
-      const res = await fetch(`/api/projects/${projectId}/versions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ versionId }),
-      });
-      if (!res.ok) throw new Error("Restore failed");
-      toast({
-        title: "Version restored",
-        description: "The project content has been restored. Reload the editor to see changes.",
-      });
-      setTimeout(() => window.location.reload(), 1500);
-    } catch {
-      toast({
-        title: "Restore failed",
-        description: "Could not restore this version.",
-        variant: "destructive",
-      });
-    } finally {
-      setRestoring(null);
+  const versionsQuery = useApiQuery<Version[]>(
+    ["projects", projectId, "versions"],
+    `/api/projects/${projectId}/versions`
+  );
+  const versions = versionsQuery.data ?? [];
+  const restoreMutation = useApiMutation<Version, { versionId: string }>(
+    `/api/projects/${projectId}/versions`,
+    {
+      onSuccess: () => {
+        toast({
+          title: "Version restored",
+          description: "The project content has been restored. Reloading the editor.",
+        });
+        window.setTimeout(() => window.location.reload(), 1200);
+      },
+      onError: (error) => {
+        toast({
+          title: "Restore failed",
+          description: getErrorMessage(error, "Could not restore this version."),
+          variant: "destructive",
+        });
+      },
     }
-  };
+  );
 
-  if (loading) {
+  if (versionsQuery.isLoading) {
     return (
       <div className="space-y-2">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="h-10 bg-fg/5 animate-pulse rounded" />
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="h-10 animate-pulse rounded bg-fg/5" />
         ))}
       </div>
     );
+  }
+
+  if (versionsQuery.isError) {
+    return <p className="text-sm text-fg/40">{getErrorMessage(versionsQuery.error)}</p>;
   }
 
   if (versions.length === 0) {
@@ -71,22 +64,31 @@ export function VersionHistory({ projectId }: { projectId: string }) {
 
   return (
     <div className="space-y-2">
-      {versions.map((v) => (
+      {versions.map((version) => (
         <div
-          key={v.id}
-          className="flex items-center justify-between py-2 px-3 border border-fg/10 rounded-md text-sm"
+          key={version.id}
+          className="flex items-center justify-between rounded-md border border-fg/10 px-3 py-2 text-sm"
         >
           <div>
-            <span className="font-medium">{v.label || "Untitled version"}</span>
-            <span className="text-fg/40 ml-2">{v.wordCount} words</span>
-            <span className="text-fg/40 ml-2">{new Date(v.createdAt).toLocaleDateString()}</span>
+            <span className="font-medium">{version.label || "Untitled version"}</span>
+            <span className="ml-2 text-fg/40">{version.wordCount} words</span>
+            <span className="ml-2 text-fg/40">
+              {new Date(version.createdAt).toLocaleDateString()}
+            </span>
           </div>
           <button
-            onClick={() => handleRestore(v.id)}
-            disabled={restoring === v.id}
+            onClick={async () => {
+              setRestoring(version.id);
+              try {
+                await restoreMutation.mutateAsync({ versionId: version.id });
+              } finally {
+                setRestoring(null);
+              }
+            }}
+            disabled={restoring === version.id}
             className="text-xs text-brand hover:underline disabled:opacity-50"
           >
-            {restoring === v.id ? "Restoring..." : "Restore"}
+            {restoring === version.id ? "Restoring..." : "Restore"}
           </button>
         </div>
       ))}

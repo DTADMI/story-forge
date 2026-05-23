@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/components/toast";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/toast";
+import { getErrorMessage } from "@/lib/client-api";
+import { useApiMutation } from "@/lib/query-hooks";
 
 export default function NewGroupPage() {
   const router = useRouter();
@@ -13,73 +15,60 @@ export default function NewGroupPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim()) {
-      toast({
-        title: "Name required",
-        description: "Please enter a group name.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const res = await fetch("/api/social/groups", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          description: description.trim() || null,
-          isPrivate,
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
+  const createGroupMutation = useApiMutation<{ id: string }, Record<string, unknown>>(
+    "/api/social/groups",
+    {
+      onSuccess: (group) => {
+        router.push(`/groups/${group.id}`);
+      },
+      onError: (error) => {
         toast({
           title: "Failed to create group",
-          description: data.error || "Something went wrong.",
+          description: getErrorMessage(error, "Something went wrong."),
           variant: "destructive",
         });
-        return;
-      }
-
-      const group = await res.json();
-      router.push(`/groups/${group.id}`);
-    } catch {
-      toast({
-        title: "Error",
-        description: "Could not connect to server.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+      },
     }
-  }
+  );
 
   return (
     <main className="mx-auto max-w-lg px-6 py-10">
-      <h1 className="text-2xl font-extrabold mb-6">Create Group</h1>
+      <h1 className="mb-6 text-2xl font-extrabold">Create Group</h1>
       <Card className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault();
+            if (!name.trim()) {
+              toast({
+                title: "Name required",
+                description: "Please enter a group name.",
+                variant: "destructive",
+              });
+              return;
+            }
+
+            await createGroupMutation.mutateAsync({
+              name: name.trim(),
+              description: description.trim() || null,
+              isPrivate,
+            });
+          }}
+          className="space-y-5"
+        >
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label className="mb-1 block text-sm font-medium">Name</label>
             <Input
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(event) => setName(event.target.value)}
               placeholder="My Writing Circle"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Description</label>
+            <label className="mb-1 block text-sm font-medium">Description</label>
             <textarea
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(event) => setDescription(event.target.value)}
               placeholder="What is this group about?"
               rows={3}
               className="border-fg/20 placeholder:text-fg/50 flex w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-[color:var(--bg)] dark:ring-offset-[color:var(--bg)]"
@@ -89,13 +78,13 @@ export default function NewGroupPage() {
             <input
               type="checkbox"
               checked={isPrivate}
-              onChange={(e) => setIsPrivate(e.target.checked)}
+              onChange={(event) => setIsPrivate(event.target.checked)}
               className="accent-brand"
             />
             Private group
           </label>
           <div className="flex items-center gap-3">
-            <Button type="submit" isLoading={isLoading}>
+            <Button type="submit" isLoading={createGroupMutation.isPending}>
               Create Group
             </Button>
             <Button type="button" variant="ghost" onClick={() => router.back()}>

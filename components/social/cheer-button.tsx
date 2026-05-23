@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { getErrorMessage } from "@/lib/client-api";
+import { useApiMutation } from "@/lib/query-hooks";
 import { Button } from "../ui/button";
 
 interface CheerButtonProps {
@@ -8,39 +10,29 @@ interface CheerButtonProps {
 }
 
 export function CheerButton({ targetUserId }: CheerButtonProps) {
-  const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-
-  async function cheer() {
-    setIsLoading(true);
-    setMessage(null);
-    try {
-      const res = await fetch("/api/social/cheer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: targetUserId }),
-      });
-      if (res.ok) {
-        setMessage("Sent Cheer! 🖋️");
-        setTimeout(() => setMessage(null), 3000);
-      } else {
-        const text = await res.text();
-        setMessage(text || "Failed to cheer");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const cheerMutation = useApiMutation<unknown, { userId: string }>("/api/social/cheer", {
+    onSuccess: () => {
+      setMessage("Sent cheer.");
+      window.setTimeout(() => setMessage(null), 3000);
+    },
+    onError: (error) => {
+      setMessage(getErrorMessage(error, "Failed to cheer"));
+    },
+  });
 
   return (
     <div className="flex flex-col items-center gap-2">
       <Button
-        onClick={cheer}
-        disabled={isLoading}
+        onClick={() => {
+          setMessage(null);
+          cheerMutation.mutate({ userId: targetUserId });
+        }}
+        disabled={cheerMutation.isPending}
         variant="outline"
         className="hover:border-brand hover:text-brand"
       >
-        {isLoading ? "..." : "Cheer 🖋️"}
+        {cheerMutation.isPending ? "Sending..." : "Cheer"}
       </Button>
       {message && <span className="text-xs font-medium animate-pulse">{message}</span>}
     </div>

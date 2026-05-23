@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useToast } from "@/components/toast";
 import { Plus, Trash2 } from "lucide-react";
+import { useToast } from "@/components/toast";
+import { getErrorMessage } from "@/lib/client-api";
+import { useApiMutation } from "@/lib/query-hooks";
 
 interface VocabWord {
   word: string;
@@ -22,139 +24,113 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
   const [vocabulary, setVocabulary] = useState<VocabWord[]>([]);
   const [newWord, setNewWord] = useState("");
   const [newMeaning, setNewMeaning] = useState("");
-  const [saving, setSaving] = useState(false);
+  const createLanguageMutation = useApiMutation<unknown, Record<string, unknown>>(
+    "/api/world/encyclopedia",
+    {
+      onSuccess: () => {
+        toast({ title: "Language created." });
+        onSaved?.();
+      },
+      onError: (error) => {
+        toast({
+          title: "Failed to save language",
+          description: getErrorMessage(error),
+          variant: "destructive",
+        });
+      },
+    }
+  );
 
   function addWord() {
     if (!newWord.trim() || !newMeaning.trim()) return;
-    setVocabulary((prev) => [...prev, { word: newWord.trim(), meaning: newMeaning.trim() }]);
+    setVocabulary((current) => [...current, { word: newWord.trim(), meaning: newMeaning.trim() }]);
     setNewWord("");
     setNewMeaning("");
-  }
-
-  function removeWord(index: number) {
-    setVocabulary((prev) => prev.filter((_, i) => i !== index));
-  }
-
-  async function handleSave() {
-    if (!name.trim()) {
-      toast({ title: "Name is required", variant: "destructive" });
-      return;
-    }
-    setSaving(true);
-    try {
-      const structuredContent = {
-        phonology: phonology.trim(),
-        grammarRules: grammarRules.trim(),
-        script: script.trim(),
-        vocabulary: vocabulary.map((v) => ({ word: v.word, meaning: v.meaning })),
-      };
-      const vocabStr =
-        vocabulary.length > 0
-          ? `\n**Vocabulary:**\n${vocabulary.map((v) => `${v.word} — ${v.meaning}`).join("\n")}`
-          : "";
-      const content = `**Phonology:** ${phonology || "N/A"}\n**Grammar Rules:** ${grammarRules || "N/A"}\n**Script/Alphabet:** ${script || "N/A"}${vocabStr}`;
-
-      const res = await fetch("/api/world/encyclopedia", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          category: "language",
-          title: name.trim(),
-          content,
-          metadata: structuredContent,
-        }),
-      });
-      if (!res.ok) throw new Error("Failed to save");
-      toast({ title: "Language created!" });
-      onSaved?.();
-    } catch {
-      toast({ title: "Failed to save language", variant: "destructive" });
-    } finally {
-      setSaving(false);
-    }
   }
 
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium mb-1">Language Name</label>
+        <label className="mb-1 block text-sm font-medium">Language Name</label>
         <input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(event) => setName(event.target.value)}
           placeholder="e.g. Elvish"
-          className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
+          className="w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Phonology</label>
+        <label className="mb-1 block text-sm font-medium">Phonology</label>
         <textarea
           value={phonology}
-          onChange={(e) => setPhonology(e.target.value)}
+          onChange={(event) => setPhonology(event.target.value)}
           rows={2}
-          className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y"
+          className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
           placeholder="Sound inventory, phonotactics..."
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Grammar Rules</label>
+        <label className="mb-1 block text-sm font-medium">Grammar Rules</label>
         <textarea
           value={grammarRules}
-          onChange={(e) => setGrammarRules(e.target.value)}
+          onChange={(event) => setGrammarRules(event.target.value)}
           rows={3}
-          className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y"
+          className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
           placeholder="Word order, morphology, syntax..."
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Script / Alphabet</label>
+        <label className="mb-1 block text-sm font-medium">Script / Alphabet</label>
         <textarea
           value={script}
-          onChange={(e) => setScript(e.target.value)}
+          onChange={(event) => setScript(event.target.value)}
           rows={2}
-          className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y"
+          className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
           placeholder="Writing system description..."
         />
       </div>
 
-      {/* Vocabulary */}
       <div>
-        <label className="block text-sm font-medium mb-1">Vocabulary</label>
-        <div className="flex items-center gap-2 mb-2">
+        <label className="mb-1 block text-sm font-medium">Vocabulary</label>
+        <div className="mb-2 flex items-center gap-2">
           <input
             value={newWord}
-            onChange={(e) => setNewWord(e.target.value)}
+            onChange={(event) => setNewWord(event.target.value)}
             placeholder="Word"
-            className="flex-1 rounded-md border border-fg/20 px-2 py-1.5 text-sm bg-bg"
+            className="flex-1 rounded-md border border-fg/20 bg-bg px-2 py-1.5 text-sm"
           />
           <input
             value={newMeaning}
-            onChange={(e) => setNewMeaning(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addWord())}
+            onChange={(event) => setNewMeaning(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && (event.preventDefault(), addWord())}
             placeholder="Meaning"
-            className="flex-1 rounded-md border border-fg/20 px-2 py-1.5 text-sm bg-bg"
+            className="flex-1 rounded-md border border-fg/20 bg-bg px-2 py-1.5 text-sm"
           />
           <button
             onClick={addWord}
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-brand text-white rounded-md hover:bg-brand/90"
+            className="inline-flex items-center gap-1 rounded-md bg-brand px-3 py-1.5 text-xs text-white hover:bg-brand/90"
           >
             <Plus className="h-3 w-3" />
           </button>
         </div>
         {vocabulary.length > 0 && (
-          <div className="max-h-48 overflow-y-auto border border-fg/10 rounded-md">
-            {vocabulary.map((v, i) => (
+          <div className="max-h-48 overflow-y-auto rounded-md border border-fg/10">
+            {vocabulary.map((entry, index) => (
               <div
-                key={i}
-                className="flex items-center justify-between text-xs py-1.5 px-2 border-b border-fg/5 last:border-0 hover:bg-fg/5"
+                key={`${entry.word}-${index}`}
+                className="flex items-center justify-between border-b border-fg/5 px-2 py-1.5 text-xs last:border-0 hover:bg-fg/5"
               >
                 <span>
-                  <span className="font-medium">{v.word}</span>
-                  <span className="text-fg/40 ml-2">— {v.meaning}</span>
+                  <span className="font-medium">{entry.word}</span>
+                  <span className="ml-2 text-fg/40">- {entry.meaning}</span>
                 </span>
-                <button onClick={() => removeWord(i)} className="text-fg/30 hover:text-red-500">
+                <button
+                  onClick={() => setVocabulary((current) => current.filter((_, i) => i !== index))}
+                  className="text-fg/30 hover:text-red-500"
+                >
                   <Trash2 className="h-3 w-3" />
                 </button>
               </div>
@@ -165,11 +141,37 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
 
       <div className="flex justify-end">
         <button
-          onClick={handleSave}
-          disabled={saving}
-          className="bg-brand text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-brand/90 disabled:opacity-50"
+          onClick={async () => {
+            if (!name.trim()) {
+              toast({ title: "Name is required", variant: "destructive" });
+              return;
+            }
+
+            const structuredContent = {
+              phonology: phonology.trim(),
+              grammarRules: grammarRules.trim(),
+              script: script.trim(),
+              vocabulary: vocabulary.map((entry) => ({
+                word: entry.word,
+                meaning: entry.meaning,
+              })),
+            };
+            const vocabularyText =
+              vocabulary.length > 0
+                ? `\n**Vocabulary:**\n${vocabulary.map((entry) => `${entry.word} - ${entry.meaning}`).join("\n")}`
+                : "";
+
+            await createLanguageMutation.mutateAsync({
+              category: "language",
+              title: name.trim(),
+              content: `**Phonology:** ${phonology || "N/A"}\n**Grammar Rules:** ${grammarRules || "N/A"}\n**Script/Alphabet:** ${script || "N/A"}${vocabularyText}`,
+              metadata: structuredContent,
+            });
+          }}
+          disabled={createLanguageMutation.isPending}
+          className="rounded-md bg-brand px-6 py-2 text-sm font-medium text-white hover:bg-brand/90 disabled:opacity-50"
         >
-          {saving ? "Saving..." : "Create Language"}
+          {createLanguageMutation.isPending ? "Saving..." : "Create Language"}
         </button>
       </div>
     </div>

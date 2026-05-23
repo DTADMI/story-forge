@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Bell } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { fetchVoid } from "@/lib/client-api";
+import { useApiQuery } from "@/lib/query-hooks";
+import { useOptimisticMutation } from "@/lib/mutation";
 
 interface Notification {
   id: string;
@@ -13,71 +17,57 @@ interface Notification {
   createdAt: string;
 }
 
+const notificationsKey = ["notifications", "bell"];
+
 export function NotificationBell() {
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  const notificationsQuery = useApiQuery<Notification[]>(notificationsKey, "/api/notifications", {
+    refetchInterval: 60_000,
+  });
+  const notifications = notificationsQuery.data ?? [];
+  const unreadCount = notifications.length;
+  const markAsReadMutation = useOptimisticMutation<void, { id: string }, Notification[]>({
+    mutationFn: ({ id }) => fetchVoid(`/api/notifications/${id}/read`, { method: "POST" }),
+    queryKey: notificationsKey,
+    updater: (current, { id }) => (current ?? []).filter((notification) => notification.id !== id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: notificationsKey });
+    },
+  });
 
   useEffect(() => {
-    async function fetchUnread() {
-      try {
-        const res = await fetch("/api/notifications");
-        if (res.ok) {
-          const data = await res.json();
-          setUnreadCount(data.length);
-          setNotifications(data.slice(0, 5));
-        }
-      } catch {
-        /* noop */
-      }
-    }
-
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
+
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [isOpen]);
 
-  async function markAsRead(id: string) {
-    try {
-      await fetch(`/api/notifications/${id}/read`, { method: "POST" });
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
-      setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch {
-      /* noop */
-    }
-  }
-
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative inline-flex items-center justify-center p-1 rounded-md hover:bg-fg/5 transition-colors"
+        onClick={() => setIsOpen((open) => !open)}
+        className="relative inline-flex items-center justify-center rounded-md p-1 transition-colors hover:bg-fg/5"
         aria-label="Notifications"
       >
         <Bell className="h-4 w-4" />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white leading-none">
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] leading-none font-bold text-white">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 rounded-lg border border-fg/10 bg-bg shadow-xl z-50">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-fg/10">
+        <div className="absolute top-full right-0 z-50 mt-2 w-72 rounded-lg border border-fg/10 bg-bg shadow-xl">
+          <div className="flex items-center justify-between border-b border-fg/10 px-4 py-3">
             <span className="text-sm font-semibold">Notifications</span>
             {unreadCount > 0 && (
               <Link
@@ -90,23 +80,27 @@ export function NotificationBell() {
             )}
           </div>
 
-          {notifications.length === 0 ? (
+          {notificationsQuery.isLoading ? (
+            <p className="px-4 py-6 text-center text-sm text-fg/40">Loading notifications...</p>
+          ) : notifications.length === 0 ? (
             <p className="px-4 py-6 text-center text-sm text-fg/40">No new notifications</p>
           ) : (
             <div className="max-h-64 overflow-y-auto">
-              {notifications.map((n) => (
+              {notifications.slice(0, 5).map((notification) => (
                 <button
-                  key={n.id}
+                  key={notification.id}
                   onClick={() => {
-                    markAsRead(n.id);
+                    markAsReadMutation.mutate({ id: notification.id });
                     setIsOpen(false);
                   }}
-                  className="w-full text-left px-4 py-3 hover:bg-fg/5 border-b border-fg/5 last:border-b-0 transition-colors"
+                  className="w-full border-b border-fg/5 px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-fg/5"
                 >
-                  <p className="text-sm font-medium">{n.title}</p>
-                  {n.body && <p className="text-xs text-fg/40 mt-0.5 line-clamp-1">{n.body}</p>}
-                  <span className="text-xs text-fg/20 mt-1 block capitalize">
-                    {n.type.replace(/_/g, " ")}
+                  <p className="text-sm font-medium">{notification.title}</p>
+                  {notification.body && (
+                    <p className="mt-0.5 line-clamp-1 text-xs text-fg/40">{notification.body}</p>
+                  )}
+                  <span className="mt-1 block text-xs capitalize text-fg/20">
+                    {notification.type.replace(/_/g, " ")}
                   </span>
                 </button>
               ))}

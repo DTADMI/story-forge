@@ -184,6 +184,8 @@ story-forge/
 
 ## In Progress
 
+- [*] Complete client TanStack Query migration across remaining world CRUD, AI analysis, admin/auth, billing, and editor helper surfaces
+
 ---
 
 ## Planned
@@ -196,6 +198,7 @@ story-forge/
 ### Infrastructure & Tooling
 
 - [ ] React 19.2 review: verify new APIs, audit third-party lib compatibility
+- [ ] Finish migrating remaining client-side fetch paths to TanStack Query + shared mutation helpers
 - [ ] Accessibility audit: WCAG 2.1 AA comprehensive review
 - [ ] Real-time collaboration via Supabase Realtime (CRDT/Yjs)
 
@@ -212,6 +215,15 @@ story-forge/
 - [ ] World-building API tests (locations, species, organizations, eras, calendar, dialogues, timeline, encyclopedia)
 
 ---
+
+## Completed (May 23, 2026 — Round 4)
+
+### TanStack Query & UX shell
+- [x] Shared client API error parsing + query client defaults
+- [x] Shared query hooks expanded for suspense queries and client mutations
+- [x] Query suspense/error boundary component
+- [x] Quest Hunt-inspired dashboard shell/header/sidebar/mobile nav refresh
+- [x] Migrated notifications, admin flags, world search, encyclopedia category builders, editor collaboration surfaces, group/profile flows, and core AI writing/character panels to TanStack Query / Mutation
 
 ## Completed (May 22, 2026 — Round 3)
 
