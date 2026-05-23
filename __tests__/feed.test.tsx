@@ -9,7 +9,7 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
-import PublicFeedPage from "@/app/feed/page";
+import PublicFeedPage from "@/app/(public)/feed/page";
 
 describe("PublicFeedPage", () => {
   it("renders the public stories feed header", async () => {

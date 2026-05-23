@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { BookOpen } from "lucide-react";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -44,7 +44,13 @@ export default function SignInPage() {
   return (
     <div className="container mx-auto max-w-md px-4 py-16">
       <div className="text-center mb-8">
-        <BookOpen className="h-10 w-10 text-primary mx-auto mb-4" />
+        <Image
+          src="/images/StoryForge_logo.png"
+          alt="StoryForge"
+          width={48}
+          height={48}
+          className="mx-auto mb-4 object-contain"
+        />
         <h1 className="font-display text-2xl font-bold">Welcome back</h1>
         <p className="text-muted-foreground mt-1">Sign in to continue your story</p>
       </div>

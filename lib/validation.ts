@@ -83,6 +83,37 @@ export const cheerSchema = z.object({
   receiverId: z.string().min(1, "Receiver is required"),
 });
 
+// ── AI schemas ──
+
+export const aiSuggestSchema = z.object({
+  feature: z.enum(["suggest", "character", "plot", "style"]),
+  context: z.string().min(1, "Context is required").max(10000),
+  multiple: z.boolean().optional(),
+  projectId: z.string().optional(),
+});
+
+export const aiCharacterSchema = z.object({
+  context: z.string().min(1, "Context is required").max(10000),
+  projectId: z.string().optional(),
+});
+
+export const aiPlotSchema = z.object({
+  context: z.string().min(1, "Context is required").max(15000),
+  projectId: z.string().optional(),
+});
+
+export const aiStyleSchema = z.object({
+  context: z.string().min(1, "Context is required").max(10000),
+  projectId: z.string().optional(),
+  styleGuide: z.string().max(2000).optional(),
+});
+
+export const aiResearchSchema = z.object({
+  query: z.string().min(1, "Query is required").max(500),
+  context: z.string().max(10000).optional(),
+  projectId: z.string().optional(),
+});
+
 // ── Helper utilities ──
 
 export function validateInput<T>(schema: z.ZodSchema<T>, data: unknown) {

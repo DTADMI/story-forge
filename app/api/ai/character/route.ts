@@ -3,20 +3,29 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { trackAiUsage } from "@/lib/ai-usage";
 import { isEnabled } from "@/lib/flags";
-import { validateInput, aiSuggestSchema } from "@/lib/validation";
+import { validateInput, aiCharacterSchema } from "@/lib/validation";
 import { getAiAdapterForFeature } from "@/lib/ai";
 import { checkRateLimit, RateLimitTiers } from "@/lib/rate-limit";
 import { withErrorHandler } from "@/lib/api-handler";
 
-const SYSTEM_PROMPTS: Record<string, string> = {
-  suggest:
-    "You are a creative writing assistant for StoryForge. Provide helpful writing suggestions that fit the context. Keep suggestions concise (1-3 sentences).",
-  character:
-    "You are a character development expert. Based on the context, suggest character traits, backstory ideas, or development arcs.",
-  plot: "You are a story structure analyst. Analyze the plot context and suggest improvements for pacing, conflict, or resolution.",
-  style:
-    "You are a writing style coach. Review the text and suggest improvements for consistency, voice, and readability.",
-};
+const SYSTEM_PROMPT = `You are a character development expert for StoryForge. Based on the provided context, create detailed character profiles. Return a JSON object with these fields:
+
+{
+  "suggestions": [
+    {
+      "name": "Character name",
+      "role": "Protagonist / Antagonist / Side character / etc.",
+      "traits": ["trait1", "trait2", "trait3"],
+      "flaws": ["flaw1", "flaw2"],
+      "motivations": ["motivation1", "motivation2"],
+      "backstory": "2-3 sentence origin story",
+      "arc": "Recommended character development arc",
+      "relationships": ["Possible relationship with another character"]
+    }
+  ]
+}
+
+Provide 1-3 character suggestions. Be creative, specific, and avoid generic tropes.`;
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
@@ -30,9 +39,9 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   const user = await requireUser();
 
-  if (!(await isEnabled("ai_assist")) && !(await isEnabled("ai_writing_suggestions"))) {
+  if (!(await isEnabled("ai_assist")) && !(await isEnabled("ai_character_development"))) {
     return NextResponse.json(
-      { error: "AI Writing Suggestions are not available." },
+      { error: "AI Character Development is not available." },
       { status: 403 }
     );
   }
@@ -43,14 +52,14 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   });
 
   const tier = dbUser?.subscriptionTier ?? "free";
-  const usage = await trackAiUsage(user.id, tier, "suggest");
+  const usage = await trackAiUsage(user.id, tier, "character");
 
   if (!usage.allowed) {
     return NextResponse.json(
       {
         error:
           tier === "free"
-            ? "AI features require a subscription. Upgrade your plan to access AI Writing Suggestions."
+            ? "AI features require a subscription. Upgrade your plan to access AI Character Development."
             : `Daily AI request limit reached (${usage.limit}/${usage.limit}). Try again tomorrow.`,
         remaining: 0,
         limit: usage.limit,
@@ -60,7 +69,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   }
 
   const body = await request.json();
-  const validation = validateInput(aiSuggestSchema, body);
+  const validation = validateInput(aiCharacterSchema, body);
   if (!validation.success) {
     return NextResponse.json(
       { error: "Invalid request", details: validation.errors.issues },
@@ -68,7 +77,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     );
   }
 
-  const { feature, context, multiple, projectId } = validation.data;
+  const { context, projectId } = validation.data;
 
   if (projectId) {
     const hasAccess = await prisma.project.findFirst({
@@ -79,19 +88,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     }
   }
 
-  const { adapter, model, config } = getAiAdapterForFeature(
-    feature === "character" || feature === "plot" || feature === "style" ? feature : "suggest"
-  );
-
-  const systemPrompt = SYSTEM_PROMPTS[feature] ?? SYSTEM_PROMPTS.suggest;
-  const userPrompt = multiple
-    ? `Based on the following context, provide 3 different writing suggestions as a JSON array of strings:\n\n${context.slice(0, 2000)}\n\nReturn: {"suggestions": ["suggestion 1", "suggestion 2", "suggestion 3"]}`
-    : `Based on the following context, provide ONE writing suggestion as a JSON object:\n\n${context.slice(0, 2000)}\n\nReturn: {"suggestion": "your suggestion here"}`;
+  const { adapter, model, config } = getAiAdapterForFeature("character");
 
   const response = await adapter.chatCompletion({
     messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: context.slice(0, 10000) },
     ],
     temperature: config.temperature,
     max_tokens: config.maxTokens,
@@ -103,12 +105,13 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   try {
     result = JSON.parse(response.content);
   } catch {
-    result = { suggestion: response.content };
+    result = {
+      suggestions: [{ name: "Generated Character", traits: [], backstory: response.content }],
+    };
   }
 
   return NextResponse.json({
-    suggestion: result.suggestion,
-    suggestions: result.suggestions,
+    suggestions: result.suggestions ?? [],
     model: response.model,
     usage: response.usage,
     remaining: usage.remaining,

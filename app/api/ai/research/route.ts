@@ -3,20 +3,29 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { trackAiUsage } from "@/lib/ai-usage";
 import { isEnabled } from "@/lib/flags";
-import { validateInput, aiSuggestSchema } from "@/lib/validation";
+import { validateInput, aiResearchSchema } from "@/lib/validation";
 import { getAiAdapterForFeature } from "@/lib/ai";
 import { checkRateLimit, RateLimitTiers } from "@/lib/rate-limit";
 import { withErrorHandler } from "@/lib/api-handler";
 
-const SYSTEM_PROMPTS: Record<string, string> = {
-  suggest:
-    "You are a creative writing assistant for StoryForge. Provide helpful writing suggestions that fit the context. Keep suggestions concise (1-3 sentences).",
-  character:
-    "You are a character development expert. Based on the context, suggest character traits, backstory ideas, or development arcs.",
-  plot: "You are a story structure analyst. Analyze the plot context and suggest improvements for pacing, conflict, or resolution.",
-  style:
-    "You are a writing style coach. Review the text and suggest improvements for consistency, voice, and readability.",
-};
+const SYSTEM_PROMPT = `You are a research assistant for StoryForge. Help writers with factual accuracy, world-building research, and cultural details. Return a JSON object with this structure:
+
+{
+  "findings": [
+    {
+      "topic": "Topic name",
+      "summary": "Concise, factual summary of the research finding",
+      "details": "Additional relevant context or elaboration",
+      "reliability": "high / medium / low / speculative",
+      "sources": ["Source reference 1", "Source reference 2"]
+    }
+  ],
+  "accuracyNotes": "Brief note about historical/factual accuracy considerations",
+  "writingTips": ["How to incorporate this into your story (tip 1)", "How to incorporate this into your story (tip 2)"],
+  "furtherReading": ["Suggested subtopic 1", "Suggested subtopic 2"]
+}
+
+Be accurate, concise, and helpful. Use general knowledge for common topics. Note when information should be verified against primary sources.`;
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
@@ -30,11 +39,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   const user = await requireUser();
 
-  if (!(await isEnabled("ai_assist")) && !(await isEnabled("ai_writing_suggestions"))) {
-    return NextResponse.json(
-      { error: "AI Writing Suggestions are not available." },
-      { status: 403 }
-    );
+  if (!(await isEnabled("ai_assist")) && !(await isEnabled("ai_research_assistant"))) {
+    return NextResponse.json({ error: "AI Research Assistant is not available." }, { status: 403 });
   }
 
   const dbUser = await prisma.user.findUnique({
@@ -43,14 +49,14 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   });
 
   const tier = dbUser?.subscriptionTier ?? "free";
-  const usage = await trackAiUsage(user.id, tier, "suggest");
+  const usage = await trackAiUsage(user.id, tier, "research");
 
   if (!usage.allowed) {
     return NextResponse.json(
       {
         error:
           tier === "free"
-            ? "AI features require a subscription. Upgrade your plan to access AI Writing Suggestions."
+            ? "AI features require a subscription. Upgrade your plan to access AI Research Assistant."
             : `Daily AI request limit reached (${usage.limit}/${usage.limit}). Try again tomorrow.`,
         remaining: 0,
         limit: usage.limit,
@@ -60,7 +66,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   }
 
   const body = await request.json();
-  const validation = validateInput(aiSuggestSchema, body);
+  const validation = validateInput(aiResearchSchema, body);
   if (!validation.success) {
     return NextResponse.json(
       { error: "Invalid request", details: validation.errors.issues },
@@ -68,7 +74,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     );
   }
 
-  const { feature, context, multiple, projectId } = validation.data;
+  const { query, context, projectId } = validation.data;
 
   if (projectId) {
     const hasAccess = await prisma.project.findFirst({
@@ -79,19 +85,16 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     }
   }
 
-  const { adapter, model, config } = getAiAdapterForFeature(
-    feature === "character" || feature === "plot" || feature === "style" ? feature : "suggest"
-  );
+  const { adapter, model, config } = getAiAdapterForFeature("research");
 
-  const systemPrompt = SYSTEM_PROMPTS[feature] ?? SYSTEM_PROMPTS.suggest;
-  const userPrompt = multiple
-    ? `Based on the following context, provide 3 different writing suggestions as a JSON array of strings:\n\n${context.slice(0, 2000)}\n\nReturn: {"suggestions": ["suggestion 1", "suggestion 2", "suggestion 3"]}`
-    : `Based on the following context, provide ONE writing suggestion as a JSON object:\n\n${context.slice(0, 2000)}\n\nReturn: {"suggestion": "your suggestion here"}`;
+  const userMessage = context
+    ? `Research query: ${query}\n\nStory context for relevance:\n${context.slice(0, 5000)}`
+    : `Research query: ${query}`;
 
   const response = await adapter.chatCompletion({
     messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: userMessage },
     ],
     temperature: config.temperature,
     max_tokens: config.maxTokens,
@@ -103,12 +106,16 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   try {
     result = JSON.parse(response.content);
   } catch {
-    result = { suggestion: response.content };
+    result = {
+      findings: [{ topic: query, summary: response.content, reliability: "medium", sources: [] }],
+      accuracyNotes: "",
+      writingTips: [],
+      furtherReading: [],
+    };
   }
 
   return NextResponse.json({
-    suggestion: result.suggestion,
-    suggestions: result.suggestions,
+    ...result,
     model: response.model,
     usage: response.usage,
     remaining: usage.remaining,

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Footer() {
@@ -9,7 +10,16 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-3">
-            <h3 className="font-display font-semibold">StoryForge</h3>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/images/StoryForge_logo.png"
+                alt="StoryForge"
+                width={24}
+                height={24}
+                className="object-contain"
+              />
+              <h3 className="font-display font-semibold">StoryForge</h3>
+            </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
               A gamified creative writing platform for novelists, screenwriters, and storytellers.
             </p>

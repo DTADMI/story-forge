@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { isEnabled } from "@/lib/flags";
+import { isEnabledSync } from "@/lib/flags";
 
 interface AiWritingSuggestionProps {
   context: string;
@@ -19,7 +19,7 @@ export function AiWritingButton({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!isEnabled("aiAssist") && !isEnabled("aiWritingSuggestions")) return null;
+  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiWritingSuggestions")) return null;
 
   const featureLabels: Record<string, string> = {
     suggest: "AI Writing Suggestion",
@@ -96,7 +96,7 @@ export function AiSuggestPanel({ context, onInsert, className = "" }: AiSuggestP
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  if (!isEnabled("aiAssist") && !isEnabled("aiWritingSuggestions")) return null;
+  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiWritingSuggestions")) return null;
 
   const fetchSuggestions = async () => {
     setLoading(true);

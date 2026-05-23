@@ -1,21 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { createBrowserClient } from "@/lib/supabase/client";
-import {
-  BookOpen,
-  Sun,
-  Moon,
-  Menu,
-  X,
-  LayoutDashboard,
-  User,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { Sun, Moon, Menu, X, LayoutDashboard, User, Settings, LogOut } from "lucide-react";
 
 interface UserInfo {
   id: string;
@@ -55,7 +46,13 @@ export function Header() {
           href="/"
           className="flex items-center gap-2 font-display text-lg font-bold text-foreground hover:text-primary transition-colors"
         >
-          <BookOpen className="h-5 w-5 text-primary" />
+          <Image
+            src="/images/StoryForge_logo.png"
+            alt="StoryForge"
+            width={28}
+            height={28}
+            className="object-contain"
+          />
           <span className="hidden sm:inline">StoryForge</span>
         </Link>
 

@@ -2,17 +2,18 @@ import { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { DashboardShell } from "@/components/layout/dashboard-shell";
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const supabaseUser = await getUser();
-  if (!supabaseUser) redirect("/signin");
+  const user = await getUser();
+  if (!user) redirect("/signin");
 
   const dbUser = await prisma.user.findUnique({
-    where: { id: supabaseUser.id },
+    where: { id: user.id },
     select: { role: true },
   });
 
   if (!dbUser || dbUser.role !== "admin") redirect("/signin");
 
-  return <>{children}</>;
+  return <DashboardShell isAdmin={true}>{children}</DashboardShell>;
 }
