@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useToast } from "@/components/toast";
+import { useApiMutation } from "@/lib/query-hooks";
 import { Plus, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 
 interface Month {
@@ -19,8 +20,17 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
   const [name, setName] = useState("");
   const [weekLength, setWeekLength] = useState(7);
   const [months, setMonths] = useState<Month[]>([{ name: "First Month", days: 30, orderIndex: 0 }]);
-  const [saving, setSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+
+  const saveCalendar = useApiMutation<unknown, Record<string, unknown>>("/api/world/calendar", {
+    onSuccess: () => {
+      toast({ title: "Calendar created!" });
+      window.location.href = "/world/calendar";
+    },
+    onError: () => {
+      toast({ title: "Failed to save calendar", variant: "destructive" });
+    },
+  });
 
   function addMonth() {
     setMonths((prev) => [
@@ -49,7 +59,7 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
     setMonths((prev) => prev.map((m, i) => (i === index ? { ...m, [field]: value } : m)));
   }
 
-  async function handleSave() {
+  function handleSave() {
     if (!name.trim()) {
       toast({ title: "Calendar name is required", variant: "destructive" });
       return;
@@ -59,25 +69,11 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
       return;
     }
 
-    setSaving(true);
-    try {
-      if (onSave) {
-        onSave({ name: name.trim(), weekLength, months });
-        return;
-      }
-      const res = await fetch("/api/world/calendar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), weekLength, months }),
-      });
-      if (!res.ok) throw new Error("Failed to save");
-      toast({ title: "Calendar created!" });
-      window.location.href = "/world/calendar";
-    } catch {
-      toast({ title: "Failed to save calendar", variant: "destructive" });
-    } finally {
-      setSaving(false);
+    if (onSave) {
+      onSave({ name: name.trim(), weekLength, months });
+      return;
     }
+    saveCalendar.mutate({ name: name.trim(), weekLength, months });
   }
 
   const weekDays = Array.from({ length: weekLength }, (_, i) => i + 1);
@@ -246,10 +242,10 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
       <div className="flex justify-end">
         <button
           onClick={handleSave}
-          disabled={saving}
+          disabled={saveCalendar.isPending && !onSave}
           className="bg-brand text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-brand/90 disabled:opacity-50"
         >
-          {saving ? "Saving..." : "Create Calendar"}
+          {saveCalendar.isPending && !onSave ? "Saving..." : "Create Calendar"}
         </button>
       </div>
     </div>

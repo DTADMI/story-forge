@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { isEnabledSync } from "@/lib/flags";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 
 interface ResearchFinding {
   topic: string;
@@ -27,33 +29,20 @@ interface AiResearchPanelProps {
 export function AiResearchPanel({ context, projectId, className = "" }: AiResearchPanelProps) {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<ResearchResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const researchQuery = useApiMutation<
+    ResearchResult,
+    { query: string; context?: string; projectId?: string }
+  >("/api/ai/research", {
+    onSuccess: (data) => setResult(data),
+  });
+
+  const handleSearch = () => {
+    if (!query.trim()) return;
+    researchQuery.mutate({ query: query.trim(), context, projectId });
+  };
 
   if (!isEnabledSync("aiAssist") && !isEnabledSync("aiResearchAssistant")) return null;
-
-  const handleSearch = async () => {
-    if (!query.trim()) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/ai/research", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: query.trim(), context, projectId }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error ?? "Research request failed");
-      }
-      const data = await res.json();
-      setResult(data as ResearchResult);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Research request failed");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const reliabilityColors: Record<string, string> = {
     high: "text-green-400 bg-green-500/10",
@@ -77,10 +66,10 @@ export function AiResearchPanel({ context, projectId, className = "" }: AiResear
         />
         <button
           onClick={handleSearch}
-          disabled={loading || !query.trim()}
+          disabled={researchQuery.isPending || !query.trim()}
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-brand/30 text-brand hover:bg-brand/5 disabled:opacity-50 transition-colors shrink-0"
         >
-          {loading ? (
+          {researchQuery.isPending ? (
             <span className="inline-block w-4 h-4 border-2 border-brand/30 border-t-brand rounded-full animate-spin" />
           ) : (
             "Research"
@@ -88,9 +77,9 @@ export function AiResearchPanel({ context, projectId, className = "" }: AiResear
         </button>
       </div>
 
-      {error && (
+      {researchQuery.error && (
         <div className="p-3 rounded-md border border-red-500/20 bg-red-500/5 text-sm text-red-400">
-          {error}
+          {getErrorMessage(researchQuery.error, "Research request failed")}
         </div>
       )}
 

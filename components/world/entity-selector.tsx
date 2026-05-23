@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useApiQuery } from "@/lib/query-hooks";
 import { Search } from "lucide-react";
 
 interface Entity {
@@ -15,29 +16,15 @@ interface EntitySelectorProps {
 }
 
 export function EntitySelector({ entityType, selected, onChange }: EntitySelectorProps) {
-  const [entities, setEntities] = useState<Entity[]>([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const res = await fetch(`/api/world/${entityType}s`);
-        if (res.ok && !cancelled) {
-          const data = await res.json();
-          setEntities(data);
-        }
-      } catch {
-        // noop
-      }
-      if (!cancelled) setLoading(false);
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [entityType]);
+  const entitiesQuery = useApiQuery<Entity[]>(
+    ["world", entityType + "s"],
+    `/api/world/${entityType}s`
+  );
+
+  const entities = entitiesQuery.data ?? [];
+  const isLoading = entitiesQuery.isLoading;
 
   function toggle(id: string) {
     if (selected.includes(id)) {
@@ -65,7 +52,7 @@ export function EntitySelector({ entityType, selected, onChange }: EntitySelecto
         />
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="space-y-1">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-6 bg-fg/5 animate-pulse rounded" />

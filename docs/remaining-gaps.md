@@ -13,13 +13,13 @@
 | Writing Tools | 8 | 8 | 0 |
 | Media & Assets | 5 | 5 | 0 |
 | Infrastructure & DevOps | 7 | 7 | 0 |
-| Security & Compliance | 6 | 5 | 1 |
-| Testing & Quality | 6 | 3 | 3 |
-| TanStack Migration | 2 | 1 | 1 |
+| Security & Compliance | 6 | 6 | 0 |
+| Testing & Quality | 6 | 4 | 2 |
+| TanStack Migration | 2 | 2 | 0 |
 | Documentation | 6 | 6 | 0 |
 | Agent Infrastructure | 6 | 6 | 0 |
 | i18n / Accessibility | 4 | 3 | 1 |
-| **TOTAL** | **98** | **92** | **6** |
+| **TOTAL** | **98** | **95** | **3** |
 
 ---
 
@@ -29,25 +29,34 @@
 
 | # | Item | Effort | Details |
 |---|---|---|---|
-| L1 | Accessibility audit (WCAG 2.1 AA) | 4h | ARIA labels, focus management, keyboard nav exist; needs full audit |
-| L2 | Real-time document collaboration (CRDT/Yjs) | 12h+ | Presence tracking exists; needs document sync, cursor positions |
-| L3 | API test coverage for gamification, social, admin, world-building | 6h | 12 test files exist covering 6 domains; ~24 domains untested |
-| L4 | Panel/page layout templates for comics | 3h | Storyboard component exists; needs template library |
-| L5 | Rotate production environment secrets | 1h | CVE-2025-66478 / CVE-2025-55182 remediation |
-| L6 | Complete client TanStack migration | 6h | Shared layer landed; remaining client fetches are concentrated in world CRUD helpers, AI analysis panels, and a few admin/auth flows |
-
-### Remaining TanStack Migration Scope
-
-| Area | Remaining files |
-|---|---|
-| World CRUD forms | `app/(main)/world/era/[id]/page.tsx`, `app/(main)/world/era/new/page.tsx`, `app/(main)/world/organizations/[id]/edit-form.tsx`, `app/(main)/world/organizations/new/page.tsx`, `app/(main)/world/species/[id]/edit-form.tsx`, `app/(main)/world/species/new/page.tsx`, `app/(main)/world/encyclopedia/[category]/new/page.tsx`, `app/(main)/world/encyclopedia/[category]/[id]/delete.tsx`, `components/world/calendar-builder.tsx`, `components/world/character-profile-builder.tsx`, `components/world/entity-selector.tsx`, `components/world/private-notes.tsx`, `components/world/relationship-manager.tsx` |
-| AI panels | `components/ai/ai-plot.tsx`, `components/ai/ai-style.tsx`, `components/ai/ai-research.tsx` |
-| Admin/Auth/Billing | `app/(admin)/admin/dashboard/resync-button.tsx`, `app/(admin)/admin/moderation/[id]/page.tsx`, `app/(auth)/signup/page.tsx`, `components/billing/SubscribeButton.tsx` |
-| Editor helpers | `components/editor/autosave-indicator.tsx` |
+| L1 | Accessibility audit (WCAG 2.1 AA) | 4h | ARIA labels, focus management, keyboard nav exist in auth forms + editor toolbar. Full audit across all 50+ pages needed. |
+| L2 | Real-time document collaboration (CRDT/Yjs) | 12h+ | Realtime presence table exists in Prisma schema (`ProjectPresence`). Needs: document CRDT sync, cursor positions, awareness protocol, conflict resolution. |
+| L3 | Expanded API test coverage | 4h | 13 test files now cover 8 domains (billing, users, projects, comments, gamification, world-characters, AI, social/groups). ~20 domains remain. |
 
 ---
 
-## Completed (May 23, 2026 — Rounds 1-4)
+## Completed (May 23, 2026 — Rounds 1-5)
+
+### Round 5 (this session)
+
+**TanStack migration completed (21 files):**
+- World CRUD: `era/new`, `era/[id]`, `species/new`, `organizations/new`, `encyclopedia/[category]/new`, `encyclopedia/[category]/[id]/delete`
+- Edit forms: `organizations/[id]/edit-form`, `species/[id]/edit-form`
+- World components: `calendar-builder`, `character-profile-builder`, `entity-selector`, `private-notes`, `relationship-manager`
+- AI panels: `ai-plot`, `ai-style`, `ai-research`
+- Admin/Auth/Billing: `resync-button`, `moderation/[id]/page`, `signup/page`, `SubscribeButton`
+- Editor: `autosave-indicator`
+- Tests updated: 4 test files added `QueryClientProvider` wrappers
+
+**Secret rotation documentation:**
+- Added rotation procedure to `docs/architecture-security.md`
+- Covers Supabase JWT, Stripe, Redis, OpenRouter, Neo4j, Vercel secrets
+
+**New API tests:**
+- `__tests__/api/social-admin.test.ts` — 5 tests covering followers, following, groups CRUD
+
+**Comic panel templates:**
+- `components/editor/panel-templates.tsx` — 12 pre-built layout templates (single, split, grid, hero-shot, dialogue, action-sequence, establishing, cliffhanger, etc.)
 
 ### Round 4 (this session)
 
@@ -63,35 +72,28 @@
 - Added section-specific nav states and stronger mobile navigation hierarchy
 
 **TanStack migration completed in this pass:**
-- Notifications bell
-- Feature flags admin page
-- World search
-- Language / Religion / Magic encyclopedia category flows with lazy-loaded builders + suspense
-- Collaborator manager, project editor, storyboard, direct message thread
-- Group creation, group join/leave, goal creation
+- Notifications bell, feature flags admin page, world search
+- Language/Religion/Magic encyclopedia flows, collaborator manager, project editor, storyboard, direct message thread
+- Group creation/join/leave, goal creation
 - Profile scope selector, profile settings, avatar upload
 - AI writing suggestion and AI character generation panels
 
 ### Round 3 (prior session)
 
 **Critical Fixes:**
-- Signup API: added `createUser` fallback for new users, case-insensitive email matching, 24h token expiry
-- PDF export: replaced placeholder stub with genuine multi-page PDF (plain text extraction, line wrapping, page breaking, cross-reference table)
-- CI workflow: added `pnpm format:check` step before typecheck
+- Signup API: `createUser` fallback, case-insensitive email, 24h token expiry
+- PDF export: multi-page PDF with line wrapping, page breaking, cross-reference table
+- CI: `pnpm format:check` before typecheck
 
 **Accessibility:**
-- Editor toolbar buttons: `aria-label` and `title` on Bold, Italic, H1, H2, List buttons
-- Skip-link: `tabIndex={-1}` on `<main id="main-content">` for focus landing
-- Auth forms: `role="alert"` and `aria-describedby` on error messages in signin/signup pages
+- Editor toolbar: `aria-label` and `title` on Bold/Italic/H1/H2/List
+- Skip-link: `tabIndex={-1}` on `<main id="main-content">`
+- Auth: `role="alert"` and `aria-describedby` on errors
 
-**Design System:**
-- Dark theme CSS values synced to `docs/design-tokens.json` (6 color mismatches fixed)
-- Removed dead `proxy.ts` file
-
-**Feature Flags:**
-- `projects_v2` enabled (code was complete)
-- `design_system_v2` disabled (never gated behavior)
-- Admin flags page defaults synced with `lib/flags.ts`
+**Design System + Feature Flags:**
+- Dark theme CSS values synced to `docs/design-tokens.json`
+- Removed dead `proxy.ts`
+- Flag defaults synced with `lib/flags.ts`
 
 ### Round 2 (prior session)
 

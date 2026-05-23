@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/toast";
+import { useApiQuery, useApiMutation } from "@/lib/query-hooks";
+import { fetchVoid } from "@/lib/client-api";
 import { Trash2, Plus, Search } from "lucide-react";
 
 interface Relationship {
@@ -38,93 +40,60 @@ function groupBy<T>(arr: T[], key: (item: T) => string): Record<string, T[]> {
 
 export function RelationshipManager({ characterId }: { characterId: string }) {
   const { toast } = useToast();
-  const [relationships, setRelationships] = useState<Relationship[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [characters, setCharacters] = useState<{ id: string; name: string }[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCharacter, setSelectedCharacter] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("parent");
   const [description, setDescription] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const [charRes, relRes] = await Promise.all([
-          fetch("/api/world/characters"),
-          fetch(`/api/world/characters/${characterId}`),
-        ]);
-        if (!cancelled && charRes.ok) {
-          const list = await charRes.json();
-          setCharacters(list.filter((c: { id: string }) => c.id !== characterId));
-        }
-        if (!cancelled && relRes.ok) {
-          const char = await relRes.json();
-          setRelationships((char.metadata?.connections as Relationship[]) || []);
-        }
-      } catch {
-        // noop
-      }
-      if (!cancelled) setLoading(false);
+  const charactersQuery = useApiQuery<{ id: string; name: string }[]>(
+    ["world", "characters"],
+    "/api/world/characters"
+  );
+
+  const charDetailQuery = useApiQuery<{ metadata?: { connections?: Relationship[] } }>(
+    ["world", "character", characterId],
+    `/api/world/characters/${characterId}`
+  );
+
+  const addMutation = useApiMutation<unknown, Record<string, unknown>>(
+    `/api/world/characters/${characterId}/connections`,
+    {
+      onSuccess: () => {
+        toast({ title: "Relationship added" });
+        setSelectedCharacter("");
+        setDescription("");
+        setShowForm(false);
+      },
+      onError: () => {
+        toast({ title: "Failed to add relationship", variant: "destructive" });
+      },
     }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [characterId]);
+  );
 
-  async function refreshRelationships() {
-    try {
-      const res = await fetch(`/api/world/characters/${characterId}`);
-      if (res.ok) {
-        const char = await res.json();
-        setRelationships((char.metadata?.connections as Relationship[]) || []);
-      }
-    } catch {
-      // noop
-    }
-  }
+  const characters = charactersQuery.data?.filter((c) => c.id !== characterId) ?? [];
+  const relationships = (charDetailQuery.data?.metadata?.connections as Relationship[]) ?? [];
+  const isReloading = charactersQuery.isLoading || charDetailQuery.isLoading;
 
-  async function handleAdd() {
+  function handleAdd() {
     if (!selectedCharacter) return;
-    setSaving(true);
-    try {
-      const res = await fetch(`/api/world/characters/${characterId}/connections`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          targetId: selectedCharacter,
-          type: selectedType,
-          description: description.trim() || undefined,
-        }),
-      });
-      if (!res.ok) throw new Error("Failed to add connection");
-      toast({ title: "Relationship added" });
-      setSelectedCharacter("");
-      setDescription("");
-      setShowForm(false);
-      refreshRelationships();
-    } catch {
-      toast({ title: "Failed to add relationship", variant: "destructive" });
-    } finally {
-      setSaving(false);
-    }
+    addMutation.mutate({
+      targetId: selectedCharacter,
+      type: selectedType,
+      description: description.trim() || undefined,
+    });
   }
 
-  async function handleDelete(connectionId: string) {
-    try {
-      const res = await fetch(
-        `/api/world/characters/${characterId}/connections?connectionId=${connectionId}`,
-        { method: "DELETE" }
-      );
-      if (!res.ok) throw new Error("Failed");
-      toast({ title: "Relationship removed" });
-      refreshRelationships();
-    } catch {
-      toast({ title: "Failed to remove relationship", variant: "destructive" });
-    }
+  function handleDelete(connectionId: string) {
+    fetchVoid(`/api/world/characters/${characterId}/connections?connectionId=${connectionId}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        toast({ title: "Relationship removed" });
+      })
+      .catch(() => {
+        toast({ title: "Failed to remove relationship", variant: "destructive" });
+      });
   }
 
   const grouped = groupBy(relationships, (r) => r.type);
@@ -132,7 +101,7 @@ export function RelationshipManager({ characterId }: { characterId: string }) {
     c.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) {
+  if (isReloading) {
     return (
       <div className="space-y-2">
         <div className="h-4 w-32 bg-fg/10 animate-pulse rounded" />
@@ -222,10 +191,10 @@ export function RelationshipManager({ characterId }: { characterId: string }) {
             </button>
             <button
               onClick={handleAdd}
-              disabled={!selectedCharacter || saving}
+              disabled={!selectedCharacter || addMutation.isPending}
               className="px-3 py-1 text-xs bg-brand text-white rounded-md disabled:opacity-50"
             >
-              {saving ? "Adding..." : "Add Relationship"}
+              {addMutation.isPending ? "Adding..." : "Add Relationship"}
             </button>
           </div>
         </div>

@@ -5,6 +5,8 @@ import type { Organization } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { Card } from "@/components/ui/card";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 
 const ORG_TYPES = ["faction", "guild", "kingdom", "clan", "corporation", "cult", "other"];
 
@@ -16,35 +18,37 @@ export function OrganizationEditForm({ org }: { org: Organization }) {
   const [description, setDescription] = useState(org.description || "");
   const [goals, setGoals] = useState(org.goals || "");
   const [projectId, setProjectId] = useState(org.projectId || "");
-  const [saving, setSaving] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const updateOrg = useApiMutation<unknown, Record<string, unknown>>(
+    `/api/world/organizations/${org.id}`,
+    {
+      method: "PATCH",
+      onSuccess: () => {
+        toast({ title: "Organization updated!" });
+        router.refresh();
+      },
+      onError: (err) => {
+        toast({
+          title: getErrorMessage(err, "Failed to update organization"),
+          variant: "destructive",
+        });
+      },
+    }
+  );
+
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
       toast({ title: "Name is required", variant: "destructive" });
       return;
     }
-    setSaving(true);
-    try {
-      const res = await fetch(`/api/world/organizations/${org.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          type,
-          description: description.trim() || null,
-          goals: goals.trim() || null,
-          projectId: projectId.trim() || null,
-        }),
-      });
-      if (!res.ok) throw new Error("Failed to update");
-      toast({ title: "Organization updated!" });
-      router.refresh();
-    } catch {
-      toast({ title: "Failed to update organization", variant: "destructive" });
-    } finally {
-      setSaving(false);
-    }
+    updateOrg.mutate({
+      name: name.trim(),
+      type,
+      description: description.trim() || null,
+      goals: goals.trim() || null,
+      projectId: projectId.trim() || null,
+    });
   }
 
   return (
@@ -102,10 +106,10 @@ export function OrganizationEditForm({ org }: { org: Organization }) {
         </div>
         <button
           type="submit"
-          disabled={saving}
+          disabled={updateOrg.isPending}
           className="bg-brand text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-brand/90 disabled:opacity-50"
         >
-          {saving ? "Saving..." : "Save Changes"}
+          {updateOrg.isPending ? "Saving..." : "Save Changes"}
         </button>
       </form>
     </Card>

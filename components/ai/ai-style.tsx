@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { isEnabledSync } from "@/lib/flags";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 
 interface StyleSuggestion {
   text: string;
@@ -42,35 +44,20 @@ export function AiStylePanel({
   className = "",
 }: AiStylePanelProps) {
   const [analysis, setAnalysis] = useState<StyleAnalysis | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"analysis" | "strengths" | "suggestions" | "profile">(
     "analysis"
   );
 
-  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiStyleConsistency")) return null;
+  const analyzeStyle = useApiMutation<
+    StyleAnalysis,
+    { context: string; projectId?: string; styleGuide?: string }
+  >("/api/ai/style", {
+    onSuccess: (data) => setAnalysis(data),
+  });
 
-  const handleAnalyze = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/ai/style", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ context, projectId, styleGuide }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error ?? "Style analysis failed");
-      }
-      const data = await res.json();
-      setAnalysis(data as StyleAnalysis);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Style analysis failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleAnalyze = () => analyzeStyle.mutate({ context, projectId, styleGuide });
+
+  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiStyleConsistency")) return null;
 
   const tabs = [
     { key: "analysis" as const, label: "Analysis" },
@@ -83,10 +70,10 @@ export function AiStylePanel({
     <div className={`space-y-3 ${className}`}>
       <button
         onClick={handleAnalyze}
-        disabled={loading}
+        disabled={analyzeStyle.isPending}
         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-brand/30 text-brand hover:bg-brand/5 disabled:opacity-50 transition-colors"
       >
-        {loading ? (
+        {analyzeStyle.isPending ? (
           <>
             <span className="inline-block w-4 h-4 border-2 border-brand/30 border-t-brand rounded-full animate-spin" />
             Analyzing style...
@@ -111,9 +98,9 @@ export function AiStylePanel({
         )}
       </button>
 
-      {error && (
+      {analyzeStyle.error && (
         <div className="p-3 rounded-md border border-red-500/20 bg-red-500/5 text-sm text-red-400">
-          {error}
+          {getErrorMessage(analyzeStyle.error, "Style analysis failed")}
         </div>
       )}
 

@@ -1,44 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useApiMutation } from "@/lib/query-hooks";
+import type { ApiError } from "@/lib/client-api";
 
 export function ResyncGraphButton() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
-
-  async function handleResync() {
-    setStatus("loading");
-    setMessage("");
-    try {
-      const res = await fetch("/api/admin/neo4j/resync", { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) {
-        setStatus("error");
-        setMessage(data.error || data.detail || "Resync failed");
-      } else {
-        setStatus("success");
-        setMessage(
-          `Graph resynced: ${data.nodeCount} nodes, ${data.relationshipCount} relationships`
-        );
-      }
-    } catch {
-      setStatus("error");
-      setMessage("Network error during resync");
-    }
-  }
+  const resync = useApiMutation<{ nodeCount: number; relationshipCount: number }, void>(
+    "/api/admin/neo4j/resync"
+  );
 
   return (
     <div className="flex flex-col items-start gap-2">
       <button
-        onClick={handleResync}
-        disabled={status === "loading"}
+        onClick={() => resync.mutate(undefined)}
+        disabled={resync.isPending}
         className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
       >
-        {status === "loading" ? "Resyncing..." : "Resync Graph Database"}
+        {resync.isPending ? "Resyncing..." : "Resync Graph Database"}
       </button>
-      {message && (
-        <p className={`text-xs ${status === "error" ? "text-red-500" : "text-green-600"}`}>
-          {message}
+      {resync.isSuccess && resync.data && (
+        <p className="text-xs text-green-600">
+          Graph resynced: {resync.data.nodeCount} nodes, {resync.data.relationshipCount}{" "}
+          relationships
+        </p>
+      )}
+      {resync.isError && (
+        <p className="text-xs text-red-500">
+          {((resync.error as ApiError)?.payload as { error?: string; detail?: string })?.error ??
+            ((resync.error as ApiError)?.payload as { error?: string; detail?: string })?.detail ??
+            "Resync failed"}
         </p>
       )}
     </div>

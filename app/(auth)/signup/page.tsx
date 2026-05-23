@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { useApiMutation } from "@/lib/query-hooks";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -16,6 +17,8 @@ export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const triggerVerification = useApiMutation<unknown, { email: string }>("/api/auth/signup");
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,27 +37,11 @@ export default function SignUpPage() {
       setError(error.message);
       setLoading(false);
     } else if (data.session) {
-      try {
-        await fetch("/api/auth/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
-      } catch {
-        /* verification email non-critical */
-      }
+      triggerVerification.mutate({ email });
       router.push("/dashboard");
       router.refresh();
     } else {
-      try {
-        await fetch("/api/auth/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
-      } catch {
-        /* verification email non-critical */
-      }
+      triggerVerification.mutate({ email });
       router.push("/signin?message=check_email");
     }
   };

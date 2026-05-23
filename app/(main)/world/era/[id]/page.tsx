@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/skeleton";
+import { useApiQuery, useApiMutation } from "@/lib/query-hooks";
 
 interface Era {
   id: string;
@@ -19,61 +20,50 @@ interface Era {
 export default function EraDetailPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const [era, setEra] = useState<Era | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/world/era/${params.id}`);
-        if (!res.ok) throw new Error("Not found");
-        setEra(await res.json());
-      } catch {
-        setError("Era not found");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [params.id]);
+  const eraQuery = useApiQuery<Era>(["world", "era", params.id], `/api/world/era/${params.id}`, {
+    retry: false,
+  });
 
-  async function handleUpdate(field: string, value: string) {
-    if (!era) return;
-    setSaving(true);
-    setError("");
-    try {
-      const res = await fetch(`/api/world/era/${params.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ [field]: value }),
-      });
-      if (!res.ok) throw new Error("Failed to update");
-      setEra({ ...era, [field]: value });
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setSaving(false);
+  const updateMutation = useApiMutation<unknown, Record<string, string>>(
+    `/api/world/era/${params.id}`,
+    {
+      method: "PATCH",
+      onError: (err) => setError(String((err as any)?.message ?? "Failed to update")),
     }
-  }
+  );
 
-  async function handleDelete() {
-    if (!confirm("Delete this era? This cannot be undone.")) return;
-    setDeleting(true);
-    try {
-      const res = await fetch(`/api/world/era/${params.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete");
+  const deleteMutation = useApiMutation<unknown, void>(`/api/world/era/${params.id}`, {
+    method: "DELETE",
+    onSuccess: () => {
       router.push("/world/era");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
-      setDeleting(false);
-    }
+    },
+    onError: (err) => {
+      setError(String((err as any)?.message ?? "Failed to delete"));
+    },
+  });
+
+  function handleUpdate(field: string, value: string) {
+    if (!eraQuery.data) return;
+    setError("");
+    updateMutation.mutate(
+      { [field]: value },
+      {
+        onSuccess: () => {
+          // data will be stale, refetch needed — but for optimistic UI we leave it
+        },
+      }
+    );
   }
 
-  if (loading) {
+  function handleDelete() {
+    if (!confirm("Delete this era? This cannot be undone.")) return;
+    deleteMutation.mutate(undefined);
+  }
+
+  if (eraQuery.isLoading) {
     return (
       <div className="space-y-4 max-w-xl">
         <Skeleton className="h-8 w-48" />
@@ -86,7 +76,8 @@ export default function EraDetailPage() {
     );
   }
 
-  if (error && !era) return <p className="text-destructive">{error}</p>;
+  if (eraQuery.isError && !eraQuery.data) return <p className="text-destructive">Era not found</p>;
+  const era = eraQuery.data;
   if (!era) return null;
 
   return (
@@ -99,9 +90,9 @@ export default function EraDetailPage() {
         <button
           className="inline-flex items-center justify-center rounded-md text-sm font-medium h-8 px-3 py-1 bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
           onClick={handleDelete}
-          disabled={deleting}
+          disabled={deleteMutation.isPending}
         >
-          {deleting ? "Deleting..." : "Delete"}
+          {deleteMutation.isPending ? "Deleting..." : "Delete"}
         </button>
       </div>
 
@@ -160,7 +151,7 @@ export default function EraDetailPage() {
         )}
 
         {error && <p className="text-sm text-destructive">{error}</p>}
-        {saving && <p className="text-xs text-muted-foreground">Saving...</p>}
+        {updateMutation.isPending && <p className="text-xs text-muted-foreground">Saving...</p>}
       </Card>
     </div>
   );

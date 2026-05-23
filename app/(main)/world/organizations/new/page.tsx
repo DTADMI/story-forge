@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { Card } from "@/components/ui/card";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -18,42 +20,34 @@ export default function NewOrganizationPage() {
   const [description, setDescription] = useState("");
   const [goals, setGoals] = useState("");
   const [projectId, setProjectId] = useState("");
-  const [saving, setSaving] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const createOrg = useApiMutation<unknown, Record<string, unknown>>("/api/world/organizations", {
+    onSuccess: () => {
+      toast({ title: "Organization created!" });
+      router.push("/world/organizations");
+      router.refresh();
+    },
+    onError: (err) => {
+      toast({
+        title: getErrorMessage(err, "Failed to create organization"),
+        variant: "destructive",
+      });
+    },
+  });
+
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
       toast({ title: "Name is required", variant: "destructive" });
       return;
     }
-    setSaving(true);
-    try {
-      const res = await fetch("/api/world/organizations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          type,
-          description: description.trim() || null,
-          goals: goals.trim() || null,
-          projectId: projectId.trim() || null,
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to create");
-      }
-      toast({ title: "Organization created!" });
-      router.push("/world/organizations");
-      router.refresh();
-    } catch (err) {
-      toast({
-        title: err instanceof Error ? err.message : "Failed to create organization",
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
-    }
+    createOrg.mutate({
+      name: name.trim(),
+      type,
+      description: description.trim() || null,
+      goals: goals.trim() || null,
+      projectId: projectId.trim() || null,
+    });
   }
 
   return (
@@ -136,10 +130,10 @@ export default function NewOrganizationPage() {
             </Link>
             <button
               type="submit"
-              disabled={saving}
+              disabled={createOrg.isPending}
               className="bg-brand text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-brand/90 disabled:opacity-50"
             >
-              {saving ? "Creating..." : "Create Organization"}
+              {createOrg.isPending ? "Creating..." : "Create Organization"}
             </button>
           </div>
         </form>

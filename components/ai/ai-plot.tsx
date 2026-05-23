@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { isEnabledSync } from "@/lib/flags";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 
 interface PlotRecommendation {
   area: string;
@@ -31,35 +33,20 @@ interface AiPlotPanelProps {
 
 export function AiPlotPanel({ context, projectId, className = "" }: AiPlotPanelProps) {
   const [analysis, setAnalysis] = useState<PlotAnalysis | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<
     "overview" | "strengths" | "weaknesses" | "recommendations"
   >("overview");
 
-  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiPlotAnalysis")) return null;
-
-  const handleAnalyze = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/ai/plot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ context, projectId }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error ?? "Plot analysis failed");
-      }
-      const data = await res.json();
-      setAnalysis(data as PlotAnalysis);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Plot analysis failed");
-    } finally {
-      setLoading(false);
+  const analyzePlot = useApiMutation<PlotAnalysis, { context: string; projectId?: string }>(
+    "/api/ai/plot",
+    {
+      onSuccess: (data) => setAnalysis(data),
     }
-  };
+  );
+
+  const handleAnalyze = () => analyzePlot.mutate({ context, projectId });
+
+  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiPlotAnalysis")) return null;
 
   const tabs = [
     { key: "overview" as const, label: "Overview" },
@@ -72,10 +59,10 @@ export function AiPlotPanel({ context, projectId, className = "" }: AiPlotPanelP
     <div className={`space-y-3 ${className}`}>
       <button
         onClick={handleAnalyze}
-        disabled={loading}
+        disabled={analyzePlot.isPending}
         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-brand/30 text-brand hover:bg-brand/5 disabled:opacity-50 transition-colors"
       >
-        {loading ? (
+        {analyzePlot.isPending ? (
           <>
             <span className="inline-block w-4 h-4 border-2 border-brand/30 border-t-brand rounded-full animate-spin" />
             Analyzing plot...
@@ -100,9 +87,9 @@ export function AiPlotPanel({ context, projectId, className = "" }: AiPlotPanelP
         )}
       </button>
 
-      {error && (
+      {analyzePlot.error && (
         <div className="p-3 rounded-md border border-red-500/20 bg-red-500/5 text-sm text-red-400">
-          {error}
+          {getErrorMessage(analyzePlot.error, "Plot analysis failed")}
         </div>
       )}
 

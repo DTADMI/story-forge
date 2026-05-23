@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useToast } from "@/components/toast";
+import { useApiMutation } from "@/lib/query-hooks";
 
 interface PrivateNotesProps {
   entityType: string;
@@ -13,23 +14,22 @@ export function PrivateNotes({ entityType, entityId, initialNotes }: PrivateNote
   const { toast } = useToast();
   const [notes, setNotes] = useState(initialNotes);
   const [expanded, setExpanded] = useState(false);
-  const [saving, setSaving] = useState(false);
 
-  async function handleSave() {
-    setSaving(true);
-    try {
-      const res = await fetch(`/api/world/${entityType}/${entityId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ metadata: { privateNotes: notes } }),
-      });
-      if (!res.ok) throw new Error("Failed to save");
-      toast({ title: "Notes saved" });
-    } catch {
-      toast({ title: "Failed to save notes", variant: "destructive" });
-    } finally {
-      setSaving(false);
+  const saveNotes = useApiMutation<unknown, Record<string, unknown>>(
+    `/api/world/${entityType}/${entityId}`,
+    {
+      method: "PATCH",
+      onSuccess: () => {
+        toast({ title: "Notes saved" });
+      },
+      onError: () => {
+        toast({ title: "Failed to save notes", variant: "destructive" });
+      },
     }
+  );
+
+  function handleSave() {
+    saveNotes.mutate({ metadata: { privateNotes: notes } });
   }
 
   return (
@@ -56,10 +56,10 @@ export function PrivateNotes({ entityType, entityId, initialNotes }: PrivateNote
           <div className="flex justify-end">
             <button
               onClick={handleSave}
-              disabled={saving}
+              disabled={saveNotes.isPending}
               className="px-3 py-1 text-xs bg-fg/10 text-fg rounded-md hover:bg-fg/20 disabled:opacity-50"
             >
-              {saving ? "Saving..." : "Save Notes"}
+              {saveNotes.isPending ? "Saving..." : "Save Notes"}
             </button>
           </div>
         </div>

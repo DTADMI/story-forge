@@ -5,6 +5,8 @@ import type { Species } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { Card } from "@/components/ui/card";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 
 export function SpeciesEditForm({ species }: { species: Species }) {
   const router = useRouter();
@@ -16,37 +18,36 @@ export function SpeciesEditForm({ species }: { species: Species }) {
   const [lifespan, setLifespan] = useState(species.lifespan || "");
   const [homeland, setHomeland] = useState(species.homeland || "");
   const [projectId, setProjectId] = useState(species.projectId || "");
-  const [saving, setSaving] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const updateSpecies = useApiMutation<unknown, Record<string, unknown>>(
+    `/api/world/species/${species.id}`,
+    {
+      method: "PATCH",
+      onSuccess: () => {
+        toast({ title: "Species updated!" });
+        router.refresh();
+      },
+      onError: (err) => {
+        toast({ title: getErrorMessage(err, "Failed to update species"), variant: "destructive" });
+      },
+    }
+  );
+
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
       toast({ title: "Name is required", variant: "destructive" });
       return;
     }
-    setSaving(true);
-    try {
-      const res = await fetch(`/api/world/species/${species.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          description: description.trim() || null,
-          appearance: appearance.trim() || null,
-          traits: traits.trim() || null,
-          lifespan: lifespan.trim() || null,
-          homeland: homeland.trim() || null,
-          projectId: projectId.trim() || null,
-        }),
-      });
-      if (!res.ok) throw new Error("Failed to update");
-      toast({ title: "Species updated!" });
-      router.refresh();
-    } catch {
-      toast({ title: "Failed to update species", variant: "destructive" });
-    } finally {
-      setSaving(false);
-    }
+    updateSpecies.mutate({
+      name: name.trim(),
+      description: description.trim() || null,
+      appearance: appearance.trim() || null,
+      traits: traits.trim() || null,
+      lifespan: lifespan.trim() || null,
+      homeland: homeland.trim() || null,
+      projectId: projectId.trim() || null,
+    });
   }
 
   return (
@@ -116,10 +117,10 @@ export function SpeciesEditForm({ species }: { species: Species }) {
         </div>
         <button
           type="submit"
-          disabled={saving}
+          disabled={updateSpecies.isPending}
           className="bg-brand text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-brand/90 disabled:opacity-50"
         >
-          {saving ? "Saving..." : "Save Changes"}
+          {updateSpecies.isPending ? "Saving..." : "Save Changes"}
         </button>
       </form>
     </Card>

@@ -1,6 +1,7 @@
 "use client";
-import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 
 type Plan = "monthly" | "yearly" | "lifetime";
 
@@ -11,36 +12,33 @@ const LABELS: Record<Plan, string> = {
 };
 
 export function SubscribeButton({ plan, disabled }: { plan: Plan; disabled?: boolean }) {
-  const [loading, setLoading] = React.useState(false);
+  const checkout = useApiMutation<{ url?: string; message?: string }, { plan: Plan }>(
+    "/api/billing/checkout",
+    {
+      onSuccess: (data) => {
+        if (data?.url) {
+          window.location.href = data.url;
+        } else {
+          alert(data?.message || "Checkout not available yet.");
+        }
+      },
+      onError: (err) => {
+        alert(getErrorMessage(err, "Failed to start checkout."));
+      },
+    }
+  );
+
   return (
     <Button
       className="w-full"
-      disabled={disabled || loading}
-      aria-disabled={disabled || loading}
-      onClick={async () => {
+      disabled={disabled || checkout.isPending}
+      aria-disabled={disabled || checkout.isPending}
+      onClick={() => {
         if (disabled) return;
-        try {
-          setLoading(true);
-          const res = await fetch("/api/billing/checkout", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ plan }),
-          });
-          const data = await res.json();
-          if (res.ok && data?.url) {
-            window.location.href = data.url as string;
-          } else {
-            alert(data?.message || "Checkout not available yet.");
-          }
-        } catch (e) {
-          console.error(e);
-          alert("Failed to start checkout.");
-        } finally {
-          setLoading(false);
-        }
+        checkout.mutate({ plan });
       }}
     >
-      {loading ? "Processing..." : LABELS[plan] || "Subscribe"}
+      {checkout.isPending ? "Processing..." : LABELS[plan] || "Subscribe"}
     </Button>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useToast } from "@/components/toast";
+import { useApiMutation } from "@/lib/query-hooks";
 
 interface CharacterProfileData {
   name?: string;
@@ -47,29 +48,28 @@ export function CharacterProfileBuilder({ character, onSaved }: CharacterProfile
     name: character.name,
     ...initialMeta,
   });
-  const [saving, setSaving] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
+
+  const saveProfile = useApiMutation<unknown, Record<string, unknown>>(
+    `/api/world/characters/${character.id}`,
+    {
+      method: "PATCH",
+      onSuccess: () => {
+        toast({ title: "Profile saved!" });
+        onSaved?.();
+      },
+      onError: () => {
+        toast({ title: "Failed to save profile", variant: "destructive" });
+      },
+    }
+  );
 
   function update(field: keyof CharacterProfileData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
-  async function handleSave() {
-    setSaving(true);
-    try {
-      const res = await fetch(`/api/world/characters/${character.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ metadata: form }),
-      });
-      if (!res.ok) throw new Error("Failed to save");
-      toast({ title: "Profile saved!" });
-      onSaved?.();
-    } catch {
-      toast({ title: "Failed to save profile", variant: "destructive" });
-    } finally {
-      setSaving(false);
-    }
+  function handleSave() {
+    saveProfile.mutate({ metadata: form });
   }
 
   const sections = [
@@ -126,10 +126,10 @@ export function CharacterProfileBuilder({ character, onSaved }: CharacterProfile
         <h3 className="text-sm font-bold">Character Profile</h3>
         <button
           onClick={handleSave}
-          disabled={saving}
+          disabled={saveProfile.isPending}
           className="px-3 py-1 text-xs bg-brand text-white rounded-md disabled:opacity-50"
         >
-          {saving ? "Saving..." : "Save Profile"}
+          {saveProfile.isPending ? "Saving..." : "Save Profile"}
         </button>
       </div>
 

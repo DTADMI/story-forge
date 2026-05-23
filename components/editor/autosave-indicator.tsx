@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/components/toast";
 import { CheckCircle2, Loader2 } from "lucide-react";
+import { fetchJson, fetchVoid, type ApiError } from "@/lib/client-api";
 
 type SaveStatus = "saved" | "saving" | "unsaved";
 
@@ -25,54 +27,50 @@ export function AutosaveIndicator({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
 
-  const save = useCallback(
-    async (contentToSave: string) => {
-      setStatus("saving");
-      try {
-        const wc = contentToSave.trim() ? contentToSave.trim().split(/\s+/).length : 0;
-
-        const res = await fetch(`/api/projects/${projectId}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            content: contentToSave,
-            wordCount: wordCount ?? wc,
-          }),
-        });
-
-        if (!res.ok) throw new Error("Save failed");
-
-        // Log progress to gamification pipeline (words written)
-        const delta = wordCount !== undefined ? wc - wordCount : wc;
-        if (delta > 0) {
-          try {
-            await fetch("/api/gamification/progress", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ value: Math.max(0, delta) }),
-            });
-          } catch {
-            // progress logging is non-critical
-          }
-        }
-
-        if (mountedRef.current) {
-          setStatus("saved");
-          lastSavedRef.current = contentToSave;
-          onSaved?.();
-        }
-      } catch {
-        if (mountedRef.current) {
-          setStatus("unsaved");
-          toast({
-            title: "Autosave failed",
-            description: "Your changes have not been saved. Please try again.",
-            variant: "destructive",
+  const saveMutation = useMutation<unknown, ApiError, string>({
+    mutationFn: async (contentToSave: string) => {
+      const wc = contentToSave.trim() ? contentToSave.trim().split(/\s+/).length : 0;
+      await fetchJson(`/api/projects/${projectId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ content: contentToSave, wordCount: wordCount ?? wc }),
+      });
+      const delta = wordCount !== undefined ? wc - wordCount : wc;
+      if (delta > 0) {
+        try {
+          await fetchVoid("/api/gamification/progress", {
+            method: "POST",
+            body: JSON.stringify({ value: Math.max(0, delta) }),
           });
+        } catch {
+          // progress logging is non-critical
         }
       }
     },
-    [projectId, wordCount, toast, onSaved]
+    onSuccess: (_data, contentToSave) => {
+      if (mountedRef.current) {
+        setStatus("saved");
+        lastSavedRef.current = contentToSave;
+        onSaved?.();
+      }
+    },
+    onError: () => {
+      if (mountedRef.current) {
+        setStatus("unsaved");
+        toast({
+          title: "Autosave failed",
+          description: "Your changes have not been saved. Please try again.",
+          variant: "destructive",
+        });
+      }
+    },
+  });
+
+  const save = useCallback(
+    (contentToSave: string) => {
+      setStatus("saving");
+      saveMutation.mutate(contentToSave);
+    },
+    [saveMutation]
   );
 
   useEffect(() => {

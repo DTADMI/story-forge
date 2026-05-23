@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { Card } from "@/components/ui/card";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -31,41 +33,30 @@ export default function NewEncyclopediaEntryPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [projectId, setProjectId] = useState("");
-  const [saving, setSaving] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const createEntry = useApiMutation<unknown, Record<string, unknown>>("/api/world/encyclopedia", {
+    onSuccess: () => {
+      toast({ title: "Entry created!" });
+      router.push(`/world/encyclopedia/${category}`);
+      router.refresh();
+    },
+    onError: (err) => {
+      toast({ title: getErrorMessage(err, "Failed to create entry"), variant: "destructive" });
+    },
+  });
+
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
       toast({ title: "Title and content are required", variant: "destructive" });
       return;
     }
-    setSaving(true);
-    try {
-      const res = await fetch("/api/world/encyclopedia", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          category,
-          title: title.trim(),
-          content: content.trim(),
-          projectId: projectId || null,
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to create entry");
-      }
-      toast({ title: "Entry created!" });
-      router.push(`/world/encyclopedia/${category}`);
-      router.refresh();
-    } catch (err) {
-      toast({
-        title: err instanceof Error ? err.message : "Failed to create entry",
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
-    }
+    createEntry.mutate({
+      category,
+      title: title.trim(),
+      content: content.trim(),
+      projectId: projectId || null,
+    });
   }
 
   return (
@@ -118,10 +109,10 @@ export default function NewEncyclopediaEntryPage() {
 
           <button
             type="submit"
-            disabled={saving}
+            disabled={createEntry.isPending}
             className="bg-brand text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-brand/90 disabled:opacity-50"
           >
-            {saving ? "Creating..." : "Create Entry"}
+            {createEntry.isPending ? "Creating..." : "Create Entry"}
           </button>
         </form>
       </Card>

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/toast";
+import { useApiMutation } from "@/lib/query-hooks";
 
 export function EncyclopediaEntryDelete({
   entryId,
@@ -15,18 +16,20 @@ export function EncyclopediaEntryDelete({
   const { toast } = useToast();
   const [confirming, setConfirming] = useState(false);
 
-  async function handleDelete() {
-    try {
-      const res = await fetch(`/api/world/encyclopedia/${entryId}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Failed");
+  const deleteEntry = useApiMutation<unknown, void>(`/api/world/encyclopedia/${entryId}`, {
+    method: "DELETE",
+    onSuccess: () => {
       toast({ title: "Entry deleted" });
       router.push(`/world/encyclopedia/${category}`);
       router.refresh();
-    } catch {
+    },
+    onError: () => {
       toast({ title: "Failed to delete entry", variant: "destructive" });
-    }
+    },
+  });
+
+  function handleDelete() {
+    deleteEntry.mutate(undefined);
   }
 
   if (confirming) {

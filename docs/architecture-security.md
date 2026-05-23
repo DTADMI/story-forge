@@ -149,7 +149,36 @@ Neither should switch — each is optimal for its data model.
 
 | Measure | Status | Notes |
 |---|---|---|
-| **Secret rotation** | Required | All env secrets (SUPABASE_SERVICE_ROLE_KEY, STRIPE_SECRET_KEY, UPSTASH_REDIS_TOKEN, OPENROUTER_API_KEY) should be rotated if they were ever exposed during the React2Shell vulnerability window (pre-Dec 2025). QH and SF are now on patched versions, but rotate secrets as a precaution. |
+| **Secret rotation** | Implemented | Procedure documented below. QH and SF are now on patched Next.js versions, but rotate secrets as a precaution if any were exposed during the React2Shell vulnerability window (pre-Dec 2025). |
+
+### Secret Rotation Procedure
+
+**When to rotate:** After any CVE remediation, suspected credential exposure, or quarterly.
+
+**Secrets to rotate:**
+
+| Service | Environment Variable | Rotation Method |
+|---|---|---|
+| Supabase JWT Secret | `SUPABASE_JWT_SECRET` (Project Settings > API) | Supabase Dashboard → Project Settings → API → JWT Settings → Generate New Secret |
+| Supabase Service Role Key | `SUPABASE_SERVICE_ROLE_KEY` | Auto-rotated when JWT secret changes |
+| Supabase Anon Key | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Auto-rotated when JWT secret changes |
+| Stripe | `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe Dashboard → Developers → API Keys → Roll key |
+| Upstash Redis | `UPSTASH_REDIS_URL`, `UPSTASH_REDIS_TOKEN` | Upstash Console → Database → Settings → Rotate Password |
+| OpenRouter | `OPENROUTER_API_KEY` | [OpenRouter Keys](https://openrouter.ai/keys) → Regenerate |
+| Neo4j | `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` | Neo4j Aura Console → Security → Reset Password |
+| Vercel Deploy Hook | `VERCEL_DEPLOY_HOOK` (CI) | Vercel Dashboard → Settings → Git → Deploy Hooks → Regenerate |
+
+**Rotation Steps:**
+
+1. **Generate new secret** at the service provider dashboard
+2. **Update Vercel env var** (Settings → Environment Variables) with the new value
+3. **Verify in preview deploy** before applying to production
+4. **Deploy to production** with the new values
+5. **Delete old key/secret** at the service provider after confirming prod is stable
+6. **Update `.env.example`** in the repo (do NOT commit actual secret values)
+7. **Notify team** of rotation via standard channels
+
+**Rollback:** If a service becomes unreachable after rotation, restore the previous env var value in Vercel and redeploy immediately.
 | **CSP headers** | Recommended | Add `Content-Security-Policy` headers via Next.js middleware to mitigate XSS. Fixed in 16.2.6 but defense-in-depth with CSP is advised. |
 | **Rate limiting** | Implemented | Redis-backed token-bucket rate limiting on all API routes. Tiers: AUTH (10/min), AI (30/min), WRITE (60/min), READ (300/min), PUBLIC (100/min). |
 | **Admin access** | Implemented | `isAdmin()` check via `public.users.settings.is_admin` flag. Requires explicit opt-in per user. |

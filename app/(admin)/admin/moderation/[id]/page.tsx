@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
+import { useApiQuery, useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 import Link from "next/link";
 
 interface ModEntity {
@@ -21,65 +23,51 @@ interface ModEntity {
 export default function ModerationReviewPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const [entity, setEntity] = useState<ModEntity | null>(null);
-  const [entityType, setEntityType] = useState<"project" | "character">("project");
-  const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/projects/${params.id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setEntity(data);
-          setEntityType("project");
-        } else {
-          const charRes = await fetch(`/api/world/characters/${params.id}`);
-          if (charRes.ok) {
-            const data = await charRes.json();
-            setEntity(data);
-            setEntityType("character");
-          }
-        }
-      } catch {
-        // not found
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [params.id]);
+  const projectQuery = useApiQuery<ModEntity>(
+    ["moderation", "project", params.id],
+    `/api/projects/${params.id}`,
+    { retry: false }
+  );
 
-  const handleAction = async (action: string) => {
-    const reason = action === "warn" ? prompt("Reason for warning:") : "";
-    setActionLoading(action);
-    setMessage("");
+  const charQuery = useApiQuery<ModEntity>(
+    ["moderation", "character", params.id],
+    `/api/world/characters/${params.id}`,
+    { retry: false, enabled: !!projectQuery.isError }
+  );
 
-    try {
-      const res = await fetch(`/api/admin/moderation/${params.id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, entityType, reason: reason || undefined }),
-      });
-
-      if (!res.ok) throw new Error("Action failed");
-
-      const data = await res.json();
+  const moderatedAction = useApiMutation<
+    { message?: string },
+    { action: string; entityType: "project" | "character"; reason?: string }
+  >(`/api/admin/moderation/${params.id}`, {
+    onSuccess: (data, variables) => {
       setMessage(data.message || "Action completed");
-
-      if (action === "delete") {
+      if (
+        variables &&
+        typeof variables === "object" &&
+        "action" in variables &&
+        variables.action === "delete"
+      ) {
         setTimeout(() => router.push("/admin/moderation"), 1500);
       }
-    } catch (err: any) {
-      setMessage(err.message || "Action failed");
-    } finally {
-      setActionLoading(null);
-    }
+    },
+    onError: (err) => {
+      setMessage(getErrorMessage(err, "Action failed"));
+    },
+  });
+
+  const entity = projectQuery.data ?? charQuery.data;
+  const entityType: "project" | "character" = projectQuery.data ? "project" : "character";
+  const isLoading = projectQuery.isLoading || (projectQuery.isError && charQuery.isLoading);
+
+  const handleAction = (action: string) => {
+    const reason = action === "warn" ? prompt("Reason for warning:") : "";
+    setMessage("");
+    moderatedAction.mutate({ action, entityType, reason: reason || undefined });
   };
 
-  if (loading) return <div className="p-6 text-fg/40">Loading...</div>;
+  if (isLoading) return <div className="p-6 text-fg/40">Loading...</div>;
   if (!entity) return <div className="p-6 text-fg/40">Entity not found</div>;
 
   const isProject = entityType === "project";
@@ -157,24 +145,24 @@ export default function ModerationReviewPage() {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => handleAction("approve")}
-            disabled={!!actionLoading}
+            disabled={moderatedAction.isPending}
             className="px-4 py-2 text-sm font-medium rounded-md bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
           >
-            {actionLoading === "approve" ? "..." : "Approve"}
+            {moderatedAction.isPending ? "..." : "Approve"}
           </button>
           <button
             onClick={() => handleAction("flag")}
-            disabled={!!actionLoading}
+            disabled={moderatedAction.isPending}
             className="px-4 py-2 text-sm font-medium rounded-md bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50"
           >
-            {actionLoading === "flag" ? "..." : "Flag"}
+            {moderatedAction.isPending ? "..." : "Flag"}
           </button>
           <button
             onClick={() => handleAction("warn")}
-            disabled={!!actionLoading}
+            disabled={moderatedAction.isPending}
             className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {actionLoading === "warn" ? "..." : "Warn Author"}
+            {moderatedAction.isPending ? "..." : "Warn Author"}
           </button>
           <button
             onClick={() => {
@@ -182,10 +170,10 @@ export default function ModerationReviewPage() {
                 handleAction("delete");
               }
             }}
-            disabled={!!actionLoading}
+            disabled={moderatedAction.isPending}
             className="px-4 py-2 text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
           >
-            {actionLoading === "delete" ? "..." : "Delete"}
+            {moderatedAction.isPending ? "..." : "Delete"}
           </button>
         </div>
         {message && <p className="text-sm text-fg/60 mt-3">{message}</p>}

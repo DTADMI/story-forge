@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, disabled }: any) => (
@@ -11,6 +12,11 @@ vi.mock("@/components/ui/button", () => ({
 }));
 
 import { SubscribeButton } from "@/components/billing/SubscribeButton";
+import { createQueryClient } from "@/lib/query-client";
+
+function renderWithQuery(ui: React.ReactElement) {
+  return render(<QueryClientProvider client={createQueryClient()}>{ui}</QueryClientProvider>);
+}
 
 describe("SubscribeButton", () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -26,22 +32,22 @@ describe("SubscribeButton", () => {
   });
 
   it("renders monthly label for monthly plan", () => {
-    render(<SubscribeButton plan="monthly" />);
+    renderWithQuery(<SubscribeButton plan="monthly" />);
     expect(screen.getByText("Subscribe Monthly")).toBeInTheDocument();
   });
 
   it("renders yearly label for yearly plan", () => {
-    render(<SubscribeButton plan="yearly" />);
+    renderWithQuery(<SubscribeButton plan="yearly" />);
     expect(screen.getByText("Subscribe Yearly")).toBeInTheDocument();
   });
 
   it("renders lifetime label for lifetime plan", () => {
-    render(<SubscribeButton plan="lifetime" />);
+    renderWithQuery(<SubscribeButton plan="lifetime" />);
     expect(screen.getByText("Buy Lifetime")).toBeInTheDocument();
   });
 
   it("is disabled when disabled prop is true", () => {
-    render(<SubscribeButton plan="monthly" disabled />);
+    renderWithQuery(<SubscribeButton plan="monthly" disabled />);
     expect(screen.getByRole("button", { name: /subscribe monthly/i })).toBeDisabled();
   });
 
@@ -67,14 +73,15 @@ describe("SubscribeButton", () => {
     });
     vi.stubGlobal("fetch", mockFetch);
 
-    render(<SubscribeButton plan="monthly" />);
+    renderWithQuery(<SubscribeButton plan="monthly" />);
     await user.click(screen.getByText("Subscribe Monthly"));
 
-    expect(mockFetch).toHaveBeenCalledWith("/api/billing/checkout", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ plan: "monthly" }),
-    });
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+    const [url, init] = mockFetch.mock.calls[0];
+    expect(url).toBe("/api/billing/checkout");
+    expect(init.method).toBe("POST");
+    expect(init.headers).toBeInstanceOf(Headers);
+    expect(init.body).toBe(JSON.stringify({ plan: "monthly" }));
     await vi.waitFor(() => {
       expect(currentUrl).toBe("https://checkout.stripe.com/session_1");
     });
@@ -90,7 +97,7 @@ describe("SubscribeButton", () => {
     vi.stubGlobal("fetch", mockFetch);
     window.alert = vi.fn();
 
-    render(<SubscribeButton plan="monthly" />);
+    renderWithQuery(<SubscribeButton plan="monthly" />);
     await user.click(screen.getByText("Subscribe Monthly"));
 
     await vi.waitFor(() => {
@@ -107,7 +114,7 @@ describe("SubscribeButton", () => {
     });
     vi.stubGlobal("fetch", vi.fn().mockReturnValue(fetchPromise));
 
-    render(<SubscribeButton plan="monthly" />);
+    renderWithQuery(<SubscribeButton plan="monthly" />);
     const clickPromise = user.click(screen.getByText("Subscribe Monthly"));
 
     await waitFor(() => {
@@ -126,7 +133,7 @@ describe("SubscribeButton", () => {
     const mockFetch = vi.fn();
     vi.stubGlobal("fetch", mockFetch);
 
-    render(<SubscribeButton plan="monthly" disabled />);
+    renderWithQuery(<SubscribeButton plan="monthly" disabled />);
     await user.click(screen.getByRole("button", { name: /subscribe monthly/i }));
 
     expect(mockFetch).not.toHaveBeenCalled();

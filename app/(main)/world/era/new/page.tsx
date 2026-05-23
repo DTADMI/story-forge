@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 
 export default function NewEraPage() {
   const router = useRouter();
@@ -12,41 +14,26 @@ export default function NewEraPage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [color, setColor] = useState("#6366f1");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim()) {
-      setError("Name is required.");
-      return;
-    }
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch("/api/world/era", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          description: description.trim() || undefined,
-          startDate: startDate || undefined,
-          endDate: endDate || undefined,
-          color: color || undefined,
-        }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to create era");
-      }
+  const createEra = useApiMutation<unknown, Record<string, unknown>>("/api/world/era", {
+    onSuccess: () => {
       router.push("/world/era");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    },
+  });
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim()) {
+      return;
     }
+    createEra.mutate({
+      name: name.trim(),
+      description: description.trim() || undefined,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+      color: color || undefined,
+    });
   }
 
   return (
@@ -126,11 +113,15 @@ export default function NewEraPage() {
             />
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {createEra.error && (
+            <p className="text-sm text-destructive">
+              {getErrorMessage(createEra.error, "Failed to create era")}
+            </p>
+          )}
 
           <div className="flex gap-3">
-            <Button type="submit" disabled={loading}>
-              {loading ? "Creating..." : "Create Era"}
+            <Button type="submit" disabled={createEra.isPending}>
+              {createEra.isPending ? "Creating..." : "Create Era"}
             </Button>
             <Button type="button" variant="outline" onClick={() => router.back()}>
               Cancel

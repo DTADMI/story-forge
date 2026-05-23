@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 vi.mock("@/lib/flags", () => ({
   isEnabledSync: vi.fn(),
@@ -8,6 +9,11 @@ vi.mock("@/lib/flags", () => ({
 
 import { isEnabledSync } from "@/lib/flags";
 import { AiStylePanel } from "@/components/ai/ai-style";
+import { createQueryClient } from "@/lib/query-client";
+
+function renderWithQuery(ui: React.ReactElement) {
+  return render(<QueryClientProvider client={createQueryClient()}>{ui}</QueryClientProvider>);
+}
 
 describe("AiStylePanel", () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -25,14 +31,14 @@ describe("AiStylePanel", () => {
   it("renders nothing when feature flag is disabled", () => {
     (isEnabledSync as ReturnType<typeof vi.fn>).mockReturnValue(false);
 
-    const { container } = render(<AiStylePanel context="A text passage" />);
+    const { container } = renderWithQuery(<AiStylePanel context="A text passage" />);
     expect(container.firstChild).toBeNull();
   });
 
   it("renders button when feature flag is enabled", () => {
     (isEnabledSync as ReturnType<typeof vi.fn>).mockReturnValue(true);
 
-    render(<AiStylePanel context="A text passage" />);
+    renderWithQuery(<AiStylePanel context="A text passage" />);
     expect(screen.getByText(/check style consistency/i)).toBeInTheDocument();
   });
 
@@ -64,7 +70,7 @@ describe("AiStylePanel", () => {
         }),
     });
 
-    render(<AiStylePanel context="A dark fantasy passage." />);
+    renderWithQuery(<AiStylePanel context="A dark fantasy passage." />);
     const button = screen.getByText(/check style consistency/i);
     await user.click(button);
 

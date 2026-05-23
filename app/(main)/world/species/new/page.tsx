@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { Card } from "@/components/ui/card";
+import { useApiMutation } from "@/lib/query-hooks";
+import { getErrorMessage } from "@/lib/client-api";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -18,44 +20,33 @@ export default function NewSpeciesPage() {
   const [lifespan, setLifespan] = useState("");
   const [homeland, setHomeland] = useState("");
   const [projectId, setProjectId] = useState("");
-  const [saving, setSaving] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const createSpecies = useApiMutation<unknown, Record<string, unknown>>("/api/world/species", {
+    onSuccess: () => {
+      toast({ title: "Species created!" });
+      router.push("/world/species");
+      router.refresh();
+    },
+    onError: (err) => {
+      toast({ title: getErrorMessage(err, "Failed to create species"), variant: "destructive" });
+    },
+  });
+
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
       toast({ title: "Name is required", variant: "destructive" });
       return;
     }
-    setSaving(true);
-    try {
-      const res = await fetch("/api/world/species", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          description: description.trim() || null,
-          appearance: appearance.trim() || null,
-          traits: traits.trim() || null,
-          lifespan: lifespan.trim() || null,
-          homeland: homeland.trim() || null,
-          projectId: projectId.trim() || null,
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to create");
-      }
-      toast({ title: "Species created!" });
-      router.push("/world/species");
-      router.refresh();
-    } catch (err) {
-      toast({
-        title: err instanceof Error ? err.message : "Failed to create species",
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
-    }
+    createSpecies.mutate({
+      name: name.trim(),
+      description: description.trim() || null,
+      appearance: appearance.trim() || null,
+      traits: traits.trim() || null,
+      lifespan: lifespan.trim() || null,
+      homeland: homeland.trim() || null,
+      projectId: projectId.trim() || null,
+    });
   }
 
   return (
@@ -154,10 +145,10 @@ export default function NewSpeciesPage() {
             </Link>
             <button
               type="submit"
-              disabled={saving}
+              disabled={createSpecies.isPending}
               className="bg-brand text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-brand/90 disabled:opacity-50"
             >
-              {saving ? "Creating..." : "Create Species"}
+              {createSpecies.isPending ? "Creating..." : "Create Species"}
             </button>
           </div>
         </form>

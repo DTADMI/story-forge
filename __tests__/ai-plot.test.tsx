@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 vi.mock("@/lib/flags", () => ({
   isEnabledSync: vi.fn(),
@@ -8,6 +9,11 @@ vi.mock("@/lib/flags", () => ({
 
 import { isEnabledSync } from "@/lib/flags";
 import { AiPlotPanel } from "@/components/ai/ai-plot";
+import { createQueryClient } from "@/lib/query-client";
+
+function renderWithQuery(ui: React.ReactElement) {
+  return render(<QueryClientProvider client={createQueryClient()}>{ui}</QueryClientProvider>);
+}
 
 describe("AiPlotPanel", () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -25,14 +31,14 @@ describe("AiPlotPanel", () => {
   it("renders nothing when feature flag is disabled", () => {
     (isEnabledSync as ReturnType<typeof vi.fn>).mockReturnValue(false);
 
-    const { container } = render(<AiPlotPanel context="A story plot" />);
+    const { container } = renderWithQuery(<AiPlotPanel context="A story plot" />);
     expect(container.firstChild).toBeNull();
   });
 
   it("renders button when feature flag is enabled", () => {
     (isEnabledSync as ReturnType<typeof vi.fn>).mockReturnValue(true);
 
-    render(<AiPlotPanel context="A story plot" />);
+    renderWithQuery(<AiPlotPanel context="A story plot" />);
     expect(screen.getByText(/analyze story structure/i)).toBeInTheDocument();
   });
 
@@ -52,7 +58,7 @@ describe("AiPlotPanel", () => {
         )
     );
 
-    render(<AiPlotPanel context="A story plot" />);
+    renderWithQuery(<AiPlotPanel context="A story plot" />);
     const button = screen.getByText(/analyze story structure/i);
     await user.click(button);
 
@@ -81,7 +87,7 @@ describe("AiPlotPanel", () => {
         }),
     });
 
-    render(<AiPlotPanel context="A story plot" />);
+    renderWithQuery(<AiPlotPanel context="A story plot" />);
     const button = screen.getByText(/analyze story structure/i);
     await user.click(button);
 
