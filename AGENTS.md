@@ -56,6 +56,7 @@ story-forge/
 - Scope searches and avoid heavy folders: `node_modules`, `.next`, `dist`, `.idea`.
 - Never use `Get-ChildItem -Recurse | Select-String` for repo content search.
 - For data-heavy work, prefer repo scripts over repeated manual tool calls when a script is practical.
+- Use `pnpm`/`pnpx` rather than `npm`/`npx` for all package management and script execution.
 
 ### Change Safety
 
