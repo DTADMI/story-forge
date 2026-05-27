@@ -18,7 +18,8 @@ CREATE POLICY "Public media is viewable by everyone"
 
 CREATE POLICY "Authenticated users can upload to public media"
   ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'media' AND auth.role() = 'authenticated');
+  TO authenticated
+  WITH CHECK (bucket_id = 'media');
 
 CREATE POLICY "Users can manage own private media"
   ON storage.objects FOR ALL

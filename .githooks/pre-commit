@@ -27,6 +27,10 @@ echo "-> Testing..."
 pnpm test:run
 echo "   OK"
 
+echo "-> Supabase security guardrails..."
+pnpm check:supabase-security
+echo "   OK"
+
 echo "-> Building..."
 pnpm build > /dev/null 2>&1
 echo "   OK"
