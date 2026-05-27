@@ -10,6 +10,14 @@ const nextConfig = {
     serverActions: {
         bodySizeLimit: '2mb',
     },
+    staleTimes: {
+      dynamic: 30,
+      static: 300,
+    },
+    optimizePackageImports: [
+      "lucide-react",
+      "date-fns",
+    ],
   },
   async headers() {
     return [

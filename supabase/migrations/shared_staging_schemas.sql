@@ -1,20 +1,45 @@
--- Shared Staging Database: story-forge-staging
+-- Shared Staging Database: story-forge-staging (CONSOLIDATED)
 -- Supabase ref: luxjwdodinxvpfbmfzyu
--- 
--- This Supabase project hosts 3 app staging environments via Postgres schemas:
---   public          → StoryForge (default schema)
---   librakeeper     → LibraKeeper tables
---   nebulaforgeweb  → NebulaForgeWeb tables
 --
--- Each project connects to the SAME Supabase URL but uses a different schema.
+-- This Supabase project is the consolidated shared staging host for all
+-- staging-only Nebula Forge apps. See shared_staging_schemas_upgrade.sql
+-- for the full list of app schemas.
+--
+-- App schemas:
+--   public          → StoryForge (host app)
+--   librakeeper     → LibraKeeper
+--   nebulaforgeweb  → NebulaForgeWeb
+--   velvetgalaxy    → Velvet Galaxy
+--   collectometal   → CollectoMetal
+--   gamehub         → GameHub
+--   private         → Admin-only views (shared, not exposed to Data API)
+--
+-- Each app connects to the SAME Supabase URL but uses a different schema.
 -- Auth (auth.users) is shared across all schemas (acceptable for staging).
+--
+-- Supabase client configuration for non-public schemas:
+--
+--   import { createClient } from "@supabase/supabase-js";
+--   const supabase = createClient(url, anonKey, {
+--     db: { schema: "<app-schema>" }
+--   });
+--
+-- For Prisma, set the schema in schema.prisma:
+--   datasource db {
+--     provider  = "postgresql"
+--     url       = env("DATABASE_URL")
+--     schemas   = ["<app-schema>"]
+--   }
+--
+-- See: docs/technical/portfolio-staging-and-promotion-runbook.md
+-- See: docs/technical/portfolio-staging-migration-backlog.md
 
 -- ============================================================
--- LibraKeeper Schema
+-- LibraKeeper Schema (seed tables for Supabase-managed objects)
 -- ============================================================
 CREATE SCHEMA IF NOT EXISTS librakeeper;
 
--- Feature flags table
+-- Feature flags table (seed structure for Supabase-based flags)
 CREATE TABLE IF NOT EXISTS librakeeper."FeatureFlag" (
     id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
     name TEXT NOT NULL UNIQUE,
@@ -24,11 +49,10 @@ CREATE TABLE IF NOT EXISTS librakeeper."FeatureFlag" (
     "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Enable RLS on schema tables
 ALTER TABLE librakeeper."FeatureFlag" ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================
--- NebulaForgeWeb Schema
+-- NebulaForgeWeb Schema (seed tables for Supabase-managed objects)
 -- ============================================================
 CREATE SCHEMA IF NOT EXISTS nebulaforgeweb;
 
@@ -53,20 +77,3 @@ CREATE TABLE IF NOT EXISTS nebulaforgeweb.site_settings (
 
 ALTER TABLE nebulaforgeweb.feature_flags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE nebulaforgeweb.site_settings ENABLE ROW LEVEL SECURITY;
-
--- ============================================================
--- Supabase Client Configuration
--- ============================================================
--- For apps using non-public schemas, configure the Supabase client:
---
---   import { createClient } from "@supabase/supabase-js";
---   const supabase = createClient(url, anonKey, {
---     db: { schema: "librakeeper" }  // or "nebulaforgeweb"
---   });
---
--- For Prisma, set the schema in schema.prisma:
---   datasource db {
---     provider  = "postgresql"
---     url       = env("DATABASE_URL")
---     schemas   = ["librakeeper"]
---   }
