@@ -62,7 +62,7 @@ describe("AiCharacterPanel", () => {
     const button = screen.getByText(/generate character ideas/i);
     await user.click(button);
 
-    expect(screen.getByText(/generating characters/i)).toBeInTheDocument();
+    expect(await screen.findByText(/generating characters/i)).toBeInTheDocument();
   });
 
   it("shows error message on failure", async () => {
