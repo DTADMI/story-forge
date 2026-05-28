@@ -19,34 +19,39 @@
 
 ## Architecture
 
-Single Next.js 16 App Router app on Vercel with Supabase (Auth, DB, Storage, Realtime) and Upstash Redis. Prisma ORM with pg adapter on Supabase Postgres. Feature flags backed by Redis with env-var fallback.
+Single Next.js 16 App Router app on Vercel with Supabase (Auth, DB, Storage, Realtime) and Upstash Redis. Prisma ORM with pg adapter on Supabase Postgres. AI via custom multi-provider adapter (OpenRouter, DeepSeek, OpenAI). Feature flags backed by Redis with env-var fallback.
 
 ```
 story-forge/
-├── web/              ← Next.js 16 App Router (single app)
-│   ├── app/      ← Pages, layouts, API route handlers
-│   ├── components/ ← UI components (design system, editor, AI)
-│   └── lib/      ← Prisma, Supabase, Redis, flags, cache, AI
-├── packages/
-│   └── ai-core/      ← Shared AI package (OpenRouter adapter)
-├── prisma/           ← Prisma schema + migrations
+├── app/              ← Next.js 16 App Router pages & API routes
+├── components/       ← UI components (design system, editor, AI, world, social)
+├── hooks/            ← Custom React hooks
+├── lib/              ← Prisma, Supabase, Redis, flags, cache, AI, storage, email
+├── i18n/             ← next-intl config (request.ts, routing.ts)
+├── messages/         ← Translation JSON (en, fr)
+├── prisma/           ← Prisma schema (37 models)
 ├── supabase/         ← Supabase SQL migrations + config
-├── scripts/          ← Build, migration, utility scripts
+├── scripts/          ← Build, migration, rollout/rollback, utility scripts
 ├── docs/             ← Technical documentation
 └── .github/          ← CI workflow
 ```
 
+Note: The project is flat (no `web/` or `packages/` directories). AI logic lives in `lib/ai.ts` rather than a separate `packages/ai-core/`.
+
 ## Repository Map
 
-- `web/app/` Next.js App Router pages and API route handlers
-- `web/app/(main)/` Protected routes (requires auth)
-- `web/app/api/` All API route handlers (projects, users, world, social, gamification, billing, AI)
-- `web/components/` Shared UI components (ui/, editor/, ai/, social/, billing/, pwa/)
-- `web/lib/` Shared logic: prisma.ts, supabase/, redis.ts, flags.ts, cache.ts, storage.ts
-- `packages/ai-core/` Shared AI infrastructure (types, OpenRouter adapter, factory)
+- `app/` Next.js App Router pages and API route handlers
+- `app/(main)/` Protected routes (requires auth)
+- `app/(auth)/` Auth pages (signin, signup, reset-password)
+- `app/(marketing)/` Public marketing pages
+- `app/(public)/` Public pages (landing, pricing, faq, about, etc.)
+- `app/(admin)/` Admin pages (requires admin role)
+- `app/api/` All API route handlers (projects, users, world, social, gamification, billing, AI)
+- `components/` Shared UI components (ui/, editor/, ai/, social/, billing/, pwa/, layout/, world/, etc.)
+- `lib/` Shared logic: prisma.ts, supabase/, redis.ts, flags.ts, cache.ts, ai.ts, storage.ts, stripe.ts, neo4j.ts
 - `prisma/` Prisma schema and tracked migration history
 - `supabase/migrations/` Supabase SQL migrations (RLS policies, triggers, tables)
-- `scripts/` Utility and CI support scripts
+- `scripts/` Utility, rollout/rollback, and CI support scripts
 
 ## Hard Rules
 
@@ -75,7 +80,7 @@ story-forge/
 - Avoid editing generated output, `.next/`, `dist/`, or generated Prisma client files.
 - Keep new product behavior behind feature flags and update docs accordingly.
 - Growth ideas, themes, and events must remain feature-flag gated and controllable from the admin dashboard.
-- **Never use `--no-verify`, `--no-gpg-sign`, or any hook-skipping flag on git commits or pushes.** The pre-commit hook runs `pnpm -C web lint`, `pnpm build`, and `pnpm -C web test:run`. These must pass before every commit. If a hook takes too long, increase the tool timeout — do not bypass the hook.
+- **Never use `--no-verify`, `--no-gpg-sign`, or any hook-skipping flag on git commits or pushes.** The pre-commit hook runs `pnpm format:check`, `pnpm exec prisma generate`, `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, and `pnpm build`. These must pass before every commit. If a hook takes too long, increase the tool timeout — do not bypass the hook.
 
 ### Content Platform Rules
 
