@@ -61,7 +61,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       </div>
 
       {/* Editor */}
-      <ProjectEditor project={project as any} userPreferences={undefined} />
+      <ProjectEditor
+        project={project as unknown as React.ComponentProps<typeof ProjectEditor>["project"]}
+        userPreferences={undefined}
+        currentUser={{ id: user.id, name: currentUserName }}
+      />
 
       {/* Panel count display */}
       <div className="flex items-center gap-2 text-sm text-fg/50">
@@ -208,7 +212,7 @@ async function updateSettings(id: string, formData: FormData) {
     data: {
       title: title || undefined,
       description: description || undefined,
-      defaultScope: defaultScope as any,
+      defaultScope: defaultScope as unknown as never,
     },
   });
   redirect(`/projects/${id}`);

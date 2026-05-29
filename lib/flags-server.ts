@@ -13,10 +13,14 @@ async function getPrismaFeatureFlags(): Promise<FeatureFlag[]> {
         id: r.id,
         name: r.name,
         description: r.description ?? "",
-        type: (r.type as FlagType) ?? "boolean",
-        enabled: r.enabled,
-        value: r.value as boolean | number | string[],
-        category: (r.category as FeatureFlag["category"]) ?? "core",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        type: ((r as any).type as FlagType) ?? "boolean",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        enabled: (r as any).enabled,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        value: (r as any).value as boolean | number | string[],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        category: ((r as any).category as FeatureFlag["category"]) ?? "core",
       }));
     }
   } catch {

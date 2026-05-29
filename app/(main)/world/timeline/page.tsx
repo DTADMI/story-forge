@@ -10,11 +10,20 @@ async function getTimelineEvents() {
   return res.json();
 }
 
+interface TimelineEvent {
+  id: string;
+  title: string;
+  description?: string;
+  date?: string;
+  characters?: { id: string; name: string }[];
+  locations?: { id: string; name: string }[];
+}
+
 export default async function TimelinePage() {
   const user = await getUser();
   if (!user) redirect("/signin");
 
-  const events = await getTimelineEvents();
+  const events: TimelineEvent[] = await getTimelineEvents();
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10 space-y-8">
@@ -43,7 +52,7 @@ export default async function TimelinePage() {
             </Link>
           </Card>
         ) : (
-          events.map((event: any) => (
+          events.map((event: TimelineEvent) => (
             <Card key={event.id} className="p-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -58,9 +67,9 @@ export default async function TimelinePage() {
                   {event.description && (
                     <p className="text-sm text-fg/60 mt-1 line-clamp-2">{event.description}</p>
                   )}
-                  {event.characters?.length > 0 && (
+                  {event.characters && event.characters.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">
-                      {event.characters.map((c: any) => (
+                      {event.characters.map((c: { id: string; name: string }) => (
                         <span
                           key={c.id}
                           className="text-xs bg-brand/10 text-brand px-2 py-0.5 rounded-full"
@@ -70,9 +79,9 @@ export default async function TimelinePage() {
                       ))}
                     </div>
                   )}
-                  {event.locations?.length > 0 && (
+                  {event.locations && event.locations.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {event.locations.map((l: any) => (
+                      {event.locations.map((l: { id: string; name: string }) => (
                         <span
                           key={l.id}
                           className="text-xs bg-fg/5 text-fg/60 px-2 py-0.5 rounded-full"

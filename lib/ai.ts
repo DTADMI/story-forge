@@ -11,6 +11,7 @@ import type {
   AiStreamEvent,
 } from "@/lib/ai-types";
 import { AI_FEATURE_CONFIGS, AI_MODELS } from "@/lib/ai-types";
+import { recordAiRequest } from "@/lib/ai-monitoring";
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1000;
@@ -308,19 +309,67 @@ function createOpenAiAdapter(): AiAdapter {
   };
 }
 
+function wrapWithMonitoring(adapter: AiAdapter): AiAdapter {
+  const originalCompletion = adapter.chatCompletion.bind(adapter);
+  return {
+    ...adapter,
+    chatCompletion: async (params) => {
+      const start = Date.now();
+      try {
+        const result = await originalCompletion(params);
+        const feature = (params as { _feature?: AiFeature })._feature;
+        if (feature) {
+          void recordAiRequest({
+            feature,
+            latencyMs: Date.now() - start,
+            success: true,
+            provider: resolveAiProvider(),
+            model: result.model ?? "unknown",
+            tokensInput: result.usage?.prompt_tokens ?? 0,
+            tokensOutput: result.usage?.completion_tokens ?? 0,
+            timestamp: Date.now(),
+          }).catch(() => {});
+        }
+        return result;
+      } catch (error) {
+        const feature = (params as { _feature?: AiFeature })._feature;
+        if (feature) {
+          void recordAiRequest({
+            feature,
+            latencyMs: Date.now() - start,
+            success: false,
+            provider: resolveAiProvider(),
+            model: "unknown",
+            tokensInput: 0,
+            tokensOutput: 0,
+            timestamp: Date.now(),
+          }).catch(() => {});
+        }
+        throw error;
+      }
+    },
+  };
+}
+
 export function getAiAdapter(): AiAdapter {
   const provider = resolveAiProvider();
+  let adapter: AiAdapter;
   switch (provider) {
     case "deepseek":
-      return createDeepSeekAdapter();
+      adapter = createDeepSeekAdapter();
+      break;
     case "openai":
-      return createOpenAiAdapter();
+      adapter = createOpenAiAdapter();
+      break;
     case "mock":
-      return createMockAdapter();
+      adapter = createMockAdapter();
+      break;
     case "openrouter":
     default:
-      return createOpenRouterAdapter();
+      adapter = createOpenRouterAdapter();
+      break;
   }
+  return wrapWithMonitoring(adapter);
 }
 
 export function getAiAdapterForFeature(feature: AiFeature): {

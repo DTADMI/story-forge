@@ -2,6 +2,7 @@
 
 import { usePresence } from "@/lib/realtime";
 import { isEnabledSync } from "@/lib/flags";
+import { useI18n } from "@/lib/i18n";
 
 interface PresenceAvatarsProps {
   projectId: string;
@@ -21,6 +22,7 @@ const AVATAR_COLORS = [
 
 export function PresenceAvatars({ projectId, currentUser }: PresenceAvatarsProps) {
   const { activeUsers } = usePresence(`project:${projectId}`, currentUser);
+  const { t } = useI18n();
 
   if (!isEnabledSync("real_time_collaboration")) return null;
 
@@ -30,7 +32,7 @@ export function PresenceAvatars({ projectId, currentUser }: PresenceAvatarsProps
 
   return (
     <div className="flex items-center gap-1">
-      <span className="text-xs text-fg/40 mr-1">Viewers:</span>
+      <span className="text-xs text-fg/40 mr-1">{t("social.viewers")}:</span>
       {displayUsers.map((user, i) => (
         <span
           key={user.id}

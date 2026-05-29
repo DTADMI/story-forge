@@ -43,7 +43,7 @@ export default async function DialoguesPage() {
             </Link>
           </Card>
         ) : (
-          dialogues.map((d: any) => (
+          dialogues.map((d: { id: string; title?: string; project?: { title: string } }) => (
             <Card key={d.id} className="p-4 flex items-center justify-between">
               <div>
                 <h3 className="font-bold">{d.title || "Untitled Scene"}</h3>

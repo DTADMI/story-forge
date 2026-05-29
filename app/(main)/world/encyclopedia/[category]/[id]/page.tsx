@@ -44,8 +44,13 @@ export default async function EncyclopediaEntryDetailPage({
   const label = categoryLabels[category] || category;
 
   let referencedEntries: { id: string; title: string }[] = [];
-  if ((entry.metadata as any)?.references?.length) {
-    const refIds = (entry.metadata as any).references as string[];
+  const entryMeta = entry.metadata as Record<string, unknown>;
+  if (
+    (entryMeta as Record<string, unknown>)["references"] &&
+    Array.isArray((entryMeta as Record<string, unknown>)["references"]) &&
+    ((entryMeta as Record<string, unknown>)["references"] as unknown[]).length > 0
+  ) {
+    const refIds = (entryMeta as Record<string, unknown>)["references"] as string[];
     const refs = await prisma.encyclopediaEntry.findMany({
       where: { id: { in: refIds }, userId: user.id },
       select: { id: true, title: true },
@@ -100,10 +105,10 @@ export default async function EncyclopediaEntryDetailPage({
       </div>
 
       {/* Image */}
-      {(entry.metadata as any)?.imageUrl && (
+      {Boolean(entryMeta["imageUrl"]) && (
         <div className="relative w-full h-64 mb-6">
           <NextImage
-            src={(entry.metadata as any).imageUrl}
+            src={entryMeta["imageUrl"] as string}
             alt={entry.title}
             fill
             className="object-cover rounded-lg border border-fg/10"

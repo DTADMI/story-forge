@@ -6,6 +6,7 @@ type Row = {
 };
 
 async function getFollowers(): Promise<Row[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const res = await apiFetch("/api/social/followers", { cache: "no-store" as any });
   if (!res.ok) return [];
   return res.json();

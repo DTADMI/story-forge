@@ -24,6 +24,13 @@ export default async function TimelineVizPage() {
     }),
   ]);
 
+  const mappedEras = eras.map((era) => ({
+    ...era,
+    color: era.color ?? "#6b7280",
+    startDate: era.startDate ?? new Date().toISOString(),
+    endDate: era.endDate ?? undefined,
+  }));
+
   return (
     <main className="mx-auto max-w-5xl px-6 py-6">
       <div className="flex items-center justify-between mb-6">
@@ -38,7 +45,10 @@ export default async function TimelineVizPage() {
         </Link>
       </div>
 
-      <TimelineViz events={events} eras={eras as any} />
+      <TimelineViz
+        events={events}
+        eras={mappedEras as unknown as React.ComponentProps<typeof TimelineViz>["eras"]}
+      />
     </main>
   );
 }

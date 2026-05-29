@@ -45,7 +45,7 @@ export default async function CalendarDetailPage({ params }: { params: Promise<{
 
       {/* Calendar Grid */}
       <div className="space-y-6">
-        {months.map((month: any) => {
+        {months.map((month: { id?: string; name?: string; days: number; orderIndex?: number }) => {
           const rows: number[][] = [];
           let currentRow: number[] = [];
           for (let d = 1; d <= month.days; d++) {

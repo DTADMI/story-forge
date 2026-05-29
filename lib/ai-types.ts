@@ -17,6 +17,7 @@ export interface AiChatCompletionParams {
   max_tokens?: number;
   response_format?: { type: "json_object" | "text" };
   model?: string;
+  _feature?: AiFeature;
 }
 
 export interface AiChatCompletionResponse {

@@ -51,7 +51,7 @@ export default async function SpeciesPage() {
         />
       ) : (
         <div className="grid gap-4">
-          {species.map((s: any) => (
+          {species.map((s: { id: string; name: string; description?: string; traits?: string }) => (
             <Link key={s.id} href={`/world/species/${s.id}`}>
               <Card className="p-4 hover:bg-fg/5 transition-colors">
                 <h3 className="text-base font-bold">{s.name}</h3>

@@ -3,17 +3,29 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect } from "react";
+import type { Extension } from "@tiptap/core";
 
 interface EditorProps {
   content: string;
   onChange?: (content: string) => void;
   onSave?: (content: string) => void;
+  collaborationExtensions?: Extension[];
+  editable?: boolean;
 }
 
-export function Editor({ content, onChange, onSave }: EditorProps) {
+export function Editor({
+  content,
+  onChange,
+  onSave,
+  collaborationExtensions,
+  editable = true,
+}: EditorProps) {
+  const extensions = [StarterKit, ...(collaborationExtensions ?? [])];
+
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions,
     content,
+    editable,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML());
     },

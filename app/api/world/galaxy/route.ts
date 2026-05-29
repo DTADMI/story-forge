@@ -18,7 +18,11 @@ interface GalaxyEdge {
   label?: string;
 }
 
-function transformNeo4jToGalaxy(neo4jResult: any[]): { nodes: GalaxyNode[]; edges: GalaxyEdge[] } {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function transformNeo4jToGalaxy(neo4jResult: any[]): {
+  nodes: GalaxyNode[];
+  edges: GalaxyEdge[];
+} {
   const nodeMap = new Map<string, GalaxyNode>();
   const edgeSet = new Set<string>();
   const edges: GalaxyEdge[] = [];

@@ -30,7 +30,7 @@ export default function EraDetailPage() {
     `/api/world/era/${params.id}`,
     {
       method: "PATCH",
-      onError: (err) => setError(String((err as any)?.message ?? "Failed to update")),
+      onError: (err) => setError(String((err as Error)?.message ?? "Failed to update")),
     }
   );
 
@@ -41,7 +41,7 @@ export default function EraDetailPage() {
       router.refresh();
     },
     onError: (err) => {
-      setError(String((err as any)?.message ?? "Failed to delete"));
+      setError(String((err as Error)?.message ?? "Failed to delete"));
     },
   });
 

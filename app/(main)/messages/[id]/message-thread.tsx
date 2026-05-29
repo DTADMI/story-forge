@@ -7,7 +7,7 @@ import { fetchJson, fetchVoid } from "@/lib/client-api";
 import { useApiQuery } from "@/lib/query-hooks";
 import { useOptimisticMutation } from "@/lib/mutation";
 import { VoiceRecorder, VoicePlayer } from "@/lib/voice";
-import { createClient } from "@/lib/supabase/client";
+import { createBrowserClient } from "@/lib/supabase/client";
 
 interface MessageData {
   id: string;
@@ -95,10 +95,10 @@ export function MessageThread({
 
   useEffect(() => {
     markReadMutation.mutate();
-  }, [partnerId]);
+  }, [partnerId, markReadMutation]);
 
   const handleVoiceComplete = async (blob: Blob, duration: number) => {
-    const supabase = createClient();
+    const supabase = createBrowserClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();

@@ -69,10 +69,12 @@ export async function checkRateLimit(
  *   // ... handler logic
  * }, { maxRequests: 60, keyPrefix: "api:ai:suggest" });
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withRateLimit<T extends (request: Request, ...args: any[]) => Promise<Response>>(
   handler: T,
   options: { maxRequests: number; keyPrefix: string; windowSeconds?: number }
 ): T {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (async (request: Request, ...args: any[]) => {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded?.split(",")[0]?.trim() ?? "127.0.0.1";

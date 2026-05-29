@@ -56,8 +56,8 @@ export default async function TimelineEventDetailPage({
   const event = await getTimelineEvent(id);
   if (!event) notFound();
 
-  const existingChars = (event.characters || []).map((c: any) => c.id);
-  const existingLocs = (event.locations || []).map((l: any) => l.id);
+  const existingChars = (event.characters || []).map((c: { id: string }) => c.id);
+  const existingLocs = (event.locations || []).map((l: { id: string }) => l.id);
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">

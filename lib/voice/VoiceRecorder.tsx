@@ -235,9 +235,7 @@ export function VoiceRecorder({
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3">
-      {error && (
-        <p className="text-sm text-destructive">{error}</p>
-      )}
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
       {state === "idle" && (
         <button
@@ -323,12 +321,7 @@ export function VoiceRecorder({
             </span>
           </div>
 
-          <audio
-            ref={previewAudioRef}
-            src={audioUrl}
-            controls
-            className="w-full h-10"
-          />
+          <audio ref={previewAudioRef} src={audioUrl} controls className="w-full h-10" />
 
           <div className="flex items-center gap-2">
             <button

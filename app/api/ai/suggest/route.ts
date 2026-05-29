@@ -97,6 +97,13 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     max_tokens: config.maxTokens,
     response_format: { type: "json_object" },
     model,
+    _feature:
+      (feature as string) === "character" ||
+      (feature as string) === "plot" ||
+      (feature as string) === "style" ||
+      (feature as string) === "research"
+        ? (feature as string as "character" | "plot" | "style" | "research")
+        : "suggest",
   });
 
   let result: Record<string, unknown>;

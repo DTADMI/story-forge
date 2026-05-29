@@ -44,15 +44,18 @@ export function VoicePlayer({ url, compact = false, t, className = "" }: VoicePl
     setCurrentTime(0);
   }, []);
 
-  const handleSeek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !totalDuration) return;
+  const handleSeek = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const audio = audioRef.current;
+      if (!audio || !totalDuration) return;
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const ratio = x / rect.width;
-    audio.currentTime = ratio * totalDuration;
-  }, [totalDuration]);
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const ratio = x / rect.width;
+      audio.currentTime = ratio * totalDuration;
+    },
+    [totalDuration]
+  );
 
   useEffect(() => {
     const audio = audioRef.current;

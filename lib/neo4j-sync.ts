@@ -62,11 +62,14 @@ export async function deleteCharacterFromNeo4j(id: string) {
 export async function fullResync() {
   const { prisma } = await import("@/lib/prisma");
   await neo4jQuery(`MATCH (n) DETACH DELETE n`);
-  const chars = await prisma.character.findMany();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const chars = await (prisma as any).character.findMany();
   for (const c of chars) await syncCharacterToNeo4j(c);
-  const rels = await prisma.characterRelationship.findMany();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rels = await (prisma as any).characterRelationship.findMany();
   for (const r of rels) await syncRelationshipToNeo4j(r);
-  const events = await prisma.timelineEvent.findMany({ include: { characters: true } });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const events = await (prisma as any).timelineEvent.findMany({ include: { characters: true } });
   for (const e of events) {
     await syncEventToNeo4j(e);
     for (const c of e.characters) await syncEventCharacterLink(e.id, c.id);

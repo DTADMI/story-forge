@@ -191,88 +191,72 @@ story-forge/
 ## Planned
 
 ### Feature Gaps
-
-- [ ] **Panel/page layout templates** — Comic panel templates for visual storytelling
-- [ ] **Real-time collaboration** — Document sync via CRDT/Yjs (presence tracking exists)
+- [ ] Panel/page layout templates for visual storytelling
+- [ ] Real-time collaboration (CRDT/Yjs) — Phase 1: Yjs deps + TipTap extensions
 
 ### Infrastructure & Tooling
-
-- [ ] React 19.2 review: verify new APIs, audit third-party lib compatibility
-- [ ] Finish migrating remaining client-side fetch paths to TanStack Query + shared mutation helpers
-- [ ] Accessibility audit: WCAG 2.1 AA comprehensive review
-- [ ] Real-time collaboration via Supabase Realtime (CRDT/Yjs)
+- [ ] React 19.2 review
+- [ ] Complete TanStack Query migration (remaining world CRUD, AI, admin, auth, billing, editor)
+- [ ] Real-time collaboration via Supabase Realtime (CRDT/Yjs) — Phase 2: document sync
 
 ### Security & Compliance
-
-- [ ] Rotate production environment secrets (CVE-2025-66478 / CVE-2025-55182)
+- [ ] Rotate production secrets (CVE-2025-66478 / CVE-2025-55182)
 - [ ] PII handling, data export/delete
 
 ### Testing
-
-- [ ] Gamification API tests (goals, progress, badges, streak, wallet)
-- [ ] Social API tests (follow, groups, messages, notifications)
+- [ ] Competition API tests (list, detail, enter)
 - [ ] Admin API tests (users, flags, moderation)
+- [ ] Messages + Notifications API tests
 - [ ] World-building API tests (locations, species, organizations, eras, calendar, dialogues, timeline, encyclopedia)
+- [ ] AI monitoring instrumentation
 
 ---
 
 ---
  
-## 2026-05-28 Implementation Status
+## 2026-05-29 Implementation Status
 
 ### Architecture
-- i18n: `next-intl` pattern (different from cross-project Context pattern — migration recommended)
-- Default locale: `en` (INCORRECT — must be `fr` per cross-project rules)
+- i18n: Now using cross-project React Context pattern (`lib/i18n/`) — migrated from `next-intl`
+- Default locale: `fr` (Quebec French) — respects Quebec language laws
 - Single Next.js 16 App Router on Vercel with Supabase + Upstash Redis
-- Prisma ORM with pg adapter on Supabase Postgres (37 models)
+- Prisma ORM with pg adapter on Supabase Postgres (38 models)
 - Feature flags: 20 flags, Redis-backed, DB fallback
 - TanStack Query migration: shared client API error parsing, suspense/error boundaries, mutation helpers
 
-### Fixes Applied
-- Signup route: fixed `createUser` fallback + case-insensitive email match + token expiry
-- PDF export: replaced stub with real multi-page PDF generation
-- CI workflow: added Prettier format check
-- Editor toolbar buttons: added `aria-label` and `title` to all formatting buttons
-- Skip-link: added `tabIndex={-1}` to `<main>`
-- Auth pages: added `role="alert"` and `aria-describedby` to form errors
-- Dark theme CSS: synced 6 mismatched color tokens with `docs/design-tokens.json`
-- Feature flags: `projects_v2` enabled, `design_system_v2` disabled, admin page defaults synced
-- Verification token includes 24h expiry timestamp
+### Fixes Applied (2026-05-29)
+- PPR: Added `experimental.ppr: 'incremental'` to next.config.mjs
+- `optimizePackageImports`: Added `@radix-ui/react-slot`
+- Lint: Cleared all 69 warnings (64 `no-explicit-any`, 3 `exhaustive-deps`, 1 `anonymous-default-export`, 1 `no-unused-vars`)
+- Root layout: Added `force-dynamic` justification, dynamic `<html lang>` from locale
+- middleware.ts: Created with security headers
+- `docs/technical/performance-optimization.md`: Created with SSR strategy, caching layers, revalidation tiers
 
-### Features Implemented
-- Full CRUD world-building suite (characters, locations, timeline, dialogues, organizations, species, calendar, eras, encyclopedia, relationships)
-- TipTap editor with autosave and content versioning
-- Gamification engine (goals, streaks, badges, leaderboard, currency, wellbeing)
-- Stripe Checkout integration (monthly/yearly/lifetime) with webhook verification
-- AI writing suggestions (5 feature flags: writing, character, plot, style, research)
-- Export system (Markdown, EPUB3, PDF)
-- Social features: follow/unfollow, groups, DMs, notifications, cheers, blocking, favorites, comments
-- Admin dashboard: users, flags, subscriptions, audit log, moderation, Neo4j resync
-- Design system: Button, Input, Card, Tabs, Textarea, Badge, dark mode toggle
-- PWA support
+### i18n Migration (next-intl → Context Pattern)
+- Created `lib/i18n/` (config, server, provider, server-provider, index)
+- Created `lib/i18n/translations/en.ts` and `lib/i18n/translations/fr.ts` (220 keys each)
+- Added Quebec French conventions ("courriel", "téléverser", "connexion", "mot de passe")
+- Updated `app/layout.tsx`: `<html lang={locale}>`, `ServerI18nProvider` wrapper
+- Updated `components/header/User.tsx`: `useI18n()` replaces `useTranslations()`
+- Updated `components/editor/presence-avatars.tsx`: hardcoded "Viewers" → `t("social.viewers")`
+- Updated `docs/technical/i18n-status.md`
 
-### Tests Added
-- Component tests: Button, Home, Feed, SignIn, DarkModeToggle, SubscribeButton
-- API tests: Projects, Users, Billing checkout, Billing webhook, Comments, World Characters
-- Pre-commit hook: format, prisma generate, lint, typecheck, test, build
+### Competitions UI
+- Created `app/(main)/competitions/page.tsx` — browse active/past competitions
+- Created `app/(main)/competitions/[id]/page.tsx` — competition detail with entries
+- Created `app/(main)/competitions/[id]/enter-form.tsx` — enter dialog with project selection
+- Created `app/(main)/competitions/winners/page.tsx` — past winners showcase
+- Created `components/competitions/competition-card.tsx` — card + enter dialog components
+
+### Design System V2
+- Created 14 new UI components: Accordion, Alert, Avatar, Checkbox, DropdownMenu, Label, Popover, Progress, RadioGroup/Select, Skeleton, Switch, Table, Tooltip
+- Total UI components expanded from 9 to 23
 
 ### Flags Enabled/Changed
 - 20 feature flags defined in `lib/flags.ts`
 - `projects_v2` enabled
-- `design_system_v2` disabled (never gated behavior)
+- `design_system_v2` disabled (never gated behavior — kept for future V2 gating)
 - 5 AI feature flags (writing, character, plot, style, research)
-
-### Documentation
-- `docs/story-forge-documentation.md` — comprehensive platform spec
-- `docs/technical/feature-flags-testing.md`
-- `docs/remaining-gaps.md`
-- `docs/feature-recommendations.md`
-- `docs/architecture-security.md`
-
-### i18n Issues (see `docs/technical/i18n-status.md`)
-- Default locale is `en` — must be changed to `fr`
-- Uses `next-intl` instead of cross-project Context pattern
-- Quebec French conventions are weak (0 "courriel", 2 "connexion")
 
 ---
  
@@ -310,6 +294,37 @@ story-forge/
 - [x] Verification token includes 24h expiry timestamp
 
 ---
+
+## Completed (May 29, 2026 — Round 5)
+
+### Real-Time Collaboration (CRDT/Yjs)
+- [x] Installed `yjs`, `y-websocket`, `@tiptap/extension-collaboration`, `@tiptap/extension-collaboration-cursor`, `lib0`
+- [x] Created `lib/yjs-provider.ts` — Yjs document provider using Supabase Realtime Broadcast for sync
+- [x] Created `lib/yjs-collaboration.ts` — React hook (`useYjsCollaboration`) for collaborative editing
+- [x] Created cursor awareness layer via `@tiptap/extension-collaboration-cursor` with colored user labels
+- [x] Updated `components/editor/editor.tsx` — accepts optional `collaborationExtensions` and `editable` prop
+- [x] Updated `components/editor/project-editor.tsx` — integrates collaboration hook, sync indicator
+- [x] Updated `app/(main)/projects/[id]/page.tsx` — passes `currentUser` to `ProjectEditor`
+- [x] Added collaboration cursor CSS styles to `styles/globals.css`
+- [x] Feature-gated behind `real_time_collaboration` flag
+
+### AI Monitoring
+- [x] Created `lib/ai-monitoring.ts` — Redis-backed request metrics (latency, success rate, tokens, per-feature)
+- [x] Created `app/api/ai/monitor/route.ts` — admin API endpoint for AI metrics dashboard
+- [x] Updated `lib/ai.ts` — `wrapWithMonitoring` adapter records all AI requests automatically
+- [x] Updated `lib/ai-types.ts` — added `_feature` field for per-feature tracking
+- [x] Updated `app/api/ai/suggest/route.ts` — passes feature for monitoring
+
+### Test Coverage Expansion
+- [x] `__tests__/api/competitions.test.ts` — list, detail, enter, validation (7 tests)
+- [x] `__tests__/api/messages.test.ts` — create, list, validation (5 tests)
+- [x] `__tests__/api/notifications.test.ts` — list, mark read, mark all read (4 tests)
+- [x] `__tests__/api/admin-flags.test.ts` — user list, flags, subscription update (4 tests)
+- [x] `__tests__/api/world-building.test.ts` — locations, species, organizations CRUD (6 tests)
+
+### Infrastructure
+- [x] `middleware.ts` updated — removed unused parameter
+- [x] All lint warnings/errors resolved — 0 warnings, 0 errors
 
 ## Security Advisory
 

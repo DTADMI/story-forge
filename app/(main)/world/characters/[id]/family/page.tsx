@@ -21,7 +21,8 @@ export default async function CharacterFamilyPage({ params }: { params: Promise<
   const character = await getCharacter(id);
   if (!character) notFound();
 
-  const connections = (character.metadata as any)?.connections || [];
+  const connections =
+    ((character.metadata as Record<string, unknown>)?.connections as unknown[]) || [];
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
@@ -38,7 +39,9 @@ export default async function CharacterFamilyPage({ params }: { params: Promise<
         <FamilyTree
           characterId={character.id}
           characterName={character.name}
-          relationships={connections}
+          relationships={
+            connections as never as React.ComponentProps<typeof FamilyTree>["relationships"]
+          }
         />
       </Card>
 
@@ -46,7 +49,9 @@ export default async function CharacterFamilyPage({ params }: { params: Promise<
         <div className="mt-8">
           <h2 className="text-lg font-bold mb-3">Relationship Legend</h2>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            {Array.from(new Set(connections.map((c: any) => c.type))).map((type) => (
+            {Array.from(
+              new Set((connections as { type: string }[]).map((c: { type: string }) => c.type))
+            ).map((type) => (
               <div key={type as string} className="flex items-center gap-2">
                 <span
                   className="h-2 w-2 rounded-full"

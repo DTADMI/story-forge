@@ -134,7 +134,9 @@ export default async function CharacterDetailPage({ params }: { params: Promise<
       <PrivateNotes
         entityType="characters"
         entityId={character.id}
-        initialNotes={(character.metadata as any)?.privateNotes || ""}
+        initialNotes={
+          ((character.metadata as Record<string, unknown>)?.privateNotes as string) || ""
+        }
       />
     </main>
   );

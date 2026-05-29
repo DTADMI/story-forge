@@ -49,25 +49,36 @@ export default async function CalendarPage() {
         />
       ) : (
         <div className="grid gap-4">
-          {calendars.map((cal: any) => {
-            const months = cal.metadata?.months || [];
-            const totalDays = months.reduce((sum: number, m: any) => sum + (m.days || 0), 0);
-            return (
-              <Link key={cal.id} href={`/world/calendar/${cal.id}`}>
-                <Card className="p-4 hover:bg-fg/5 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-base font-bold">{cal.name}</h3>
-                      <p className="text-xs text-fg/40 mt-1">
-                        {cal.weekLength || 7} days/week &middot; {months.length} months &middot;{" "}
-                        {totalDays} days
-                      </p>
+          {calendars.map(
+            (cal: {
+              id: string;
+              name: string;
+              weekLength?: number;
+              metadata?: Record<string, unknown>;
+            }) => {
+              const months =
+                ((cal.metadata as Record<string, unknown>)?.months as { days?: number }[]) ?? [];
+              const totalDays = months.reduce(
+                (sum: number, m: { days?: number }) => sum + (m.days || 0),
+                0
+              );
+              return (
+                <Link key={cal.id} href={`/world/calendar/${cal.id}`}>
+                  <Card className="p-4 hover:bg-fg/5 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-base font-bold">{cal.name}</h3>
+                        <p className="text-xs text-fg/40 mt-1">
+                          {cal.weekLength || 7} days/week &middot; {months.length} months &middot;{" "}
+                          {totalDays} days
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </Link>
-            );
-          })}
+                  </Card>
+                </Link>
+              );
+            }
+          )}
         </div>
       )}
     </main>

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withErrorHandler<T extends (...args: any[]) => Promise<Response>>(handler: T): T {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (async (...args: any[]) => {
     try {
       return await handler(...args);

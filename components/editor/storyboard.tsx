@@ -39,8 +39,14 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
   const projectQuery = useApiQuery<{
     settings?: { linkedEntities?: { characters?: string[]; locations?: string[] } };
   }>(["projects", projectId, "storyboard"], `/api/projects/${projectId}`);
-  const linkedCharIds = projectQuery.data?.settings?.linkedEntities?.characters ?? [];
-  const linkedLocIds = projectQuery.data?.settings?.linkedEntities?.locations ?? [];
+  const linkedCharIds = useMemo(
+    () => projectQuery.data?.settings?.linkedEntities?.characters ?? [],
+    [projectQuery.data?.settings?.linkedEntities?.characters]
+  );
+  const linkedLocIds = useMemo(
+    () => projectQuery.data?.settings?.linkedEntities?.locations ?? [],
+    [projectQuery.data?.settings?.linkedEntities?.locations]
+  );
   const linkedChars = useMemo(
     () => characters.filter((character) => linkedCharIds.includes(character.id)),
     [characters, linkedCharIds]

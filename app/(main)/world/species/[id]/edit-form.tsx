@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Species } from "@prisma/client";
+import type { Species } from ".prisma/client";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { Card } from "@/components/ui/card";

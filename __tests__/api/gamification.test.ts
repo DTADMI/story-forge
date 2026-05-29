@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const mockUser = { id: "test-user-id" };
 
 vi.mock("@/lib/supabase/server", () => ({

@@ -43,8 +43,10 @@ export async function POST(request: NextRequest) {
           action: "stripe.checkout.completed",
           entityId: idempotencyKey,
           entityType: "stripe_session",
-          metadata: { sessionId: session.id, mode: session.mode },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          metadata: { sessionId: session.id, mode: session.mode as string },
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
     }
   }

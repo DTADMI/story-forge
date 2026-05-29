@@ -5,8 +5,12 @@ import { ToastProvider } from "@/components/toast";
 import { SkipLink } from "@/components/a11y/skip-link";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { OfflineIndicator } from "@/components/pwa/offline-indicator";
+import { ServerI18nProvider } from "@/lib/i18n/server-provider";
+import { getServerLocale } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
+// root layout requires force-dynamic: auth-state-dependent UI via Providers, feature flag resolution,
+// and session-aware component rendering throughout the entire route tree
 export const metadata = {
   title: "StoryForge",
   description: "Gamified creative writing platform for novelists, screenwriters, and storytellers.",
@@ -44,18 +48,22 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
 });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getServerLocale();
+
   return (
     <html
-      lang="en"
+      lang={locale}
       suppressHydrationWarning
       className={`${inter.variable} ${spaceGrotesk.variable}`}
     >
       <body className="font-sans antialiased bg-background text-foreground min-h-screen">
         <SkipLink />
-        <Providers>
-          <ToastProvider>{children}</ToastProvider>
-        </Providers>
+        <ServerI18nProvider>
+          <Providers>
+            <ToastProvider>{children}</ToastProvider>
+          </Providers>
+        </ServerI18nProvider>
         <ServiceWorkerRegistration />
         <OfflineIndicator />
       </body>

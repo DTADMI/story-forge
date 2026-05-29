@@ -61,21 +61,23 @@ export default async function OrganizationsPage() {
         />
       ) : (
         <div className="grid gap-4">
-          {organizations.map((org: any) => (
-            <Link key={org.id} href={`/world/organizations/${org.id}`}>
-              <Card className="p-4 hover:bg-fg/5 transition-colors">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-brand/10 text-brand">
-                    {typeLabels[org.type] || org.type || "Other"}
-                  </span>
-                  <h3 className="text-base font-bold">{org.name}</h3>
-                </div>
-                {org.description && (
-                  <p className="text-sm text-fg/50 mt-2 line-clamp-2">{org.description}</p>
-                )}
-              </Card>
-            </Link>
-          ))}
+          {organizations.map(
+            (org: { id: string; name: string; type?: string; description?: string }) => (
+              <Link key={org.id} href={`/world/organizations/${org.id}`}>
+                <Card className="p-4 hover:bg-fg/5 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-brand/10 text-brand">
+                      {typeLabels[(org.type as string | undefined) ?? ""] || org.type || "Other"}
+                    </span>
+                    <h3 className="text-base font-bold">{org.name}</h3>
+                  </div>
+                  {org.description && (
+                    <p className="text-sm text-fg/50 mt-2 line-clamp-2">{org.description}</p>
+                  )}
+                </Card>
+              </Link>
+            )
+          )}
         </div>
       )}
     </main>

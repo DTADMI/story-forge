@@ -1,13 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createBrowserClient } from "@/lib/supabase/client";
+import { useI18n } from "@/lib/i18n";
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import type { User } from "@supabase/supabase-js";
 
 export default function HeaderUser() {
-  const t = useTranslations();
+  const { t } = useI18n();
   const supabase = createBrowserClient();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

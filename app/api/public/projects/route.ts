@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const cursor = searchParams.get("cursor") || undefined;
 
   const where = {
-    OR: [{ isPublic: true }, { defaultScope: "PUBLIC_ANYONE" as any }],
+    OR: [{ isPublic: true }, { defaultScope: "PUBLIC_ANYONE" as const }],
   };
 
   const items = await prisma.project.findMany({

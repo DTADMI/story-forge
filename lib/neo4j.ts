@@ -16,9 +16,9 @@ export function getNeo4jDriver(): Driver | null {
   return driver;
 }
 
-export async function neo4jQuery<T = any>(
+export async function neo4jQuery<T = Record<string, unknown>>(
   cypher: string,
-  params?: Record<string, any>
+  params?: Record<string, unknown>
 ): Promise<T[]> {
   const d = getNeo4jDriver();
   if (!d) return [];
@@ -26,9 +26,10 @@ export async function neo4jQuery<T = any>(
   try {
     const result = await session.run(cypher, params);
     return result.records.map((r) => {
-      const obj: any = {};
+      const obj: Record<string, unknown> = {};
       r.keys.forEach((k) => {
-        obj[k] = r.get(k);
+        const key = typeof k === "symbol" ? k.toString() : k;
+        obj[key] = r.get(k);
       });
       return obj as T;
     });

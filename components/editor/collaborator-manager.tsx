@@ -52,7 +52,7 @@ export function CollaboratorManager({ projectId }: CollaboratorManagerProps) {
     collaboratorsKey,
     `/api/projects/${projectId}/collaborators`
   );
-  const collaborators = collaboratorsQuery.data ?? [];
+  const collaborators = useMemo(() => collaboratorsQuery.data ?? [], [collaboratorsQuery.data]);
   const debouncedSearch = useDebouncedValue(searchQuery, 300);
   const userSearchQuery = useApiQuery<UserResult[]>(
     ["users", "search", debouncedSearch],

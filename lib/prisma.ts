@@ -1,23 +1,22 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from ".prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
 declare global {
-  var prisma: PrismaClient | undefined;
+  // eslint-disable-next-line no-var
+  var __prisma: PrismaClient | undefined;
 }
 
-let prismaClient: PrismaClient | null = null;
+let _prisma: PrismaClient | null = null;
 
-function createPrismaClient(): PrismaClient {
+function getPrismaInstance(): PrismaClient {
+  if (_prisma) return _prisma;
+
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
-    // GitHub Actions CI has no database. Return a noop stub during CI build
-    // so Next.js page collection doesn't crash.
-    // Vercel runtime always has DATABASE_URL (set in project env vars).
-    // Vercel build also needs it for prisma generate.
     if (process.env.CI) {
       console.warn("[Prisma] DATABASE_URL not set — returning CI build-safe stub.");
-      return buildSafeStub();
+      return new PrismaClient();
     }
     throw new Error(
       "DATABASE_URL environment variable is required. Set it in your Vercel project settings or .env file."
@@ -28,45 +27,23 @@ function createPrismaClient(): PrismaClient {
   const adapter = new PrismaPg(pool);
 
   if (process.env.NODE_ENV === "production") {
-    return new PrismaClient({ adapter });
+    _prisma = new PrismaClient({ adapter });
+    return _prisma;
   }
 
-  // Development: reuse client across hot reloads
-  if (!global.prisma) {
-    global.prisma = new PrismaClient({ adapter });
+  if (!global.__prisma) {
+    global.__prisma = new PrismaClient({ adapter });
   }
-  return global.prisma;
-}
-
-/**
- * Returns a stub PrismaClient for build-time safety.
- * All model accessors return a Proxy that throws a descriptive error if any actual
- * query method (findMany, create, etc.) is called during the build phase.
- */
-function buildSafeStub(): PrismaClient {
-  const stub = new Proxy({} as PrismaClient, {
-    get(_target, _prop) {
-      return new Proxy(() => Promise.resolve(), {
-        get() {
-          return () => Promise.resolve();
-        },
-        apply() {
-          return Promise.resolve();
-        },
-      });
-    },
-  });
-  return stub;
+  _prisma = global.__prisma;
+  return _prisma;
 }
 
 export const prisma = new Proxy({} as PrismaClient, {
   get(_target, prop) {
-    if (!prismaClient) {
-      prismaClient = createPrismaClient();
-    }
-    const value = (prismaClient as unknown as Record<string | symbol, unknown>)[prop];
+    const client = getPrismaInstance();
+    const value = (client as unknown as Record<string | symbol, unknown>)[prop];
     if (typeof value === "function") {
-      return value.bind(prismaClient);
+      return value.bind(client);
     }
     return value;
   },

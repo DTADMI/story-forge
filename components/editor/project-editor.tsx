@@ -8,6 +8,8 @@ import { ExportDropdown } from "@/components/editor/export-dropdown";
 import { useToast } from "@/components/toast";
 import { fetchJson, fetchVoid } from "@/lib/client-api";
 import { useApiQuery } from "@/lib/query-hooks";
+import { useYjsCollaboration } from "@/lib/yjs-collaboration";
+import { isEnabledSync } from "@/lib/flags";
 
 interface ProjectEditorProps {
   project: {
@@ -28,12 +30,14 @@ interface ProjectEditorProps {
   userPreferences?: {
     breakReminders?: boolean;
   };
+  currentUser?: { id: string; name: string };
 }
 
-export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) {
+export function ProjectEditor({ project, userPreferences, currentUser }: ProjectEditorProps) {
   const [content, setContent] = useState(project.content || "");
   const [lastBreak, setLastBreak] = useState(() => Date.now());
   const [showLinkedEntities, setShowLinkedEntities] = useState(false);
+  const collaboration = useYjsCollaboration(project.id, currentUser ?? { id: "", name: "" });
   const [linkedCharIds, setLinkedCharIds] = useState<string[]>(
     project.settings?.linkedEntities?.characters || []
   );
@@ -151,6 +155,12 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
           {saveProjectMutation.isPending && (
             <span className="animate-pulse text-sm text-fg/50">Saving...</span>
           )}
+          {isEnabledSync("real_time_collaboration") && collaboration.synced && (
+            <span className="text-xs text-green-500 font-mono">● Synced</span>
+          )}
+          {isEnabledSync("real_time_collaboration") && !collaboration.synced && currentUser && (
+            <span className="text-xs text-yellow-500 font-mono animate-pulse">● Connecting...</span>
+          )}
         </div>
       </div>
 
@@ -159,6 +169,8 @@ export function ProjectEditor({ project, userPreferences }: ProjectEditorProps) 
           <Editor
             content={content}
             onChange={setContent}
+            collaborationExtensions={collaboration.extensions}
+            editable={isEnabledSync("real_time_collaboration") ? collaboration.synced : true}
             onSave={async (newContent) => {
               setContent(newContent);
               await saveProjectMutation.mutateAsync({ content: newContent });

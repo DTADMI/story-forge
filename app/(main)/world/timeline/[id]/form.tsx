@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { TimelineEvent, Character, Location } from "@prisma/client";
+import type { TimelineEvent, Character, Location } from ".prisma/client";
 import { EntitySelector } from "@/components/world/entity-selector";
 import Link from "next/link";
 

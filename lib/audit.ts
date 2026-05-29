@@ -13,11 +13,12 @@ export async function auditLog(params: {
       data: {
         userId: params.userId,
         action: params.action,
-        entityId: params.entityId,
-        entityType: params.entityType,
+        entityId: params.entityId ?? null,
+        entityType: params.entityType ?? null,
         metadata: params.metadata ?? {},
-        ip: params.ip,
+        ip: params.ip ?? null,
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
   } catch {
     if (process.env.NODE_ENV === "development") {

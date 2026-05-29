@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 vi.mock("@/lib/prisma", () => ({ prisma: { character: { findMany: vi.fn(), create: vi.fn() } } }));
 vi.mock("@/lib/supabase/server", () => ({ requireUser: vi.fn() }));
 vi.mock("@/lib/neo4j-sync", () => ({ syncCharacterToNeo4j: vi.fn() }));

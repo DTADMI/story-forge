@@ -8,6 +8,7 @@ import Link from "next/link";
 
 async function getUser(id: string) {
   const res = await apiFetch(`/api/users/${encodeURIComponent(id)}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cache: "no-store" as any,
   });
   if (!res.ok) return null;
@@ -15,14 +16,18 @@ async function getUser(id: string) {
 }
 
 async function isFollowing(targetId: string) {
-  const res = await apiFetch("/api/social/following", { cache: "no-store" as any });
+  const res = await apiFetch("/api/social/following", {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cache: "no-store" as any,
+  });
   if (!res.ok) return false;
   const following = await res.json();
-  return following.some((f: any) => f.user.id === targetId);
+  return following.some((f: { user: { id: string } }) => f.user.id === targetId);
 }
 
 async function getUserProjects(userId: string) {
   const res = await apiFetch(`/api/projects?userId=${encodeURIComponent(userId)}`, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cache: "no-store" as any,
   });
   if (!res.ok) return [];
@@ -97,17 +102,19 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
           <p className="text-fg/50 text-sm">No public projects to show.</p>
         ) : (
           <div className="grid gap-4">
-            {projects.map((p: any) => (
-              <Link key={p.id} href={`/projects/${p.id}`}>
-                <Card className="p-4 hover:border-brand transition-colors">
-                  <h3 className="font-bold">{p.title}</h3>
-                  {p.description && <p className="text-sm text-fg/60 mt-1">{p.description}</p>}
-                  <div className="mt-2 text-xs font-medium text-brand uppercase tracking-wider">
-                    {p.defaultScope}
-                  </div>
-                </Card>
-              </Link>
-            ))}
+            {projects.map(
+              (p: { id: string; title: string; description?: string; defaultScope: string }) => (
+                <Link key={p.id} href={`/projects/${p.id}`}>
+                  <Card className="p-4 hover:border-brand transition-colors">
+                    <h3 className="font-bold">{p.title}</h3>
+                    {p.description && <p className="text-sm text-fg/60 mt-1">{p.description}</p>}
+                    <div className="mt-2 text-xs font-medium text-brand uppercase tracking-wider">
+                      {p.defaultScope}
+                    </div>
+                  </Card>
+                </Link>
+              )
+            )}
           </div>
         )}
       </section>

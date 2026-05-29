@@ -12,7 +12,16 @@ export async function createActivity(params: {
   metadata?: Record<string, unknown>;
 }) {
   try {
-    await prisma.activity.create({ data: params as any });
+    await prisma.activity.create({
+      data: {
+        userId: params.userId,
+        type: params.type,
+        entityId: params.entityId ?? null,
+        entityType: params.entityType ?? null,
+        metadata: params.metadata ?? {},
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
   } catch {
     // Non-critical
   }
