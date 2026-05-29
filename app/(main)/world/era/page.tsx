@@ -3,10 +3,8 @@ import Link from "next/link";
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
-import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Eras — StoryForge" };
 

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import NextImage from "next/image";
 import { AvatarUploadForm } from "./avatar-upload-form";
 import { ScopeSelector } from "./scope-selector";
-import { Settings, Award, Target, BookOpen, Users, Flame, Droplets } from "lucide-react";
+import { Settings, Award, Target, BookOpen, Users, Droplets } from "lucide-react";
 
 export default async function ProfilePage() {
   const user = await getUser();

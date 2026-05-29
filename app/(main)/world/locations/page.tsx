@@ -3,9 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/empty-state";
 
 export const metadata: Metadata = { title: "Locations — StoryForge" };

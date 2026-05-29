@@ -216,6 +216,66 @@ story-forge/
 
 ---
 
+---
+ 
+## 2026-05-28 Implementation Status
+
+### Architecture
+- i18n: `next-intl` pattern (different from cross-project Context pattern — migration recommended)
+- Default locale: `en` (INCORRECT — must be `fr` per cross-project rules)
+- Single Next.js 16 App Router on Vercel with Supabase + Upstash Redis
+- Prisma ORM with pg adapter on Supabase Postgres (37 models)
+- Feature flags: 20 flags, Redis-backed, DB fallback
+- TanStack Query migration: shared client API error parsing, suspense/error boundaries, mutation helpers
+
+### Fixes Applied
+- Signup route: fixed `createUser` fallback + case-insensitive email match + token expiry
+- PDF export: replaced stub with real multi-page PDF generation
+- CI workflow: added Prettier format check
+- Editor toolbar buttons: added `aria-label` and `title` to all formatting buttons
+- Skip-link: added `tabIndex={-1}` to `<main>`
+- Auth pages: added `role="alert"` and `aria-describedby` to form errors
+- Dark theme CSS: synced 6 mismatched color tokens with `docs/design-tokens.json`
+- Feature flags: `projects_v2` enabled, `design_system_v2` disabled, admin page defaults synced
+- Verification token includes 24h expiry timestamp
+
+### Features Implemented
+- Full CRUD world-building suite (characters, locations, timeline, dialogues, organizations, species, calendar, eras, encyclopedia, relationships)
+- TipTap editor with autosave and content versioning
+- Gamification engine (goals, streaks, badges, leaderboard, currency, wellbeing)
+- Stripe Checkout integration (monthly/yearly/lifetime) with webhook verification
+- AI writing suggestions (5 feature flags: writing, character, plot, style, research)
+- Export system (Markdown, EPUB3, PDF)
+- Social features: follow/unfollow, groups, DMs, notifications, cheers, blocking, favorites, comments
+- Admin dashboard: users, flags, subscriptions, audit log, moderation, Neo4j resync
+- Design system: Button, Input, Card, Tabs, Textarea, Badge, dark mode toggle
+- PWA support
+
+### Tests Added
+- Component tests: Button, Home, Feed, SignIn, DarkModeToggle, SubscribeButton
+- API tests: Projects, Users, Billing checkout, Billing webhook, Comments, World Characters
+- Pre-commit hook: format, prisma generate, lint, typecheck, test, build
+
+### Flags Enabled/Changed
+- 20 feature flags defined in `lib/flags.ts`
+- `projects_v2` enabled
+- `design_system_v2` disabled (never gated behavior)
+- 5 AI feature flags (writing, character, plot, style, research)
+
+### Documentation
+- `docs/story-forge-documentation.md` — comprehensive platform spec
+- `docs/technical/feature-flags-testing.md`
+- `docs/remaining-gaps.md`
+- `docs/feature-recommendations.md`
+- `docs/architecture-security.md`
+
+### i18n Issues (see `docs/technical/i18n-status.md`)
+- Default locale is `en` — must be changed to `fr`
+- Uses `next-intl` instead of cross-project Context pattern
+- Quebec French conventions are weak (0 "courriel", 2 "connexion")
+
+---
+ 
 ## Completed (May 23, 2026 — Round 4)
 
 ### TanStack Query & UX shell

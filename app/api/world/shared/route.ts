@@ -20,7 +20,9 @@ export async function GET(request: NextRequest) {
 
   if (type && SHARABLE_MODELS[type]) {
     const model = SHARABLE_MODELS[type];
-    const entities = await (model as any).findMany({
+    const entities = await (
+      model as unknown as { findMany(args: Record<string, unknown>): Promise<unknown[]> }
+    ).findMany({
       where: { isShared: true, userId: { not: user.id } },
       orderBy: { name: "asc" },
     });
@@ -76,22 +78,36 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `Invalid entityType: ${entityType}` }, { status: 400 });
   }
 
-  const source = await (model as any).findUnique({ where: { id: entityId } });
+  interface SharedEntity {
+    id: string;
+    createdAt: unknown;
+    updatedAt: unknown;
+    isShared: unknown;
+    sharedFromProjectId: unknown;
+    userId: unknown;
+    projectId: unknown;
+    [key: string]: unknown;
+  }
+
+  type SharedModelOps = {
+    findUnique(args: { where: { id: string } }): Promise<SharedEntity | null>;
+    create(args: { data: Record<string, unknown> }): Promise<unknown>;
+  };
+
+  const source = await (model as unknown as SharedModelOps).findUnique({ where: { id: entityId } });
   if (!source) {
     return NextResponse.json({ error: "Entity not found" }, { status: 404 });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {
-    id: _id,
-    createdAt: _c,
-    updatedAt: _u,
-    isShared: _,
-    sharedFromProjectId: __,
-    ...data
-  } = source;
+  const excludeKeys = new Set(["id", "createdAt", "updatedAt", "isShared", "sharedFromProjectId"]);
+  const data: Record<string, unknown> = {};
+  for (const key of Object.keys(source)) {
+    if (!excludeKeys.has(key)) {
+      data[key] = source[key];
+    }
+  }
 
-  const copy = await (model as any).create({
+  const copy = await (model as unknown as SharedModelOps).create({
     data: {
       ...data,
       userId: user.id,
