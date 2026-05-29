@@ -249,5 +249,27 @@
     "notAvailable": "AI features are not available.",
     "error": "AI request failed. Please try again.",
     "tooManyRequests": "Too many requests. Try again later."
+  },
+  "voice": {
+    "recorder": {
+      "startRecording": "Start recording",
+      "record": "Record",
+      "recording": "Recording...",
+      "paused": "Paused",
+      "pause": "Pause",
+      "resume": "Resume",
+      "stop": "Stop",
+      "cancel": "Cancel",
+      "preview": "Preview",
+      "sendVoiceMessage": "Send voice message",
+      "errorMicrophone": "Unable to access microphone. Check browser permissions.",
+      "durationSeconds": "{{duration}}s"
+    },
+    "player": {
+      "play": "Play",
+      "pause": "Pause",
+      "seek": "Seek"
+    },
+    "voiceMessageLabel": "Voice message"
   }
 }

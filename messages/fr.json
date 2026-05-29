@@ -249,5 +249,27 @@
     "notAvailable": "Les fonctionnalités IA ne sont pas disponibles.",
     "error": "La requête IA a échoué. Veuillez réessayer.",
     "tooManyRequests": "Trop de requêtes. Réessayez plus tard."
+  },
+  "voice": {
+    "recorder": {
+      "startRecording": "Commencer l'enregistrement",
+      "record": "Enregistrer",
+      "recording": "Enregistrement...",
+      "paused": "En pause",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "stop": "Arrêter",
+      "cancel": "Annuler",
+      "preview": "Aperçu",
+      "sendVoiceMessage": "Envoyer le message vocal",
+      "errorMicrophone": "Impossible d'accéder au microphone. Vérifiez les autorisations.",
+      "durationSeconds": "{{duration}}s"
+    },
+    "player": {
+      "play": "Lire",
+      "pause": "Pause",
+      "seek": "Rechercher"
+    },
+    "voiceMessageLabel": "Message vocal"
   }
 }
