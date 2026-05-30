@@ -13,6 +13,18 @@ vi.mock("@/lib/supabase/server", () => ({
   getUser: vi.fn(),
 }));
 
+vi.mock("@/lib/flags-server", () => ({
+  isEnabled: vi.fn().mockResolvedValue(true),
+}));
+
+vi.mock("@/lib/api-handler", () => ({
+  withErrorHandler: (handler: unknown) => handler,
+}));
+
+vi.mock("@/lib/rate-limit", () => ({
+  checkRateLimit: vi.fn().mockResolvedValue({ allowed: true }),
+}));
+
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     follow: {

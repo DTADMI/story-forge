@@ -1,6 +1,7 @@
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { isEnabled } from "@/lib/flags-server";
 import { ProjectEditor } from "@/components/editor/project-editor";
 import { VersionHistory } from "@/components/editor/version-history";
 import { CollaboratorManager } from "@/components/editor/collaborator-manager";
@@ -90,11 +91,15 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <ShareButton type="project" id={project.id} title={project.title} />
       </div>
 
-      {/* Version History */}
-      <div className="border-t border-fg/10 pt-8">
-        <h2 className="text-lg font-bold mb-4">Version History</h2>
-        <VersionHistory projectId={project.id} />
-      </div>
+      {(await isEnabled("version_history")) && (
+        <>
+          {/* Version History */}
+          <div className="border-t border-fg/10 pt-8">
+            <h2 className="text-lg font-bold mb-4">Version History</h2>
+            <VersionHistory projectId={project.id} />
+          </div>
+        </>
+      )}
 
       {/* Settings */}
       <div className="border-t border-fg/10 pt-8">
@@ -145,46 +150,50 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </div>
       )}
 
-      {/* Comments */}
-      <div className="border-t border-fg/10 pt-8">
-        <h2 className="text-lg font-bold mb-4">Comments ({comments.length})</h2>
-        {comments.length === 0 ? (
-          <p className="text-sm text-fg/40">No comments yet.</p>
-        ) : (
-          <div className="space-y-4">
-            {comments.map((c) => (
-              <Card key={c.id} className="p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-medium">
-                    {c.user.username || c.user.name || "Anonymous"}
-                  </span>
-                  <span className="text-xs text-fg/40">
-                    {new Date(c.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className="text-sm">{c.content}</p>
-                {c.replies.length > 0 && (
-                  <div className="ml-4 mt-2 space-y-2 border-l-2 border-fg/10 pl-3">
-                    {c.replies.map((r) => (
-                      <div key={r.id}>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium">
-                            {r.user.username || r.user.name || "Anonymous"}
-                          </span>
-                          <span className="text-xs text-fg/40">
-                            {new Date(r.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p className="text-xs mt-0.5">{r.content}</p>
+      {(await isEnabled("comments")) && (
+        <>
+          {/* Comments */}
+          <div className="border-t border-fg/10 pt-8">
+            <h2 className="text-lg font-bold mb-4">Comments ({comments.length})</h2>
+            {comments.length === 0 ? (
+              <p className="text-sm text-fg/40">No comments yet.</p>
+            ) : (
+              <div className="space-y-4">
+                {comments.map((c) => (
+                  <Card key={c.id} className="p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm font-medium">
+                        {c.user.username || c.user.name || "Anonymous"}
+                      </span>
+                      <span className="text-xs text-fg/40">
+                        {new Date(c.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="text-sm">{c.content}</p>
+                    {c.replies.length > 0 && (
+                      <div className="ml-4 mt-2 space-y-2 border-l-2 border-fg/10 pl-3">
+                        {c.replies.map((r) => (
+                          <div key={r.id}>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-medium">
+                                {r.user.username || r.user.name || "Anonymous"}
+                              </span>
+                              <span className="text-xs text-fg/40">
+                                {new Date(r.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <p className="text-xs mt-0.5">{r.content}</p>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </Card>
-            ))}
+                    )}
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </main>
   );
 }

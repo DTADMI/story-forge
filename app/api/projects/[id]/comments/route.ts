@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { isEnabled } from "@/lib/flags-server";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await isEnabled("comments"))) {
+    return NextResponse.json({ error: "Feature disabled" }, { status: 404 });
+  }
   await requireUser();
   const { id } = await params;
 
@@ -24,6 +28,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 }
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await isEnabled("comments"))) {
+    return NextResponse.json({ error: "Feature disabled" }, { status: 404 });
+  }
   const user = await requireUser();
   const { id } = await params;
   const { content, parentId } = await request.json();

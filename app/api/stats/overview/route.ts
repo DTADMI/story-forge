@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { isEnabled } from "@/lib/flags-server";
 
 export async function GET() {
+  if (!(await isEnabled("writing_stats"))) {
+    return NextResponse.json({ error: "Feature disabled" }, { status: 404 });
+  }
   const user = await requireUser();
 
   const [totalWords, projectCount, characterCount, badgeCount, streakData, goals, wallet] =

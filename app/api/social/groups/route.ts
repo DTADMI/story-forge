@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { isEnabled } from "@/lib/flags-server";
 import { z } from "zod";
 
 const createGroupSchema = z.object({
@@ -10,6 +11,9 @@ const createGroupSchema = z.object({
 });
 
 export async function GET() {
+  if (!(await isEnabled("groups_feature"))) {
+    return NextResponse.json({ error: "Feature disabled" }, { status: 404 });
+  }
   const user = await requireUser();
   const groups = await prisma.group.findMany({
     where: { OR: [{ isPrivate: false }, { members: { some: { userId: user.id } } }] },

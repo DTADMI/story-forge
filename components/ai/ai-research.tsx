@@ -42,7 +42,7 @@ export function AiResearchPanel({ context, projectId, className = "" }: AiResear
     researchQuery.mutate({ query: query.trim(), context, projectId });
   };
 
-  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiResearchAssistant")) return null;
+  if (!isEnabledSync("ai_assist") && !isEnabledSync("ai_research_assistant")) return null;
 
   const reliabilityColors: Record<string, string> = {
     high: "text-green-400 bg-green-500/10",

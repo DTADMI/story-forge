@@ -57,7 +57,7 @@ export function AiStylePanel({
 
   const handleAnalyze = () => analyzeStyle.mutate({ context, projectId, styleGuide });
 
-  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiStyleConsistency")) return null;
+  if (!isEnabledSync("ai_assist") && !isEnabledSync("ai_style_consistency")) return null;
 
   const tabs = [
     { key: "analysis" as const, label: "Analysis" },

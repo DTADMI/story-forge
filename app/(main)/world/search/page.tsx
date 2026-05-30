@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { getErrorMessage } from "@/lib/client-api";
 import { useApiQuery } from "@/lib/query-hooks";
+import { isEnabledSync } from "@/lib/flags";
 
 const entityConfig: Record<
   string,
@@ -66,6 +67,7 @@ function useDebouncedValue<T>(value: T, delay: number) {
 }
 
 export default function WorldSearchPage() {
+  const searchEnabled = isEnabledSync("search");
   const router = useRouter();
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebouncedValue(query, 300);
@@ -79,6 +81,15 @@ export default function WorldSearchPage() {
   );
   const results = useMemo(() => searchQuery.data?.results ?? {}, [searchQuery.data]);
   const totalResults = Object.values(results).reduce((sum, items) => sum + items.length, 0);
+
+  if (!searchEnabled) {
+    return (
+      <main className="mx-auto max-w-3xl px-6 py-10">
+        <h1 className="text-2xl font-extrabold">Search</h1>
+        <p className="text-muted-foreground mt-2">Search is coming soon.</p>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:px-6">

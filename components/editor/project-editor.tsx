@@ -34,6 +34,9 @@ interface ProjectEditorProps {
 }
 
 export function ProjectEditor({ project, userPreferences, currentUser }: ProjectEditorProps) {
+  const projectsV2Enabled = isEnabledSync("projects_v2");
+  const wellbeingEnabled = isEnabledSync("wellbeing");
+
   const [content, setContent] = useState(project.content || "");
   const [lastBreak, setLastBreak] = useState(() => Date.now());
   const [showLinkedEntities, setShowLinkedEntities] = useState(false);
@@ -87,7 +90,7 @@ export function ProjectEditor({ project, userPreferences, currentUser }: Project
   });
 
   useEffect(() => {
-    if (!userPreferences?.breakReminders) return;
+    if (!wellbeingEnabled || !userPreferences?.breakReminders) return;
     const interval = window.setInterval(() => {
       const minutesSinceBreak = (Date.now() - lastBreak) / 1000 / 60;
       if (minutesSinceBreak >= 45) {
@@ -100,7 +103,7 @@ export function ProjectEditor({ project, userPreferences, currentUser }: Project
     }, 60_000);
 
     return () => window.clearInterval(interval);
-  }, [lastBreak, userPreferences?.breakReminders]);
+  }, [lastBreak, userPreferences?.breakReminders, wellbeingEnabled]);
 
   const liveWordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
   const lastParagraph = content.split(/\n\n+/).pop() ?? content.slice(-500);
@@ -119,6 +122,14 @@ export function ProjectEditor({ project, userPreferences, currentUser }: Project
     },
     [project.id, project.settings, queryClient, saveProjectMutation]
   );
+
+  if (!projectsV2Enabled) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <p className="text-muted-foreground">Projects V2 coming soon.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

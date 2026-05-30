@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { isEnabled } from "@/lib/flags-server";
 import { getCached, setCached, buildCacheKey } from "@/lib/cache";
 
 export async function GET(request: NextRequest) {
+  if (!(await isEnabled("activity_feed"))) {
+    return NextResponse.json({ items: [], nextCursor: null });
+  }
   const user = await requireUser();
   const { searchParams } = new URL(request.url);
   const cursor = searchParams.get("cursor");

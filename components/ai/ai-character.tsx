@@ -83,7 +83,7 @@ export function AiCharacterPanel({ context, projectId, className = "" }: AiChara
     },
   });
 
-  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiCharacterDevelopment")) return null;
+  if (!isEnabledSync("ai_assist") && !isEnabledSync("ai_character_development")) return null;
 
   return (
     <div className={`space-y-3 ${className}`}>

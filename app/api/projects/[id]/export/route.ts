@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { isEnabled } from "@/lib/flags-server";
 import { notFound } from "@/lib/error-response";
 import { generateEpub } from "@/lib/export-epub";
 import { generatePdfHtml } from "@/lib/export-pdf";
@@ -27,6 +28,9 @@ function htmlToMarkdown(html: string): string {
 }
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  if (!(await isEnabled("export"))) {
+    return NextResponse.json({ error: "Feature disabled" }, { status: 404 });
+  }
   const user = await requireUser();
   const { id } = await params;
 

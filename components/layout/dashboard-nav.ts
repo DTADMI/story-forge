@@ -28,6 +28,7 @@ import {
   Wand2,
   type LucideIcon,
 } from "lucide-react";
+import { isEnabledSync } from "@/lib/flags";
 
 export interface DashboardNavItem {
   title: string;
@@ -326,5 +327,16 @@ const adminSections: DashboardNavSection[] = [
 ];
 
 export function getDashboardSections(isAdmin: boolean) {
-  return isAdmin ? [...mainSections, ...adminSections] : mainSections;
+  const sections = isAdmin ? [...mainSections, ...adminSections] : mainSections;
+
+  for (const section of sections) {
+    section.items = section.items.filter((item) => {
+      if (item.href === "/groups" && !isEnabledSync("groups_feature")) return false;
+      if (item.href === "/stats" && !isEnabledSync("writing_stats")) return false;
+      if (item.href === "/world/search" && !isEnabledSync("search")) return false;
+      return true;
+    });
+  }
+
+  return sections.filter((section) => section.items.length > 0);
 }

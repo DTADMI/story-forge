@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { isEnabled } from "@/lib/flags-server";
 
 export async function GET(req: Request) {
+  if (!(await isEnabled("public_feed"))) {
+    return NextResponse.json({ items: [], nextCursor: null });
+  }
   const { searchParams } = new URL(req.url);
   const take = Math.min(parseInt(searchParams.get("take") || "20", 10), 50);
   const cursor = searchParams.get("cursor") || undefined;

@@ -2,12 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Download, FileText, BookOpen, FileType, ChevronDown } from "lucide-react";
+import { isEnabledSync } from "@/lib/flags";
 
 interface ExportDropdownProps {
   projectId: string;
 }
 
 export function ExportDropdown({ projectId }: ExportDropdownProps) {
+  const exportEnabled = isEnabledSync("export");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -22,6 +24,8 @@ export function ExportDropdown({ projectId }: ExportDropdownProps) {
       return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [open]);
+
+  if (!exportEnabled) return null;
 
   return (
     <div ref={ref} className="relative inline-block">

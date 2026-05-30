@@ -1,6 +1,16 @@
 import { prisma } from "@/lib/prisma";
+import { isEnabled } from "@/lib/flags-server";
 
 export default async function PublicFeedPage() {
+  if (!(await isEnabled("public_feed"))) {
+    return (
+      <main className="mx-auto max-w-4xl px-6 py-10">
+        <h1 className="text-2xl font-extrabold">Public Feed</h1>
+        <p className="text-muted-foreground mt-2">The public feed is currently unavailable.</p>
+      </main>
+    );
+  }
+
   const projects = await prisma.project.findMany({
     where: { OR: [{ isPublic: true }, { defaultScope: "PUBLIC_ANYONE" }] },
     include: { user: { select: { name: true, username: true, image: true } } },

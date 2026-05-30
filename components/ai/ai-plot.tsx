@@ -46,7 +46,7 @@ export function AiPlotPanel({ context, projectId, className = "" }: AiPlotPanelP
 
   const handleAnalyze = () => analyzePlot.mutate({ context, projectId });
 
-  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiPlotAnalysis")) return null;
+  if (!isEnabledSync("ai_assist") && !isEnabledSync("ai_plot_analysis")) return null;
 
   const tabs = [
     { key: "overview" as const, label: "Overview" },

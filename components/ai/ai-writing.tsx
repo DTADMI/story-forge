@@ -96,7 +96,7 @@ export function AiSuggestPanel({ context, onInsert, className = "" }: AiSuggestP
     }
   );
 
-  if (!isEnabledSync("aiAssist") && !isEnabledSync("aiWritingSuggestions")) return null;
+  if (!isEnabledSync("ai_assist") && !isEnabledSync("ai_writing_suggestions")) return null;
 
   return (
     <div className={`space-y-2 ${className}`}>

@@ -11,6 +11,8 @@ export default defineConfig({
     setupFiles: [resolve(__dirname, "./vitest.setup.ts")],
     globals: true,
     pool: "forks",
+    isolate: true,
+    fileParallelism: false,
   },
   esbuild: {
     jsx: "automatic",

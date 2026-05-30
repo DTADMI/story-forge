@@ -7,6 +7,17 @@
     "node": ">=22.22.3",
     "pnpm": ">=10.33.4"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@prisma/engines",
+      "@swc/core",
+      "esbuild",
+      "prisma",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
   "scripts": {
     "dev": "next dev",
     "build": "pnpm exec prisma generate --schema prisma/schema.prisma && next build --webpack",
@@ -70,17 +81,6 @@
     "yjs": "^13.6.31",
     "zod": "^3.24.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "@prisma/engines",
-      "@swc/core",
-      "esbuild",
-      "prisma",
-      "sharp",
-      "unrs-resolver"
-    ]
-  },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^9.39.2",
@@ -91,9 +91,9 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^25.6.0",
     "@types/pg": "^8.16.0",
-    "@types/react": "^19.2.14",
+    "@types/react": "^19",
     "autoprefixer": "^10.4.23",
-    "esbuild": "^0.27.7",
+    "esbuild": "^0.27",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.2.6",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -106,6 +106,6 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.59.3",
     "vite": "^7.3.2",
-    "vitest": "^2.1.9"
+    "vitest": "3.2.4"
   }
 }

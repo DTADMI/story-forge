@@ -9,6 +9,10 @@ vi.mock("@/lib/prisma", () => ({
 }));
 vi.mock("@/lib/supabase/server", () => ({ getUser: vi.fn(), requireUser: vi.fn() }));
 vi.mock("@/lib/activity", () => ({ createActivityAsync: vi.fn() }));
+vi.mock("@/lib/flags-server", () => ({ isEnabled: vi.fn().mockResolvedValue(true) }));
+vi.mock("@/lib/rate-limit", () => ({
+  checkRateLimit: vi.fn().mockResolvedValue({ allowed: true }),
+}));
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/supabase/server";
 

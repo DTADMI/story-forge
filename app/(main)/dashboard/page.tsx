@@ -1,6 +1,7 @@
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { isEnabled } from "@/lib/flags-server";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import {
@@ -74,6 +75,12 @@ export default async function DashboardPage() {
 
   const totalWords = projectWordTotal._sum.wordCount ?? 0;
 
+  const [writingStatsEnabled, groupsEnabled, activityFeedEnabled] = await Promise.all([
+    isEnabled("writing_stats"),
+    isEnabled("groups_feature"),
+    isEnabled("activity_feed"),
+  ]);
+
   const sections = [
     {
       label: "Writing",
@@ -85,7 +92,16 @@ export default async function DashboardPage() {
           icon: BookOpen,
         },
         { href: "/goals", label: "Writing Goals", desc: "Set daily targets", icon: Target },
-        { href: "/stats", label: "Statistics", desc: `${streakCount}-day streak`, icon: BarChart3 },
+        ...(writingStatsEnabled
+          ? [
+              {
+                href: "/stats",
+                label: "Statistics",
+                desc: `${streakCount}-day streak`,
+                icon: BarChart3,
+              },
+            ]
+          : []),
         {
           href: "/leaderboard",
           label: "Leaderboard",
@@ -138,13 +154,19 @@ export default async function DashboardPage() {
           desc: unreadNotifications > 0 ? `${unreadNotifications} unread` : "All caught up",
           icon: Bell,
         },
-        { href: "/groups", label: "Groups", desc: "Writing communities", icon: Users },
-        {
-          href: "/feed/activity",
-          label: "Activity Feed",
-          desc: "Friends' updates",
-          icon: Globe,
-        },
+        ...(groupsEnabled
+          ? [{ href: "/groups", label: "Groups", desc: "Writing communities", icon: Users }]
+          : []),
+        ...(activityFeedEnabled
+          ? [
+              {
+                href: "/feed/activity",
+                label: "Activity Feed",
+                desc: "Friends' updates",
+                icon: Globe,
+              },
+            ]
+          : []),
       ],
     },
   ];
