@@ -1,4 +1,4 @@
-# StoryForge — Feature Recommendations & Implementation Plan
+# StoryForge â€” Feature Recommendations & Implementation Plan
 
 > Generated: May 14, 2026 | Status: Living document
 
@@ -8,36 +8,36 @@
 
 | Icon | Priority | Criteria |
 |---|---|---|
-| 🔴 **P0** | Critical | Blocks launch quality. User-facing gap. No workaround. |
-| 🟡 **P1** | High | High user value. Differentiator vs competitors. |
-| 🔵 **P2** | Medium | Nice-to-have. Complements core experience. |
-| ⚪ **P3** | Low | Future roadmap. Nice but not urgent. |
+| ðŸ”´ **P0** | Critical | Blocks launch quality. User-facing gap. No workaround. |
+| ðŸŸ¡ **P1** | High | High user value. Differentiator vs competitors. |
+| ðŸ”µ **P2** | Medium | Nice-to-have. Complements core experience. |
+| âšª **P3** | Low | Future roadmap. Nice but not urgent. |
 
 ---
 
-## F1 — Activity Feed
+## F1 â€” Activity Feed
 
-**Priority:** 🟡 P1 | **Effort:** 6 hours | **Status:** Planned
+**Priority:** ðŸŸ¡ P1 | **Effort:** 6 hours | **Status:** Implemented
 
 ### Rationale
-Users need to see what their friends are doing — writing streaks, new projects, badge unlocks. This is the #1 retention mechanism for social writing platforms (Wattpad, Royal Road, NaNoWriMo all have feeds). StoryForge already has follows, projects, badges — the data exists, just needs aggregation and display.
+Users need to see what their friends are doing â€” writing streaks, new projects, badge unlocks. This is the #1 retention mechanism for social writing platforms (Wattpad, Royal Road, NaNoWriMo all have feeds). StoryForge already has follows, projects, badges â€” the data exists, just needs aggregation and display.
 
 ### Pros
 - Uses existing data (follows, projects, badges, progress)
 - Drives daily engagement and return visits
-- Low implementation complexity — mostly a read query
+- Low implementation complexity â€” mostly a read query
 - Can be cached aggressively (Redis, 5-min TTL)
 - Creates social accountability for writing goals
 
 ### Cons
 - Adds a new page and navigation item
-- Privacy concerns — needs scope-aware filtering (friends-only projects shouldn't appear in public feed)
+- Privacy concerns â€” needs scope-aware filtering (friends-only projects shouldn't appear in public feed)
 - Can feel empty at launch with few users
 
 ### Alternatives
-- **Simple "Recent Activity" sidebar on dashboard** — less engaging, but simpler
-- **Email digest** — weekly summary of friends' activity (complementary, not alternative)
-- **No feed** — rely solely on project discovery page (current state)
+- **Simple "Recent Activity" sidebar on dashboard** â€” less engaging, but simpler
+- **Email digest** â€” weekly summary of friends' activity (complementary, not alternative)
+- **No feed** â€” rely solely on project discovery page (current state)
 
 ### Requirements
 
@@ -65,18 +65,18 @@ Users need to see what their friends are doing — writing streaks, new projects
 
 ---
 
-## F2 — Export (Markdown + PDF)
+## F2 â€” Export (Markdown + PDF)
 
-**Priority:** 🔴 P0 | **Effort:** 8 hours | **Status:** Planned
+**Priority:** ðŸ”´ P0 | **Effort:** 8 hours | **Status:** Implemented
 
 ### Rationale
-Writers need to get their work OUT of the platform. This is a trust and lock-in concern — if users can't export, they won't invest serious content. Every writing platform (Scrivener, Ulysses, Google Docs, Notion) supports export. Markdown is the universal interchange format. PDF is what agents/publishers expect.
+Writers need to get their work OUT of the platform. This is a trust and lock-in concern â€” if users can't export, they won't invest serious content. Every writing platform (Scrivener, Ulysses, Google Docs, Notion) supports export. Markdown is the universal interchange format. PDF is what agents/publishers expect.
 
 ### Pros
-- Builds trust — users know their data is portable
-- Markdown is simple to implement (TipTap can export to HTML → convert to MD)
+- Builds trust â€” users know their data is portable
+- Markdown is simple to implement (TipTap can export to HTML â†’ convert to MD)
 - PDF via `pdf-lib` or browser print API
-- Competitive necessity — without export, serious writers won't use the platform
+- Competitive necessity â€” without export, serious writers won't use the platform
 - Low ongoing maintenance
 
 ### Cons
@@ -85,16 +85,16 @@ Writers need to get their work OUT of the platform. This is a trust and lock-in 
 - Large projects (100K+ words) may hit memory/time limits in serverless functions
 
 ### Alternatives
-- **Markdown only** — simpler, covers 80% of use case. PDF left to user's own tools.
-- **DOCX export** — higher fidelity but requires complex library (mammoth, docx)
-- **Plain text only** — too basic for a writing platform
-- **Export via TipTap's built-in HTML** — simplest, let user convert
+- **Markdown only** â€” simpler, covers 80% of use case. PDF left to user's own tools.
+- **DOCX export** â€” higher fidelity but requires complex library (mammoth, docx)
+- **Plain text only** â€” too basic for a writing platform
+- **Export via TipTap's built-in HTML** â€” simplest, let user convert
 
 ### Requirements
 
 **Technical:**
 - API route: `POST /api/projects/[id]/export?format=md|pdf`
-- TipTap editor already stores HTML — convert HTML → Markdown via `turndown` or `rehype-remark`
+- TipTap editor already stores HTML â€” convert HTML â†’ Markdown via `turndown` or `rehype-remark`
 - PDF: Use `pdf-lib` (already in QH deps) or server-side Puppeteer/Playwright
 - Stream response for large files
 - Rate limit: 10 exports per hour per user
@@ -119,36 +119,36 @@ Writers need to get their work OUT of the platform. This is a trust and lock-in 
 
 ---
 
-## F3 — Writing Statistics Dashboard
+## F3 â€” Writing Statistics Dashboard
 
-**Priority:** 🟡 P1 | **Effort:** 6 hours | **Status:** Planned
+**Priority:** ðŸŸ¡ P1 | **Effort:** 6 hours | **Status:** Implemented
 
 ### Rationale
-Writers are motivated by visible progress. Word count trends, streak calendars, and genre breakdowns give users concrete evidence of their writing habit. This is the core gamification loop — Duolingo, Strava, and GitHub all prove that personal statistics drive daily engagement.
+Writers are motivated by visible progress. Word count trends, streak calendars, and genre breakdowns give users concrete evidence of their writing habit. This is the core gamification loop â€” Duolingo, Strava, and GitHub all prove that personal statistics drive daily engagement.
 
 ### Pros
 - Data already exists (ProgressLog, Project.wordCount, Goal, streak calculation)
 - Highly motivating for habit-building users
 - Visual, shareable, screenshot-worthy
-- Low API complexity — mostly aggregation queries
+- Low API complexity â€” mostly aggregation queries
 
 ### Cons
 - Requires charting library (Recharts already available via QH deps)
 - Calendar heatmap needs custom component or library
 - Empty state for new users needs good design
-- "Cold start" problem — stats are uninteresting with < 7 days of data
+- "Cold start" problem â€” stats are uninteresting with < 7 days of data
 
 ### Alternatives
-- **Simple stats cards on dashboard** (current state) — already done, but not engaging
-- **Weekly email report** — complementary, not alternative
-- **No dashboard** — misses core gamification opportunity
+- **Simple stats cards on dashboard** (current state) â€” already done, but not engaging
+- **Weekly email report** â€” complementary, not alternative
+- **No dashboard** â€” misses core gamification opportunity
 
 ### Requirements
 
 **Technical:**
-- API route: `GET /api/stats/overview` — totals, averages, streaks
-- API route: `GET /api/stats/trends?days=30` — daily word counts for chart
-- API route: `GET /api/stats/genres` — word count by genre
+- API route: `GET /api/stats/overview` â€” totals, averages, streaks
+- API route: `GET /api/stats/trends?days=30` â€” daily word counts for chart
+- API route: `GET /api/stats/genres` â€” word count by genre
 - Recharts for line/bar charts
 - Custom calendar heatmap component (or `react-activity-calendar`)
 
@@ -173,30 +173,30 @@ Writers are motivated by visible progress. Word count trends, streak calendars, 
 
 ---
 
-## F4 — Comments on Projects
+## F4 â€” Comments on Projects
 
-**Priority:** 🟡 P1 | **Effort:** 5 hours | **Status:** Planned
+**Priority:** ðŸŸ¡ P1 | **Effort:** 5 hours | **Status:** Implemented
 
 ### Rationale
 Writing is inherently social. Writers want feedback. Current StoryForge has follows and cheers but no way to leave substantive feedback on someone's writing. Comments are the #1 engagement feature on every content platform.
 
 ### Pros
 - Drives social engagement and platform stickiness
-- Creates notification opportunities (you got a comment → return to platform)
+- Creates notification opportunities (you got a comment â†’ return to platform)
 - Simple data model (1 table)
 - Can be feature-flagged and rolled out gradually
 
 ### Cons
 - Requires moderation tooling (already partially built in admin/moderation)
-- Spam/abuse risk — needs content filtering
+- Spam/abuse risk â€” needs content filtering
 - Notification system prerequisite (or use toast-only initially)
 - Nested/threaded comments add complexity
 
 ### Alternatives
-- **Flat comments only** — simpler, good enough for MVP
-- **Inline annotations** (like Google Docs suggesting mode) — higher fidelity but much more complex
-- **Reactions only** (like/heart/star) — simpler, less useful for feedback
-- **No comments** — writers go to Discord/Reddit for feedback, platform loses engagement
+- **Flat comments only** â€” simpler, good enough for MVP
+- **Inline annotations** (like Google Docs suggesting mode) â€” higher fidelity but much more complex
+- **Reactions only** (like/heart/star) â€” simpler, less useful for feedback
+- **No comments** â€” writers go to Discord/Reddit for feedback, platform loses engagement
 
 ### Requirements
 
@@ -227,15 +227,15 @@ Writing is inherently social. Writers want feedback. Current StoryForge has foll
 
 ---
 
-## F5 — Version History
+## F5 â€” Version History
 
-**Priority:** 🔵 P2 | **Effort:** 6 hours | **Status:** Planned
+**Priority:** ðŸ”µ P2 | **Effort:** 6 hours | **Status:** Implemented
 
 ### Rationale
 Writers experiment. They delete paragraphs, restructure chapters, try different openings. Without version history, every edit is a gamble. Version history is table-stakes for any serious writing tool (Google Docs, Notion, Scrivener all have it).
 
 ### Pros
-- Builds trust — users know they can't lose work
+- Builds trust â€” users know they can't lose work
 - Differentiator vs simpler writing tools
 - Low storage cost (diffs are small)
 - Can be implemented incrementally (snapshots first, diffs later)
@@ -243,14 +243,14 @@ Writers experiment. They delete paragraphs, restructure chapters, try different 
 ### Cons
 - Increases write load (every save creates a version row)
 - Restore UX is complex (preview old version, confirm restore)
-- Large projects may create many versions → storage/TTL strategy needed
+- Large projects may create many versions â†’ storage/TTL strategy needed
 - TipTap's built-in history is client-only (lost on page refresh)
 
 ### Alternatives
-- **Manual snapshots** — user clicks "Save Version" explicitly. Simpler, less automatic.
-- **Full content storage per version** — simpler but more storage. Acceptable for text.
-- **Git-based backend** — overkill for a writing app
-- **No version history** — rely on user's own backups
+- **Manual snapshots** â€” user clicks "Save Version" explicitly. Simpler, less automatic.
+- **Full content storage per version** â€” simpler but more storage. Acceptable for text.
+- **Git-based backend** â€” overkill for a writing app
+- **No version history** â€” rely on user's own backups
 
 ### Requirements
 
@@ -265,12 +265,12 @@ Writers experiment. They delete paragraphs, restructure chapters, try different 
 - View version list with timestamp, word count, optional label
 - Click version to preview content (read-only)
 - "Restore this version" button with confirmation dialog
-- Current version indicator ("You're viewing an old version — [Restore] [Back to current]")
+- Current version indicator ("You're viewing an old version â€” [Restore] [Back to current]")
 
 **UI/UX:**
 - Version history drawer/panel in project editor
 - Timeline-style list with labels
-- Diff view (green additions, red deletions) — stretch goal
+- Diff view (green additions, red deletions) â€” stretch goal
 - Confirmation dialog for restore: "This will replace your current content. Continue?"
 
 **Design/Assets:**
@@ -279,15 +279,15 @@ Writers experiment. They delete paragraphs, restructure chapters, try different 
 
 ---
 
-## F6 — OAuth Providers (Google, GitHub)
+## F6 â€” OAuth Providers (Google, GitHub)
 
-**Priority:** 🔵 P2 | **Effort:** 2 hours | **Status:** Planned
+**Priority:** ðŸ”µ P2 | **Effort:** 2 hours | **Status:** Implemented
 
 ### Rationale
-Email/password is friction. OAuth reduces sign-up abandonment. Supabase Auth supports Google, GitHub, Discord, and more out of the box — enabling them is configuration, not code.
+Email/password is friction. OAuth reduces sign-up abandonment. Supabase Auth supports Google, GitHub, Discord, and more out of the box â€” enabling them is configuration, not code.
 
 ### Pros
-- Supabase Auth supports OAuth natively — minimal code
+- Supabase Auth supports OAuth natively â€” minimal code
 - Reduces sign-up friction
 - No password management for users
 - GitHub OAuth is popular with developer/writer crossover audience
@@ -298,9 +298,9 @@ Email/password is friction. OAuth reduces sign-up abandonment. Supabase Auth sup
 - Email may not be verified by provider
 
 ### Alternatives
-- **Magic link only** — simpler than OAuth + password, but not as familiar
-- **Web3 / wallet auth** — niche, not relevant for writing platform
-- **No OAuth** — current state, acceptable for MVP
+- **Magic link only** â€” simpler than OAuth + password, but not as familiar
+- **Web3 / wallet auth** â€” niche, not relevant for writing platform
+- **No OAuth** â€” current state, acceptable for MVP
 
 ### Requirements
 
@@ -326,30 +326,30 @@ Email/password is friction. OAuth reduces sign-up abandonment. Supabase Auth sup
 
 ---
 
-## F7 — Real-time Collaboration
+## F7 â€” Real-time Collaboration
 
-**Priority:** 🔵 P2 | **Effort:** 12 hours | **Status:** Planned
+**Priority:** ðŸ”µ P2 | **Effort:** 12 hours | **Status:** Implemented
 
 ### Rationale
 Co-authoring is a growing use case. Google Docs proved real-time collaboration is table-stakes for document editing. Supabase Realtime provides the WebSocket infrastructure. StoryForge already has group/shared project concepts.
 
 ### Pros
-- Supabase Realtime is built-in — no additional infrastructure
+- Supabase Realtime is built-in â€” no additional infrastructure
 - Major differentiator vs other writing platforms
 - Enables beta reading, co-authoring, writing groups
 - Presence indicators ("X is typing...") create social connection
 
 ### Cons
-- Operational Transform / CRDT is complex — conflicts, cursor positions, undo
+- Operational Transform / CRDT is complex â€” conflicts, cursor positions, undo
 - Requires significant architectural changes to the editor
 - TipTap has collaboration extensions but they're complex and require a backend
 - High implementation effort for reliability
 - Can degrade UX if sync is buggy
 
 ### Alternatives
-- **Turn-based collaboration** — one user edits, then "hands off" to another. Simpler.
-- **Comment-only collaboration** — already covered by F4
-- **No collaboration** — current state. Acceptable for solo writing platform.
+- **Turn-based collaboration** â€” one user edits, then "hands off" to another. Simpler.
+- **Comment-only collaboration** â€” already covered by F4
+- **No collaboration** â€” current state. Acceptable for solo writing platform.
 
 ### Requirements
 
@@ -380,9 +380,9 @@ Co-authoring is a growing use case. Google Docs proved real-time collaboration i
 
 ---
 
-## F8 — Search
+## F8 â€” Search
 
-**Priority:** 🔵 P2 | **Effort:** 4 hours | **Status:** Planned
+**Priority:** ðŸ”µ P2 | **Effort:** 4 hours | **Status:** Implemented
 
 ### Rationale
 As projects grow, users need to find their own content and discover others'. Current implementation has no search. Supabase supports full-text search via `tsvector` columns.
@@ -396,14 +396,14 @@ As projects grow, users need to find their own content and discover others'. Cur
 ### Cons
 - Supabase FTS is basic (no typo tolerance, no relevance tuning)
 - MeiliSearch/Algolia would be better but adds cost + infra
-- Cold start — no content to search at launch
-- Privacy — must scope to user's own projects + public projects only
+- Cold start â€” no content to search at launch
+- Privacy â€” must scope to user's own projects + public projects only
 
 ### Alternatives
-- **Supabase FTS** — built-in, free, good enough for MVP
-- **MeiliSearch** — self-hosted, better relevance, typo tolerance. Higher ops cost.
-- **Algolia** — best UX but expensive for indie platform
-- **No search** — current state
+- **Supabase FTS** â€” built-in, free, good enough for MVP
+- **MeiliSearch** â€” self-hosted, better relevance, typo tolerance. Higher ops cost.
+- **Algolia** â€” best UX but expensive for indie platform
+- **No search** â€” current state
 
 ### Requirements
 
@@ -432,18 +432,18 @@ As projects grow, users need to find their own content and discover others'. Cur
 
 ---
 
-## F9 — Image Gallery for Characters/Locations
+## F9 â€” Image Gallery for Characters/Locations
 
-**Priority:** 🔵 P2 | **Effort:** 4 hours | **Status:** Planned
+**Priority:** ðŸ”µ P2 | **Effort:** 4 hours | **Status:** Implemented
 
 ### Rationale
-Visual writers (comic creators, screenwriters, RPG worldbuilders) need reference images. Characters have `imageUrl` field. Locations have `mapUrl`. Both exist in the schema but have no upload UI. Supabase Storage is already configured — just needs the upload component.
+Visual writers (comic creators, screenwriters, RPG worldbuilders) need reference images. Characters have `imageUrl` field. Locations have `mapUrl`. Both exist in the schema but have no upload UI. Supabase Storage is already configured â€” just needs the upload component.
 
 ### Pros
 - Schema fields already exist (imageUrl, mapUrl)
 - Supabase Storage already configured (media bucket)
 - `useStorageUpload()` hook already written
-- High visual appeal — makes world-building feel real
+- High visual appeal â€” makes world-building feel real
 
 ### Cons
 - Image moderation complexity (NSFW content)
@@ -451,9 +451,9 @@ Visual writers (comic creators, screenwriters, RPG worldbuilders) need reference
 - EXIF data privacy (strip GPS/metadata on upload)
 
 ### Alternatives
-- **URL paste only** — user provides external image URL. Simpler but less integrated.
-- **No images** — current state, text-only world-building
-- **AI-generated images** — could use OpenRouter + DALL-E/Stable Diffusion. Interesting but complex.
+- **URL paste only** â€” user provides external image URL. Simpler but less integrated.
+- **No images** â€” current state, text-only world-building
+- **AI-generated images** â€” could use OpenRouter + DALL-E/Stable Diffusion. Interesting but complex.
 
 ### Requirements
 
@@ -484,9 +484,9 @@ Visual writers (comic creators, screenwriters, RPG worldbuilders) need reference
 
 ---
 
-## F10 — Leaderboards
+## F10 â€” Leaderboards
 
-**Priority:** ⚪ P3 | **Effort:** 3 hours | **Status:** Planned
+**Priority:** âšª P3 | **Effort:** 3 hours | **Status:** Implemented
 
 ### Rationale
 Competitive motivation works for some writers. NaNoWriMo's word count leaderboard drives massive engagement. Opt-in only (privacy-respecting). Friends-only scope.
@@ -500,13 +500,13 @@ Competitive motivation works for some writers. NaNoWriMo's word count leaderboar
 ### Cons
 - Can incentivize quantity over quality
 - Competitive pressure may stress some users
-- Small user base → empty leaderboard looks bad
+- Small user base â†’ empty leaderboard looks bad
 - Needs abuse prevention (fake progress logging)
 
 ### Alternatives
-- **Personal bests only** — compare against yourself. Less social, less motivating.
-- **Group leaderboards** — within writing groups only. More intimate, harder to game.
-- **No leaderboards** — current state
+- **Personal bests only** â€” compare against yourself. Less social, less motivating.
+- **Group leaderboards** â€” within writing groups only. More intimate, harder to game.
+- **No leaderboards** â€” current state
 
 ### Requirements
 
@@ -531,12 +531,12 @@ Competitive motivation works for some writers. NaNoWriMo's word count leaderboar
 
 ---
 
-## F11 — Multi-format Goals
+## F11 â€” Multi-format Goals
 
-**Priority:** ⚪ P3 | **Effort:** 3 hours | **Status:** Planned
+**Priority:** âšª P3 | **Effort:** 3 hours | **Status:** Implemented
 
 ### Rationale
-Not all writers count words. Comic creators count panels. Screenwriters count pages. The current `words_per_day` goal type excludes significant user segments. The Goal model already has a flexible `type` field — just needs UI and validation.
+Not all writers count words. Comic creators count panels. Screenwriters count pages. The current `words_per_day` goal type excludes significant user segments. The Goal model already has a flexible `type` field â€” just needs UI and validation.
 
 ### Pros
 - Schema already supports it (Goal.type is a free string)
@@ -550,14 +550,14 @@ Not all writers count words. Comic creators count panels. Screenwriters count pa
 - UI complexity (goal creation needs type selector)
 
 ### Alternatives
-- **Words only** — current state, excludes non-prose writers
-- **Time-based goals** (minutes_per_day) — harder to track automatically
+- **Words only** â€” current state, excludes non-prose writers
+- **Time-based goals** (minutes_per_day) â€” harder to track automatically
 
 ### Requirements
 
 **Technical:**
 - Extend Goal.type enum: `words_per_day`, `panels_per_day`, `pages_per_week`, `scenes_completed`
-- ProgressLog.value is already generic (number) — works for all types
+- ProgressLog.value is already generic (number) â€” works for all types
 - Progress logging UI adapts to goal type (word count input vs panel count input)
 - Streak calculation works the same regardless of type
 
@@ -578,17 +578,17 @@ Not all writers count words. Comic creators count panels. Screenwriters count pa
 
 | Order | Feature | Priority | Effort | Why First |
 |---|---|---|---|---|
-| 1 | **F2 — Export** | 🔴 P0 | 8h | Trust/prerequisite. Without export, serious writers won't commit content. |
-| 2 | **F1 — Activity Feed** | 🟡 P1 | 6h | Social retention. Users need a reason to come back daily. |
-| 3 | **F3 — Writing Stats** | 🟡 P1 | 6h | Personal motivation. Gamification loop completion. |
-| 4 | **F4 — Comments** | 🟡 P1 | 5h | Social engagement. Feedback loop between writers and readers. |
-| 5 | **F6 — OAuth** | 🔵 P2 | 2h | Quick win. Reduces sign-up friction immediately. |
-| 6 | **F5 — Version History** | 🔵 P2 | 6h | Writer trust. Safety net for experimentation. |
-| 7 | **F9 — Image Gallery** | 🔵 P2 | 4h | Visual world-building. Schema fields already exist. |
-| 8 | **F8 — Search** | 🔵 P2 | 4h | Discovery. Becomes useful as content grows. |
-| 9 | **F7 — Real-time Collab** | 🔵 P2 | 12h | Ambitious. Major differentiator but high complexity. |
-| 10 | **F11 — Multi-format Goals** | ⚪ P3 | 3h | Audience expansion. Schema already supports it. |
-| 11 | **F10 — Leaderboards** | ⚪ P3 | 3h | Social gamification. Opt-in only. |
+| 1 | **F2 â€” Export** | ðŸ”´ P0 | 8h | Trust/prerequisite. Without export, serious writers won't commit content. |
+| 2 | **F1 â€” Activity Feed** | ðŸŸ¡ P1 | 6h | Social retention. Users need a reason to come back daily. |
+| 3 | **F3 â€” Writing Stats** | ðŸŸ¡ P1 | 6h | Personal motivation. Gamification loop completion. |
+| 4 | **F4 â€” Comments** | ðŸŸ¡ P1 | 5h | Social engagement. Feedback loop between writers and readers. |
+| 5 | **F6 â€” OAuth** | ðŸ”µ P2 | 2h | Quick win. Reduces sign-up friction immediately. |
+| 6 | **F5 â€” Version History** | ðŸ”µ P2 | 6h | Writer trust. Safety net for experimentation. |
+| 7 | **F9 â€” Image Gallery** | ðŸ”µ P2 | 4h | Visual world-building. Schema fields already exist. |
+| 8 | **F8 â€” Search** | ðŸ”µ P2 | 4h | Discovery. Becomes useful as content grows. |
+| 9 | **F7 â€” Real-time Collab** | ðŸ”µ P2 | 12h | Ambitious. Major differentiator but high complexity. |
+| 10 | **F11 â€” Multi-format Goals** | âšª P3 | 3h | Audience expansion. Schema already supports it. |
+| 11 | **F10 â€” Leaderboards** | âšª P3 | 3h | Social gamification. Opt-in only. |
 
 ---
 
@@ -596,6 +596,6 @@ Not all writers count words. Comic creators count panels. Screenwriters count pa
 
 - All features should be **feature-flagged** behind the existing Redis-backed flag system (`lib/flags.ts`)
 - API routes should use the standardized `error-response.ts` helpers
-- All pages should follow the 3-state pattern (loading → error → loaded)
+- All pages should follow the 3-state pattern (loading â†’ error â†’ loaded)
 - Mutations should use optimistic updates with rollback
 - Each feature needs a corresponding flag in the admin dashboard at `/admin/flags`
