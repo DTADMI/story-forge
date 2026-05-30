@@ -19,22 +19,27 @@ CREATE TABLE IF NOT EXISTS public.projects (
 
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can read own projects" ON public.projects;
 CREATE POLICY "Users can read own projects"
   ON public.projects FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own projects" ON public.projects;
 CREATE POLICY "Users can insert own projects"
   ON public.projects FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own projects" ON public.projects;
 CREATE POLICY "Users can update own projects"
   ON public.projects FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own projects" ON public.projects;
 CREATE POLICY "Users can delete own projects"
   ON public.projects FOR DELETE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Public projects are viewable" ON public.projects;
 CREATE POLICY "Public projects are viewable"
   ON public.projects FOR SELECT
   USING (is_public = true OR default_scope = 'PUBLIC_ANYONE');
@@ -56,6 +61,7 @@ CREATE TABLE IF NOT EXISTS public.characters (
 
 ALTER TABLE public.characters ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage own characters" ON public.characters;
 CREATE POLICY "Users can manage own characters"
   ON public.characters FOR ALL
   USING (auth.uid() = user_id);
@@ -75,6 +81,7 @@ CREATE TABLE IF NOT EXISTS public.locations (
 
 ALTER TABLE public.locations ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage own locations" ON public.locations;
 CREATE POLICY "Users can manage own locations"
   ON public.locations FOR ALL
   USING (auth.uid() = user_id);
@@ -94,6 +101,7 @@ CREATE TABLE IF NOT EXISTS public.timeline_events (
 
 ALTER TABLE public.timeline_events ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage own timeline events" ON public.timeline_events;
 CREATE POLICY "Users can manage own timeline events"
   ON public.timeline_events FOR ALL
   USING (auth.uid() = user_id);
@@ -111,6 +119,7 @@ CREATE TABLE IF NOT EXISTS public.dialogues (
 
 ALTER TABLE public.dialogues ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage own dialogues" ON public.dialogues;
 CREATE POLICY "Users can manage own dialogues"
   ON public.dialogues FOR ALL
   USING (auth.uid() = user_id);
@@ -126,10 +135,12 @@ CREATE TABLE IF NOT EXISTS public.follows (
 
 ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage own follows" ON public.follows;
 CREATE POLICY "Users can manage own follows"
   ON public.follows FOR ALL
   USING (auth.uid() = follower_id);
 
+DROP POLICY IF EXISTS "Users can see who follows them" ON public.follows;
 CREATE POLICY "Users can see who follows them"
   ON public.follows FOR SELECT
   USING (auth.uid() = followee_id);
@@ -146,6 +157,7 @@ CREATE TABLE IF NOT EXISTS public.groups (
 
 ALTER TABLE public.groups ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Anyone can see public groups" ON public.groups;
 CREATE POLICY "Anyone can see public groups"
   ON public.groups FOR SELECT
   USING (is_private = false);
@@ -165,6 +177,7 @@ CREATE TABLE IF NOT EXISTS public.feature_flags (
 
 ALTER TABLE public.feature_flags ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Feature flags are readable by everyone" ON public.feature_flags;
 CREATE POLICY "Feature flags are readable by everyone"
   ON public.feature_flags FOR SELECT
   USING (true);
@@ -194,3 +207,4 @@ BEGIN
     );
   END LOOP;
 END $$;
+

@@ -49,9 +49,7 @@
     "check:supabase-security": "node scripts/check-supabase-security.mjs",
     "run-all-checks": "pnpm format:check && pnpm exec prisma generate --schema prisma/schema.prisma && pnpm lint && pnpm typecheck && pnpm test:run && pnpm check:supabase-security && pnpm build && pnpm verify"
   },
-  "dependencies": {
-    "@nebula-forge/voice-messaging": "workspace:*",
-    "@prisma/adapter-pg": "^7.2.0",
+  "dependencies": {    "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client-runtime-utils": "^7.2.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@supabase/ssr": "^0.10.2",

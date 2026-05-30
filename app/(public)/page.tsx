@@ -2,6 +2,8 @@ import Link from "next/link";
 import { BookOpen, Users, Trophy } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
+export const revalidate = 86400;
+
 export default function HomePage() {
   return (
     <div className="flex flex-col">

@@ -1,6 +1,6 @@
 # StoryForge — Feature Flags Testing Guide
 
-> Last updated: May 22, 2026
+> Last updated: May 30, 2026
 
 ## Overview
 
@@ -15,30 +15,30 @@ StoryForge uses a Redis-backed feature flag system with env-var fallback. Flags 
 | Rate limiting | `lib/rate-limit.ts` | Token-bucket via Upstash Redis |
 | Caching | `lib/cache.ts` | `getCached`, `setCached`, `invalidateCache` |
 
-## Current Flags
+## Current Flags (20 total)
 
-| ID | Name | Type | Category | Default | Description |
+| ID | Name | Type | Category | Default | Gated |
 |---|---|---|---|---|---|
-| `payments` | Payments | boolean | monetization | false | Stripe subscription checkout and billing |
-| `ai_assist` | AI Writing Assistant | boolean | ai | false | Master toggle for all AI features |
-| `ai_writing_suggestions` | AI Writing Suggestions | boolean | ai | false | Inline writing suggestions in editor |
-| `ai_character_development` | AI Character Development | boolean | ai | false | AI-generated character traits, backstories |
-| `ai_plot_analysis` | AI Plot Analysis | boolean | ai | false | AI review of story structure |
-| `ai_style_consistency` | AI Style Consistency | boolean | ai | false | AI analysis of writing style |
-| `ai_research_assistant` | AI Research Assistant | boolean | ai | false | AI-powered research and fact-checking |
-| `projects_v2` | Projects V2 | boolean | core | false | Next-generation project editor |
-| `wellbeing` | Writing Wellbeing | boolean | wellbeing | true | Break reminders, anti-burnout |
-| `design_system_v2` | Design System V2 | boolean | core | true | Updated design system |
-| `real_time_collaboration` | Real-time Collaboration | boolean | core | true | Live co-authoring and presence |
-| `groups_feature` | Writing Groups | boolean | social | true | Create and join writing groups |
-| `public_feed` | Public Story Feed | boolean | social | true | Discover public stories |
-| `activity_feed` | Activity Feed | boolean | social | true | Friends' writing activity |
-| `writing_stats` | Writing Statistics | boolean | core | true | Personal writing statistics dashboard |
-| `comments` | Project Comments | boolean | social | true | Comment on projects |
-| `export` | Project Export | boolean | core | true | Export projects as Markdown/EPUB/PDF |
-| `oauth` | OAuth Providers | boolean | core | true | Sign in with Google and GitHub |
-| `version_history` | Version History | boolean | core | false | Save and restore project versions |
-| `search` | Search | boolean | core | false | Full-text search across projects |
+| `payments` | Payments | boolean | monetization | **false** | ✅ Client: pricing page subscribe button |
+| `ai_assist` | AI Writing Assistant | boolean | ai | **true** | ✅ Server: 5 AI API routes. Client: 6 AI components |
+| `ai_writing_suggestions` | AI Writing Suggestions | boolean | ai | **true** | ✅ Server: suggest route. Client: ai-writing component |
+| `ai_character_development` | AI Character Development | boolean | ai | **true** | ✅ Server: character route. Client: ai-character component |
+| `ai_plot_analysis` | AI Plot Analysis | boolean | ai | **true** | ✅ Server: plot route. Client: ai-plot component |
+| `ai_style_consistency` | AI Style Consistency | boolean | ai | **true** | ✅ Server: style route. Client: ai-style component |
+| `ai_research_assistant` | AI Research Assistant | boolean | ai | **true** | ✅ Server: research route. Client: ai-research component |
+| `projects_v2` | Projects V2 | boolean | core | **true** | ✅ Client: project-editor fallback when disabled |
+| `wellbeing` | Writing Wellbeing | boolean | wellbeing | **true** | ✅ Client: project-editor break reminder timer |
+| `design_system_v2` | Design System V2 | boolean | core | **false** | None — acknowledged dead code, no V1/V2 split |
+| `real_time_collaboration` | Real-time Collaboration | boolean | core | **true** | ✅ Client: Yjs provider, collaboration hook, presence avatars, editor sync, sync indicators |
+| `groups_feature` | Writing Groups | boolean | social | **true** | ✅ Server: groups/join/leave API routes. Client: sidebar filter, dashboard card |
+| `public_feed` | Public Story Feed | boolean | social | **true** | ✅ Server: public projects API. Client: feed page |
+| `activity_feed` | Activity Feed | boolean | social | **true** | ✅ Server: activity feed API. Client: dashboard card |
+| `writing_stats` | Writing Statistics | boolean | core | **true** | ✅ Server: stats overview API. Client: sidebar filter, dashboard card |
+| `comments` | Project Comments | boolean | social | **true** | ✅ Server: comments API (GET+POST). Client: project detail page |
+| `export` | Project Export | boolean | core | **true** | ✅ Server: export API. Client: export dropdown component |
+| `oauth` | OAuth Providers | boolean | core | **true** | ✅ Client: signin page OAuth buttons |
+| `version_history` | Version History | boolean | core | **true** | ✅ Server: versions API (GET+POST). Client: project detail page |
+| `search` | Search | boolean | core | **true** | ✅ Server: search API. Client: search page, sidebar filter |
 
 ## Testing Flags Locally
 
@@ -48,57 +48,24 @@ Set in `.env.local`:
 ```
 NEXT_PUBLIC_FEATURE_PAYMENTS=true
 NEXT_PUBLIC_FEATURE_AI_ASSIST=true
-NEXT_PUBLIC_FEATURE_SEARCH=true
 ```
-
-### Redis Override
-
-Set flag values directly in Upstash Redis:
-```
-SET storyforge:feature_flags '[{"id":"payments","enabled":true,...}]'
-```
-
-### Debug Endpoint (dev only)
-
-`GET /api/debug/flags` — returns current flag state in development. Returns 404 in production.
 
 ### Admin Dashboard
 
-Navigate to `/admin/flags` to view and toggle flags through the admin UI. Requires admin role.
+Visit `/admin/flags` to toggle flags via the UI. Changes are persisted to Redis + DB.
 
-## Adding a New Flag
+## Flag Key Normalization
 
-1. Add to `DEFAULT_FLAGS` array in `lib/flags.ts`
-2. Add to `WebEnvSchema` in `lib/env.ts` if env-var override needed
-3. Document in this file (above table)
-4. Add UI gating with `isEnabled("flag_id")` or `isEnabledSync("flag_id")`
-5. Add to admin dashboard if applicable
+`isEnabledSync()` and `isEnabled()` normalize keys via:
+```ts
+key.toLowerCase().replace(/[^a-z0-9_]/g, "_")
+```
 
-## Flag Lifecycle
+**Always use snake_case** keys matching the flag ID exactly (e.g., `"ai_assist"`, not `"aiAssist"`).
 
-1. **Development**: Flag default is `enabled: false`
-2. **Staging**: Enable via Redis or env var for testing
-3. **Production**: Enable via admin dashboard (DB) or Redis, with rollback path
-4. **Sunset**: After 30+ days of 100% rollout, remove flag code in a cleanup PR
+## Architecture Notes
 
-## Categories
-
-| Category | Purpose |
-|---|---|
-| `core` | Essential platform features |
-| `social` | Social/community features |
-| `monetization` | Billing and subscription features |
-| `experimental` | Beta/experimental features |
-| `wellbeing` | Mental wellness and break reminders |
-| `ai` | AI-powered features |
-
-## Testing Checklist
-
-- [ ] Flag works with env var override (`NEXT_PUBLIC_FEATURE_*`)
-- [ ] Flag works with Redis override
-- [ ] Flag works with DB override (admin dashboard)
-- [ ] Flag disabled state hides UI correctly
-- [ ] Flag enabled state shows UI correctly
-- [ ] Flag gating works on both server and client
-- [ ] No errors when Redis is unavailable (graceful fallback)
-- [ ] No errors when DB is unavailable (graceful fallback)
+- `isEnabled(key)` — server-only async. Uses Prisma DB fallback.
+- `isEnabledSync(key)` — client-safe sync. Reads cached flags or defaults.
+- `loadFlags()` — async loader from Redis with env-var fallback.
+- `initFlags()` — server-side init that loads from DB + Redis.

@@ -1,4 +1,7 @@
 import { isEnabledSync } from "@/lib/flags";
+
+export const revalidate = 3600;
+
 import { SubscribeButton } from "@/components/billing/SubscribeButton";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

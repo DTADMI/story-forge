@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 
+export const revalidate = 86400;
+
 const faqs = [
   {
     q: "Is StoryForge free?",

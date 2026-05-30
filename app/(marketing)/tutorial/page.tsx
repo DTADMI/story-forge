@@ -1,3 +1,5 @@
+export const revalidate = 86400;
+
 export default function TutorialPage() {
   return (
     <section style={{ maxWidth: 960, margin: "32px auto", padding: "0 16px" }}>

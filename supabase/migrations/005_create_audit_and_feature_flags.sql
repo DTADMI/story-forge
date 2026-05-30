@@ -16,11 +16,13 @@ CREATE TABLE IF NOT EXISTS public.audit_events (
 ALTER TABLE public.audit_events ENABLE ROW LEVEL SECURITY;
 
 -- Users can read their own audit events
+DROP POLICY IF EXISTS "Users can read own audit events" ON public.audit_events;
 CREATE POLICY "Users can read own audit events"
   ON public.audit_events FOR SELECT
   USING (auth.uid() = user_id);
 
 -- Users can insert their own audit events (triggered by app logic)
+DROP POLICY IF EXISTS "Users can insert own audit events" ON public.audit_events;
 CREATE POLICY "Users can insert own audit events"
   ON public.audit_events FOR INSERT
   WITH CHECK (auth.uid() = user_id);
@@ -44,9 +46,14 @@ CREATE TABLE IF NOT EXISTS public.feature_flags (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Ensure columns added by this migration exist even if table was created by 002
+ALTER TABLE public.feature_flags ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.feature_flags ADD COLUMN IF NOT EXISTS type TEXT NOT NULL DEFAULT 'boolean';
+
 ALTER TABLE public.feature_flags ENABLE ROW LEVEL SECURITY;
 
 -- Everyone can read feature flags (needed for client-side flag checks)
+DROP POLICY IF EXISTS "Everyone can read feature flags" ON public.feature_flags;
 CREATE POLICY "Everyone can read feature flags"
   ON public.feature_flags FOR SELECT
   USING (true);
@@ -82,3 +89,4 @@ CREATE POLICY IF NOT EXISTS "Members can update owned groups"
       SELECT group_id FROM public.group_members WHERE user_id = auth.uid() AND role = 'admin'
     )
   );
+

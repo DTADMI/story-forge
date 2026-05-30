@@ -1,6 +1,8 @@
 import { BookOpen, Globe, Shield, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
+export const revalidate = 86400;
+
 export default function AboutPage() {
   return (
     <div className="flex flex-col">

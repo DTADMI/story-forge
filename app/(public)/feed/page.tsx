@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { isEnabled } from "@/lib/flags-server";
 
+export const revalidate = 300;
+
 export default async function PublicFeedPage() {
   if (!(await isEnabled("public_feed"))) {
     return (

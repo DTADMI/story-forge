@@ -26,13 +26,13 @@ with pg adapter on Supabase Postgres. Feature flags backed by Redis with env-var
 
 ```
 story-forge/
-├── app/              ← Pages, layouts, API route handlers (76 route files)
-├── components/       ← UI components (ui/, editor/, ai/, social/, world/, gamification/, pwa/)
-├── lib/              ← Prisma, Supabase, Redis, flags, cache, AI, storage, rate-limit
-├── packages/
-│   └── ai-core/      ← Shared AI package (OpenRouter adapter)
-├── prisma/           ← Prisma schema + migrations
-├── supabase/         ← Supabase SQL migrations (6 files) + config
+├── app/              ← Next.js 16 App Router pages & API routes (76 route files)
+├── components/       ← UI components (ui/, editor/, ai/, social/, world/, etc.)
+├── lib/              ← Prisma, Supabase, Redis, flags, cache, AI, storage, rate-limit, yjs
+├── i18n/             ← (deprecated) next-intl config — replaced by lib/i18n/ Context pattern
+├── messages/         ← (deprecated) Translation JSON — replaced by lib/i18n/translations/
+├── prisma/           ← Prisma schema (38 models) + migration history
+├── supabase/         ← Supabase SQL migrations (11 files) + config
 ├── scripts/          ← Migration rollout/rollback scripts, seed, agent tools
 ├── docs/             ← Technical documentation
 └── .github/          ← CI workflow
@@ -190,24 +190,17 @@ story-forge/
 
 ## Planned
 
-### Feature Gaps
-- [ ] Panel/page layout templates for visual storytelling
-- [ ] Real-time collaboration (CRDT/Yjs) — Phase 1: Yjs deps + TipTap extensions
-
 ### Infrastructure & Tooling
 - [ ] React 19.2 review
-- [ ] Complete TanStack Query migration (remaining world CRUD, AI, admin, auth, billing, editor)
-- [ ] Real-time collaboration via Supabase Realtime (CRDT/Yjs) — Phase 2: document sync
+- [ ] Complete TanStack Query migration (remaining admin, auth, billing, editor surfaces)
+- [ ] Real-time collaboration via Supabase Realtime (CRDT/Yjs) — Phase 2: document sync refinement, offline support
+
+### Features
+- [ ] Panel/page layout templates for visual storytelling
 
 ### Security & Compliance
 - [ ] Rotate production secrets (CVE-2025-66478 / CVE-2025-55182)
 - [ ] PII handling, data export/delete
-
-### Testing
-- [ ] Competition API tests (list, detail, enter)
-- [ ] Admin API tests (users, flags, moderation)
-- [ ] Messages + Notifications API tests
-- [ ] World-building API tests (locations, species, organizations, eras, calendar, dialogues, timeline, encyclopedia)
 - [ ] AI monitoring instrumentation
 
 ---

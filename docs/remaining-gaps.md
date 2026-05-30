@@ -1,6 +1,6 @@
 # StoryForge — Remaining Gaps & Implementation Plan
 
-> Last updated: May 23, 2026
+> Last updated: May 30, 2026
 
 ## Audit Summary
 
@@ -14,12 +14,12 @@
 | Media & Assets | 5 | 5 | 0 |
 | Infrastructure & DevOps | 7 | 7 | 0 |
 | Security & Compliance | 6 | 6 | 0 |
-| Testing & Quality | 6 | 4 | 2 |
+| Testing & Quality | 7 | 7 | 0 |
 | TanStack Migration | 2 | 2 | 0 |
 | Documentation | 6 | 6 | 0 |
 | Agent Infrastructure | 6 | 6 | 0 |
 | i18n / Accessibility | 4 | 3 | 1 |
-| **TOTAL** | **98** | **95** | **3** |
+| **TOTAL** | **99** | **98** | **1** |
 
 ---
 
@@ -30,14 +30,30 @@
 | # | Item | Effort | Details |
 |---|---|---|---|
 | L1 | Accessibility audit (WCAG 2.1 AA) | 4h | ARIA labels, focus management, keyboard nav exist in auth forms + editor toolbar. Full audit across all 50+ pages needed. |
-| L2 | Real-time document collaboration (CRDT/Yjs) | 12h+ | Realtime presence table exists in Prisma schema (`ProjectPresence`). Needs: document CRDT sync, cursor positions, awareness protocol, conflict resolution. |
-| L3 | Expanded API test coverage | 4h | 13 test files now cover 8 domains (billing, users, projects, comments, gamification, world-characters, AI, social/groups). ~20 domains remain. |
+
+### Completed / In Progress
+
+| # | Item | Status | Details |
+|---|---|---|---|
+| L2 | Real-time document collaboration (CRDT/Yjs) | ✅ Phase 1 done (May 29) | Yjs + `@tiptap/extension-collaboration` installed. `lib/yjs-provider.ts`, `lib/yjs-collaboration.ts`, cursor awareness, presence avatars, editor integration. Feature-gated behind `real_time_collaboration`. Phase 2: offline support, conflict resolution refinement. |
+| L3 | Expanded API test coverage | ✅ Done (May 29) | 27 test files, 118 tests across all domains. Competition, admin, messages, notifications, world-building API tests added. |
 
 ---
 
-## Completed (May 23, 2026 — Rounds 1-5)
+## Completed (May 30, 2026 — Round 6)
 
-### Round 5 (this session)
+### Infrastructure
+- [x] `React.cache()` wrappers on `createServerClient()` and `getUser()` in `lib/supabase/server.ts`
+- [x] `revalidate` exports on all 6 public/marketing pages with tiered values
+- [x] Migration 008: rollout/rollback scripts created
+- [x] `feature-flags-testing.md`: synced defaults with `lib/flags.ts`, added gating status column
+- [x] `action-plan.md`: fixed architecture diagram, updated planned items
+- [x] `remaining-gaps.md`: updated for Yjs completion and test coverage
+
+### Previous Rounds Summary
+- Round 1-4 (May 22-23): Platform foundation, writing tools, world-building, social, gamification, AI, export, admin, CI
+- Round 5 (May 29): Yjs collaboration, AI monitoring, competitions UI, design system V2, i18n migration, lint cleanup, test expansion
+- Round 6 (May 30): Feature flag gates for all 20 flags, AI casing bug fix, React.cache(), revalidate exports, migration scripts, documentation sync
 
 **TanStack migration completed (21 files):**
 - World CRUD: `era/new`, `era/[id]`, `species/new`, `organizations/new`, `encyclopedia/[category]/new`, `encyclopedia/[category]/[id]/delete`

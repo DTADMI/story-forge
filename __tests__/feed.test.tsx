@@ -1,6 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
+vi.mock("@/lib/flags-server", () => ({
+  isEnabled: vi.fn().mockResolvedValue(true),
+}));
+
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     project: {

@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can manage own notifications" ON public.notifications;
 CREATE POLICY "Users can manage own notifications"
   ON public.notifications FOR ALL
   USING (auth.uid() = user_id);
@@ -32,14 +33,17 @@ CREATE TABLE IF NOT EXISTS public.messages (
 
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can read own messages" ON public.messages;
 CREATE POLICY "Users can read own messages"
   ON public.messages FOR SELECT
   USING (auth.uid() = sender_id OR auth.uid() = receiver_id);
 
+DROP POLICY IF EXISTS "Users can insert own messages" ON public.messages;
 CREATE POLICY "Users can insert own messages"
   ON public.messages FOR INSERT
   WITH CHECK (auth.uid() = sender_id);
 
+DROP POLICY IF EXISTS "Users can update own received messages" ON public.messages;
 CREATE POLICY "Users can update own received messages"
   ON public.messages FOR UPDATE
   USING (auth.uid() = receiver_id);
@@ -49,3 +53,4 @@ CREATE INDEX IF NOT EXISTS idx_messages_sender_receiver
 
 CREATE INDEX IF NOT EXISTS idx_messages_receiver_read
   ON public.messages(receiver_id, read, created_at);
+
