@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClientProvider } from "@tanstack/react-query";
 
@@ -24,7 +24,8 @@ describe("AiCharacterPanel", () => {
     user = userEvent.setup();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await act(async () => {});
     cleanup();
   });
 
@@ -44,18 +45,12 @@ describe("AiCharacterPanel", () => {
 
   it("shows loading state on click", async () => {
     (isEnabledSync as ReturnType<typeof vi.fn>).mockReturnValue(true);
+    let resolveFetch: (value: unknown) => void;
     global.fetch = vi.fn().mockImplementation(
       () =>
-        new Promise((resolve) =>
-          setTimeout(
-            () =>
-              resolve({
-                ok: true,
-                json: () => Promise.resolve({ suggestions: [] }),
-              }),
-            100
-          )
-        )
+        new Promise((resolve) => {
+          resolveFetch = resolve;
+        })
     );
 
     renderWithQuery(<AiCharacterPanel context="A fantasy novel" />);
@@ -63,6 +58,13 @@ describe("AiCharacterPanel", () => {
     await user.click(button);
 
     expect(await screen.findByText(/generating characters/i)).toBeInTheDocument();
+
+    await act(async () => {
+      resolveFetch!({
+        ok: true,
+        json: () => Promise.resolve({ suggestions: [] }),
+      });
+    });
   });
 
   it("shows error message on failure", async () => {
