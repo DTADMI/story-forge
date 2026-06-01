@@ -30,7 +30,12 @@ INSERT INTO feature_flags (name, enabled, type, value) VALUES
   ('pg_cache', false, 'boolean', 'false'),
   ('pg_pubsub', false, 'boolean', 'false'),
   ('pg_session', false, 'boolean', 'false'),
-  ('pg_lockout', false, 'boolean', 'false')
+  ('pg_lockout', false, 'boolean', 'false'),
+  ('redis_feature_flags', false, 'boolean', 'false'),
+  ('redis_cache', false, 'boolean', 'false'),
+  ('redis_sessions', false, 'boolean', 'false'),
+  ('redis_pubsub', false, 'boolean', 'false'),
+  ('redis_leaderboard', false, 'boolean', 'false')
 ON CONFLICT (name) DO NOTHING;
 
 CREATE INDEX IF NOT EXISTS idx_feature_flags_enabled ON feature_flags (enabled) WHERE enabled = true;
@@ -149,3 +154,20 @@ BEGIN v_hash := encode(digest(p_email, 'sha256'), 'hex'); DELETE FROM account_lo
 $$;
 REVOKE EXECUTE ON FUNCTION public.reset_account_lockout(text) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.reset_account_lockout(text) TO service_role;
+
+-- Feature flag change notification trigger
+CREATE OR REPLACE FUNCTION notify_feature_flag_change()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NOTIFY feature_flags_changed;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_feature_flags_changed ON feature_flags;
+CREATE TRIGGER trg_feature_flags_changed
+  AFTER INSERT OR UPDATE OR DELETE ON feature_flags
+  FOR EACH STATEMENT
+  EXECUTE FUNCTION notify_feature_flag_change();
