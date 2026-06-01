@@ -1,9 +1,12 @@
 /**
  * Rate limiting for StoryForge API routes.
- * Uses Upstash Redis with token-bucket algorithm.
- * Graceful fallback when Redis is unavailable.
+ * Supports PG-based rate limiting via PG_RATE_LIMIT env var.
+ * Falls back to Upstash Redis with token-bucket algorithm.
  */
 import { getRedis } from "./redis";
+import { checkPgRateLimit } from "./pg-rate-limit";
+
+const USE_PG = process.env.PG_RATE_LIMIT === "true";
 
 interface RateLimitResult {
   allowed: boolean;
@@ -22,27 +25,25 @@ export async function checkRateLimit(
   maxRequests: number,
   windowSeconds = WINDOW_SECONDS
 ): Promise<RateLimitResult> {
+  if (USE_PG) {
+    return checkPgRateLimit(key, { maxRequests, windowSeconds });
+  }
+
   try {
     const redis = getRedis();
     const now = Math.floor(Date.now() / 1000);
     const windowStart = now - windowSeconds;
 
-    // Remove old entries outside the window
     await redis.zremrangebyscore(key, 0, windowStart);
-
-    // Count current window entries
     const count = (await redis.zcard(key)) as number;
 
     if (count >= maxRequests) {
-      // Get oldest entry to calculate reset time
       const oldest = (await redis.zrange(key, 0, 0, { withScores: true })) as [string, number][];
       const resetAt =
         oldest.length > 0 ? Math.ceil(oldest[0][1]) + windowSeconds : now + windowSeconds;
-
       return { allowed: false, remaining: 0, resetAt };
     }
 
-    // Add current request timestamp
     await redis.zadd(key, {
       score: now,
       member: `${now}-${Math.random().toString(36).slice(2, 8)}`,
@@ -55,7 +56,6 @@ export async function checkRateLimit(
       resetAt: now + windowSeconds,
     };
   } catch {
-    // Redis unavailable — allow the request (fail open)
     return { allowed: true, remaining: maxRequests, resetAt: 0 };
   }
 }
