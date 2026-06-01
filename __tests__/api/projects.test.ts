@@ -18,6 +18,18 @@ vi.mock("@/lib/prisma", () => ({
 vi.mock("@/lib/supabase/server", () => ({
   getUser: vi.fn(),
   requireUser: vi.fn(),
+  createServerClient: vi.fn().mockResolvedValue({
+    from: vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          maybeSingle: vi.fn().mockResolvedValue({ data: { enabled: false }, error: null }),
+        }),
+      }),
+    }),
+    rpc: vi
+      .fn()
+      .mockResolvedValue({ data: { allowed: true, remaining: 9, resetAt: 0 }, error: null }),
+  }),
 }));
 
 import { prisma } from "@/lib/prisma";

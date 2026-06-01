@@ -1,31 +1,31 @@
 /**
  * Rate limiting for StoryForge API routes.
- * Supports PG-based rate limiting via PG_RATE_LIMIT env var.
- * Falls back to Upstash Redis with token-bucket algorithm.
+ * PG is the default via pg-rate-limit.ts.
+ * Falls back to Upstash Redis when redis_rate_limit flag is enabled.
  */
 import { getRedis } from "./redis";
 import { checkPgRateLimit } from "./pg-rate-limit";
+import { createServerClient } from "@/lib/supabase/server";
 
-let _pgRateLimit: boolean | null = null;
-async function shouldUsePgRateLimit(): Promise<boolean> {
-  if (_pgRateLimit !== null) return _pgRateLimit;
-  if (process.env.PG_RATE_LIMIT === "true") {
-    _pgRateLimit = true;
+let _redisRateLimit: boolean | null = null;
+async function shouldUseRedisRateLimit(): Promise<boolean> {
+  if (_redisRateLimit !== null) return _redisRateLimit;
+  if (process.env.REDIS_RATE_LIMIT === "true") {
+    _redisRateLimit = true;
     return true;
   }
   try {
-    const { createServerClient } = await import("@/lib/supabase/server");
     const supabase = await createServerClient();
     const { data } = await (supabase as any)
       .from("feature_flags")
       .select("enabled")
-      .eq("name", "pg_rate_limit")
+      .eq("name", "redis_rate_limit")
       .maybeSingle();
-    _pgRateLimit = data?.enabled === true;
+    _redisRateLimit = data?.enabled === true;
   } catch {
-    _pgRateLimit = false;
+    _redisRateLimit = false;
   }
-  return _pgRateLimit;
+  return _redisRateLimit;
 }
 
 interface RateLimitResult {
@@ -45,10 +45,12 @@ export async function checkRateLimit(
   maxRequests: number,
   windowSeconds = WINDOW_SECONDS
 ): Promise<RateLimitResult> {
-  if (await shouldUsePgRateLimit()) {
+  // PG is the default
+  if (!(await shouldUseRedisRateLimit())) {
     return checkPgRateLimit(key, { maxRequests, windowSeconds });
   }
 
+  // Redis path
   try {
     const redis = getRedis();
     const now = Math.floor(Date.now() / 1000);
