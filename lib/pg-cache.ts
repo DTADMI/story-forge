@@ -1,17 +1,43 @@
 import { createServerClient } from "@/lib/supabase/server";
+import { getRedis } from "./redis";
 
-const DEFAULT_TTL = 300;
+const CACHE_DEFAULT_TTL = 300;
 
-let _client: Awaited<ReturnType<typeof createServerClient>> | null = null;
+let _redisCacheEnabled: boolean | null = null;
 
-async function getClient() {
-  if (!_client) _client = await createServerClient();
-  return _client;
+async function shouldUseRedisCache(): Promise<boolean> {
+  if (_redisCacheEnabled !== null) return _redisCacheEnabled;
+  if (process.env.REDIS_CACHE === "true") {
+    _redisCacheEnabled = true;
+    return true;
+  }
+  try {
+    const supabase = await createServerClient();
+    const { data } = await (supabase as any)
+      .from("feature_flags")
+      .select("enabled")
+      .eq("name", "redis_cache")
+      .maybeSingle();
+    _redisCacheEnabled = data?.enabled === true;
+  } catch {
+    _redisCacheEnabled = false;
+  }
+  return _redisCacheEnabled;
 }
 
 export async function pgGetCached<T>(key: string): Promise<T | null> {
   try {
-    const supabase = await getClient();
+    // L1: Redis (if enabled)
+    if (await shouldUseRedisCache()) {
+      const r = getRedis();
+      if (r) {
+        const cached = await r.get<T>(`cache:${key}`);
+        if (cached !== null) return cached;
+      }
+    }
+
+    // L2: PostgreSQL (source of truth)
+    const supabase = await createServerClient();
     const { data } = await (supabase as any)
       .from("app_cache")
       .select("value")
@@ -19,7 +45,15 @@ export async function pgGetCached<T>(key: string): Promise<T | null> {
       .gt("expires_at", new Date().toISOString())
       .maybeSingle();
     if (!data) return null;
-    return data.value as T;
+    const result = data.value as T;
+
+    // Warm L1
+    if (await shouldUseRedisCache()) {
+      const r = getRedis();
+      if (r) r.set(`cache:${key}`, result, { ex: 30 }).catch(() => {});
+    }
+
+    return result;
   } catch {
     return null;
   }
@@ -28,10 +62,10 @@ export async function pgGetCached<T>(key: string): Promise<T | null> {
 export async function pgSetCached<T>(
   key: string,
   value: T,
-  ttlSeconds = DEFAULT_TTL
+  ttlSeconds = CACHE_DEFAULT_TTL
 ): Promise<void> {
   try {
-    const supabase = await getClient();
+    const supabase = await createServerClient();
     await (supabase as any).from("app_cache").upsert(
       {
         key,
@@ -40,6 +74,11 @@ export async function pgSetCached<T>(
       },
       { onConflict: "key" }
     );
+
+    if (await shouldUseRedisCache()) {
+      const r = getRedis();
+      if (r) r.set(`cache:${key}`, value, { ex: Math.min(ttlSeconds, 60) }).catch(() => {});
+    }
   } catch (err) {
     console.error("[pg-cache] set error:", err);
   }
@@ -47,9 +86,23 @@ export async function pgSetCached<T>(
 
 export async function pgDeleteCached(key: string): Promise<void> {
   try {
-    const supabase = await getClient();
+    const supabase = await createServerClient();
     await (supabase as any).from("app_cache").delete().eq("key", key);
+
+    if (await shouldUseRedisCache()) {
+      const r = getRedis();
+      if (r) r.del(`cache:${key}`).catch(() => {});
+    }
   } catch (err) {
     console.error("[pg-cache] delete error:", err);
+  }
+}
+
+export async function pgInvalidatePattern(pattern: string): Promise<void> {
+  try {
+    const supabase = await createServerClient();
+    await (supabase as any).from("app_cache").delete().like("key", `${pattern}%`);
+  } catch (err) {
+    console.error("[pg-cache] invalidate error:", err);
   }
 }
