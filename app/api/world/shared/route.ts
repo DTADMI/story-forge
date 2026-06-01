@@ -2,24 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
-const SHARABLE_MODELS = {
-  character: prisma.character,
-  location: prisma.location,
-  timelineEvent: prisma.timelineEvent,
-  timelineevent: prisma.timelineEvent,
-  organization: prisma.organization,
-  species: prisma.species,
-} as const;
+type SharableModel =
+  | "character"
+  | "location"
+  | "timelineEvent"
+  | "timelineevent"
+  | "organization"
+  | "species";
 
-type SharableModel = keyof typeof SHARABLE_MODELS;
+function getModel(modelName: SharableModel) {
+  switch (modelName) {
+    case "character":
+      return prisma.character;
+    case "location":
+      return prisma.location;
+    case "timelineEvent":
+    case "timelineevent":
+      return prisma.timelineEvent;
+    case "organization":
+      return prisma.organization;
+    case "species":
+      return prisma.species;
+  }
+}
 
 export async function GET(request: NextRequest) {
   const user = await requireUser();
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type") as SharableModel | null;
 
-  if (type && SHARABLE_MODELS[type]) {
-    const model = SHARABLE_MODELS[type];
+  if (type) {
+    const model = getModel(type);
     const entities = await (
       model as unknown as { findMany(args: Record<string, unknown>): Promise<unknown[]> }
     ).findMany({
@@ -73,7 +86,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const model = SHARABLE_MODELS[entityType as SharableModel];
+  const model = getModel(entityType as SharableModel);
   if (!model) {
     return NextResponse.json({ error: `Invalid entityType: ${entityType}` }, { status: 400 });
   }
