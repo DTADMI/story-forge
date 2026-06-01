@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { ResyncGraphButton } from "./resync-button";
+import { AiMonitorCard } from "./ai-monitor-card";
 import { requireAdmin } from "@/lib/admin";
 
 export default async function AdminDashboardPage() {
@@ -45,6 +46,7 @@ export default async function AdminDashboardPage() {
           <UserList />
         </Card>
       </div>
+      <AiMonitorCard />
     </div>
   );
 }
