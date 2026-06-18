@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { createServerClient as createSupabaseServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies, headers } from "next/headers";
@@ -16,7 +17,7 @@ function getEnv(): { url: string; anonKey: string } {
   return { url, anonKey };
 }
 
-export async function createServerClient() {
+export const createServerClient = cache(async () => {
   const { url, anonKey } = getEnv();
   const cookieStore = await cookies();
   const headerStore = await headers();
@@ -46,15 +47,15 @@ export async function createServerClient() {
       },
     },
   });
-}
+});
 
-export async function getUser() {
+export const getUser = cache(async () => {
   const supabase = await createServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   return user;
-}
+});
 
 export async function requireUser() {
   const user = await getUser();
