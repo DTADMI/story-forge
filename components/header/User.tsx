@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { createBrowserClient } from "@/lib/supabase/client";
 import { useI18n } from "@/lib/i18n";
-import { Link } from "@/i18n/routing";
+import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 
 export default function HeaderUser() {
