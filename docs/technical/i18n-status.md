@@ -50,10 +50,17 @@
 
 ## Remaining Work
 
-- [ ] All `useTranslations()` from `next-intl` in components migrated to `useI18n()`
-- [ ] `next-intl` plugin removed from `next.config.mjs`
-- [ ] `messages/` directory cleaned up
-- [ ] `i18n/routing.ts` and `i18n/request.ts` removed or migrated
+- [ ] Expand `useI18n()` usage beyond the 2 migrated components (Header User, Presence Avatars) — most pages still use hardcoded English strings
+- [ ] Add i18n lint checks to pre-commit (hardcoded English string detection)
+
+## Recent Changes (2026-06-18)
+
+- [x] `next-intl` dependency removed from `package.json`
+- [x] `next-intl` plugin wrapper removed from `next.config.mjs`
+- [x] `messages/` directory removed (replaced by `lib/i18n/translations/`)
+- [x] `i18n/routing.ts` and `i18n/request.ts` removed
+- [x] `User.tsx` updated to use `next/link` instead of `@/i18n/routing`
+- [x] `next.config.mjs` simplified, added `cacheComponents: true` for PPR
 
 ## Assessment
 
@@ -61,5 +68,5 @@
 - Default locale `fr` respects Quebec language laws
 - Now uses the cross-project React Context pattern from root AGENTS.md
 - Quebec French vocabulary has been improved with proper terms
-- Migration from next-intl to Context pattern is in progress
-- The `messages/` JSON files and `i18n/` next-intl config should be removed once all components are migrated
+- Migration from next-intl to Context pattern is structurally complete — routing and plugin removed
+- Hardcoded English strings remain in the majority of pages/components — this is a deferred P1 task

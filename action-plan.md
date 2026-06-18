@@ -26,11 +26,10 @@ with pg adapter on Supabase Postgres. Feature flags backed by Redis with env-var
 
 ```
 story-forge/
-├── app/              ← Next.js 16 App Router pages & API routes (76 route files)
+├── app/              ← Next.js 16 App Router pages & API routes (85 page routes)
 ├── components/       ← UI components (ui/, editor/, ai/, social/, world/, etc.)
 ├── lib/              ← Prisma, Supabase, Redis, flags, cache, AI, storage, rate-limit, yjs
-├── i18n/             ← (deprecated) next-intl config — replaced by lib/i18n/ Context pattern
-├── messages/         ← (deprecated) Translation JSON — replaced by lib/i18n/translations/
+├── lib/i18n/         ← React Context i18n (config, server, provider, translations)
 ├── prisma/           ← Prisma schema (38 models) + migration history
 ├── supabase/         ← Supabase SQL migrations (11 files) + config
 ├── scripts/          ← Migration rollout/rollback scripts, seed, agent tools
@@ -184,7 +183,8 @@ story-forge/
 
 ## In Progress
 
-- [*] Complete client TanStack Query migration across remaining world CRUD, AI analysis, admin/auth, billing, and editor helper surfaces
+- [*] Migrate hardcoded English strings to `useI18n()` across all pages/components (only 2 of ~165 migrated)
+- [*] Yjs Phase 2: offline support, document sync refinement
 
 ---
 
@@ -192,16 +192,11 @@ story-forge/
 
 ### Infrastructure & Tooling
 - [ ] React 19.2 review
-- [ ] Complete TanStack Query migration (remaining admin, auth, billing, editor surfaces)
-- [ ] Real-time collaboration via Supabase Realtime (CRDT/Yjs) — Phase 2: document sync refinement, offline support
-
-### Features
-- [ ] Panel/page layout templates for visual storytelling
 
 ### Security & Compliance
 - [ ] Rotate production secrets (CVE-2025-66478 / CVE-2025-55182)
 - [ ] PII handling, data export/delete
-- [ ] AI monitoring instrumentation
+- [ ] Accessibility audit (WCAG 2.1 AA) — full 50+ page audit
 
 ---
 
@@ -318,6 +313,27 @@ story-forge/
 ### Infrastructure
 - [x] `middleware.ts` updated — removed unused parameter
 - [x] All lint warnings/errors resolved — 0 warnings, 0 errors
+
+## Completed (Jun 18, 2026 — Round 7)
+
+### Dead Code Cleanup
+- [x] Removed `next-intl` dependency (`i18n/routing.ts`, `i18n/request.ts`, `messages/`, package.json dep, next.config.mjs plugin wrapper)
+- [x] Fixed `User.tsx` to use `next/link` instead of dead `@/i18n/routing`
+- [x] `next.config.mjs`: added `cacheComponents: true` for PPR, removed next-intl wrapper
+
+### Infrastructure
+- [x] Added `React.cache()` wrappers to `createServerClient()` and `getUser()` in `lib/supabase/server.ts`
+- [x] Docs synced: AGENTS.md architecture diagram, action-plan.md, remaining-gaps.md, i18n-status.md
+
+### Gap Assessment
+- [x] Comprehensive audit: identified 5 priority gaps
+  - P0: Dead next-intl code → cleaned up
+  - P0: Missing `React.cache()` on Supabase server → fixed
+  - P1: Pervasive hardcoded English strings (only 2/165 components use `useI18n()`)
+  - P2: Docs out of sync → synced
+  - P2: React 19.2 review, Yjs Phase 2, secret rotation, accessibility audit → deferred
+
+---
 
 ## Security Advisory
 

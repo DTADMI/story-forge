@@ -1,15 +1,16 @@
 # StoryForge — Performance Optimization
 
-**Last Updated**: 2026-05-29
+**Last Updated**: 2026-06-18
 
 ## SSR Strategy
 
 | Page Type | Strategy | Revalidation | Justification |
 |---|---|---|---|
 | Root Layout | `force-dynamic` | N/A | Auth-state-dependent UI, feature flag resolution, session-aware rendering |
-| Public Pages (landing, about, FAQ) | Static + ISR | `revalidate: 3600` | Content changes infrequently; high traffic |
-| Marketing Pages (pricing, tutorial) | Static + ISR | `revalidate: 86400` | Mostly static; updated rarely |
-| Public Feed | ISR + `generateStaticParams` | `revalidate: 300` | Moderate update frequency, high traffic |
+| Public Pages (landing, about, FAQ) | Static + ISR | `revalidate: 86400` | Content changes infrequently; high traffic |
+| Marketing Pages (tutorial) | Static + ISR | `revalidate: 86400` | Mostly static; updated rarely |
+| Public Feed | ISR | `revalidate: 300` | Moderate update frequency, high traffic |
+| Pricing | Static + ISR | `revalidate: 3600` | Updated occasionally |
 | Auth Pages (signin, signup) | Static | N/A | Static UI, no dynamic data |
 | Protected Pages (dashboard, projects) | Dynamic | N/A | Per-user data, cannot be cached |
 | API Routes (read) | Stale-While-Revalidate via staleTimes | N/A | CDN cache for public reads |
@@ -29,9 +30,9 @@
 
 | Tier | `revalidate` (s) | `staleTimes.static` (s) | Examples |
 |---|---|---|---|
-| Static | 86400 | 300 | Landing, legal pages |
-| Slow ISR | 3600 | 300 | Public content, blog-style |
-| Medium ISR | 300 | 30 | Public feed, leaderboard |
+| Static | 86400 | 300 | Landing, about, FAQ, tutorial |
+| Slow ISR | 3600 | 300 | Pricing |
+| Medium ISR | 300 | 30 | Public feed |
 | Dynamic | 0 | 30 | Authenticated user pages, real-time data |
 
 ## Bundle Size Strategy
@@ -60,16 +61,19 @@ Configured in `next.config.mjs`:
 - **TTFB** (Time to First Byte): Target < 800ms
 
 ### Optimizations Applied
-- [x] Partial Prerendering (`experimental.ppr: 'incremental'`) enabled
+- [x] `React.cache()` wrappers on `createServerClient()` and `getUser()` in `lib/supabase/server.ts`
 - [x] Stale times configured (dynamic: 30s, static: 300s)
 - [x] `optimizePackageImports` for lucide-react, date-fns, @radix-ui/react-slot
 - [x] Security headers set (X-Frame-Options, X-Content-Type-Options, Referrer-Policy)
 - [x] `poweredByHeader: false` to reduce response size
 - [x] `serverActions.bodySizeLimit: '2mb'` to prevent large uploads
-- [ ] `React.cache()` wrappers on shared data-fetching functions
+- [x] `revalidate` exports on all 6 public/marketing pages with tiered values
+- [ ] `cacheComponents: true` (PPR) — blocked by `revalidate` export incompatibility in Next.js 16.2.6
 - [ ] `generateStaticParams` for high-traffic dynamic routes
-- [ ] `revalidate` exports on public content pages
 - [ ] Vercel Analytics / Speed Insights integration
+
+### PPR / `cacheComponents` Note
+Next.js 16.2.6 merged `experimental.ppr` into `cacheComponents`. Enabling `cacheComponents: true` is incompatible with `revalidate` exports on pages — pages using `revalidate` must migrate to `staleTimes`-based cache lifetimes or `dynamic` config. This migration is deferred until Next.js provides a clear migration path for ISR pages under PPR.
 
 ## Database Performance
 
@@ -91,8 +95,7 @@ Configured in `next.config.mjs`:
 ## Known Performance Gaps
 
 1. Root layout `force-dynamic` prevents any static rendering — justified by auth-state dependency
-2. No `generateStaticParams` for `/projects/[id]` or `/users/[id]` — these are dynamic per-user pages
-3. No `revalidate` exports on public pages — TBD after i18n migration is complete
-4. `React.cache()` not yet applied to `getUser()`, `getRedis()`, or `createClient()` — these are called from multiple components
-5. No CDN caching headers on public API responses
-6. AI feature calls are synchronous and may block SSR — consider streaming
+2. `cacheComponents` not enabled — blocked by `revalidate` incompatibility with Next.js 16.2.6
+3. No `generateStaticParams` for `/projects/[id]` or `/users/[id]` — these are dynamic per-user pages
+4. No CDN caching headers on public API responses
+5. AI feature calls are synchronous and may block SSR — consider streaming

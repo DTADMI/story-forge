@@ -25,18 +25,33 @@
 
 ## Remaining Items
 
+### HIGH — In Progress
+
+| # | Item | Effort | Details |
+|---|---|---|---|
+| H1 | Pervasive hardcoded English strings | 8h | Only 2 of ~165 components/pages use `useI18n()`. Majority of app UI is hardcoded English. Needs systematic migration to `t()` calls. |
+| H2 | React 19.2 review | 2h | Review breaking changes since React 19.0, verify all APIs (use, cache, form actions) are current. |
+
+### MEDIUM — Planned
+
+| # | Item | Effort | Details |
+|---|---|---|---|
+| M1 | Yjs Phase 2: offline support | 6h | IndexedDB persistence for offline edits, conflict resolution refinement, sync-on-reconnect. |
+| M2 | Accessibiliy audit (WCAG 2.1 AA) | 4h | ARIA labels, focus management, keyboard nav exist in auth forms + editor toolbar. Full audit across all 50+ pages needed. |
+| M3 | Rotate production secrets | 2h | CVE-2025-66478 / CVE-2025-55182 response — rotate Supabase JWT, Stripe, Redis, OpenRouter secrets. |
+
 ### LOW — Defer
 
 | # | Item | Effort | Details |
 |---|---|---|---|
-| L1 | Accessibility audit (WCAG 2.1 AA) | 4h | ARIA labels, focus management, keyboard nav exist in auth forms + editor toolbar. Full audit across all 50+ pages needed. |
+| L1 | PII handling / data export-delete | 4h | GDPR/CCPA compliance: user data export, account deletion with cascade, privacy policy updates. |
 
-### Completed / In Progress
+### Completed (2026-06-18)
 
 | # | Item | Status | Details |
 |---|---|---|---|
-| L2 | Real-time document collaboration (CRDT/Yjs) | ✅ Phase 1 done (May 29) | Yjs + `@tiptap/extension-collaboration` installed. `lib/yjs-provider.ts`, `lib/yjs-collaboration.ts`, cursor awareness, presence avatars, editor integration. Feature-gated behind `real_time_collaboration`. Phase 2: offline support, conflict resolution refinement. |
-| L3 | Expanded API test coverage | ✅ Done (May 29) | 27 test files, 118 tests across all domains. Competition, admin, messages, notifications, world-building API tests added. |
+| C1 | Clean up next-intl dead code | ✅ Done | Removed `i18n/routing.ts`, `i18n/request.ts`, `messages/` dir, `next-intl` dep. Simplified `next.config.mjs`. Added `cacheComponents: true`. |
+| C2 | `React.cache()` on Supabase server | ✅ Done | Added `React.cache()` wrappers to `createServerClient()` and `getUser()` in `lib/supabase/server.ts`. |
 
 ---
 

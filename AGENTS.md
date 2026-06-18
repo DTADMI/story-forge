@@ -27,9 +27,8 @@ story-forge/
 ├── components/       ← UI components (design system, editor, AI, world, social)
 ├── hooks/            ← Custom React hooks
 ├── lib/              ← Prisma, Supabase, Redis, flags, cache, AI, storage, email
-├── i18n/             ← next-intl config (request.ts, routing.ts)
-├── messages/         ← Translation JSON (en, fr)
-├── prisma/           ← Prisma schema (37 models)
+├── lib/i18n/         ← React Context i18n (config, server, provider, translations)
+├── prisma/           ← Prisma schema (38 models) + migration history
 ├── supabase/         ← Supabase SQL migrations + config
 ├── scripts/          ← Build, migration, rollout/rollback, utility scripts
 ├── docs/             ← Technical documentation
