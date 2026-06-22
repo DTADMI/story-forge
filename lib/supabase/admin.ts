@@ -22,7 +22,11 @@ export function createAdminClient() {
 export function createOptionalAdminClient() {
   try {
     return createAdminClient();
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    if (process.env.NODE_ENV !== "production" || process.env.VERCEL_ENV === "preview") {
+      console.warn("[auth] Admin client unavailable:", message);
+    }
     return null;
   }
 }

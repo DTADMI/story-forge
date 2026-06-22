@@ -196,154 +196,161 @@ model UserBadge {
 model Character {
   id          String   @id @default(cuid())
   user        User     @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String   @map("user_id") @db.Uuid
   project     Project? @relation(fields: [projectId], references: [id])
-  projectId   String?
+  projectId   String?  @map("project_id")
   name        String
   bio         String?  @db.Text
   traits      String?  @db.Text
   quirks      String?  @db.Text
-  imageUrl    String?
+  imageUrl    String?  @map("image_url")
   metadata    Json?    // For flexible properties
-  isShared             Boolean  @default(false)
-  sharedFromProjectId  String?
+  isShared             Boolean  @default(false) @map("is_shared")
+  sharedFromProjectId  String?  @map("shared_from_project_id")
 
   timelineEvents TimelineEvent[]
   sourceRelationships CharacterRelationship[] @relation("SourceRelationships")
   targetRelationships CharacterRelationship[] @relation("TargetRelationships")
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@map("characters")
 }
 
 model Location {
   id          String   @id @default(cuid())
   user        User     @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String   @map("user_id") @db.Uuid
   project     Project? @relation(fields: [projectId], references: [id])
-  projectId   String?
+  projectId   String?  @map("project_id")
   name        String
   description String?  @db.Text
-  mapUrl      String?
+  mapUrl      String?  @map("map_url")
   metadata    Json?
-  isShared             Boolean  @default(false)
-  sharedFromProjectId  String?
+  isShared             Boolean  @default(false) @map("is_shared")
+  sharedFromProjectId  String?  @map("shared_from_project_id")
 
   timelineEvents TimelineEvent[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@map("locations")
 }
 
 model TimelineEvent {
   id          String   @id @default(cuid())
   user        User     @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String   @map("user_id") @db.Uuid
   project     Project? @relation(fields: [projectId], references: [id])
-  projectId   String?
+  projectId   String?  @map("project_id")
   title       String
   date        String?  // Flexible date format
   description String?  @db.Text
-  isShared             Boolean  @default(false)
-  sharedFromProjectId  String?
+  isShared             Boolean  @default(false) @map("is_shared")
+  sharedFromProjectId  String?  @map("shared_from_project_id")
    
   characters  Character[]
   locations   Location[]
   
   dialogue    Dialogue? @relation(fields: [dialogueId], references: [id])
-  dialogueId  String?
+  dialogueId  String?  @map("dialogue_id")
 
   era         Era?     @relation(fields: [eraId], references: [id])
-  eraId       String?
-  sortOrder   Int      @default(0)
+  eraId       String?  @map("era_id")
+  sortOrder   Int      @default(0) @map("sort_order")
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@map("timeline_events")
 }
 
 model Dialogue {
   id          String   @id @default(cuid())
   user        User?    @relation(fields: [userId], references: [id])
-  userId      String?
+  userId      String?  @map("user_id") @db.Uuid
   project     Project? @relation(fields: [projectId], references: [id])
-  projectId   String?
+  projectId   String?  @map("project_id")
   title       String?  // Optional title for the dialogue scene
   content     Json     // Structured list of speakers and lines
    
   timelineEvents TimelineEvent[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@map("dialogues")
 }
 
 model EncyclopediaEntry {
   id          String   @id @default(cuid())
   user        User     @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String   @map("user_id") @db.Uuid
   project     Project? @relation(fields: [projectId], references: [id])
-  projectId   String?
+  projectId   String?  @map("project_id")
   category    String   // research, calendar, magic, fauna, flora, culture, item, system, language, religion, philosophy
   title       String
   content     String   @db.Text
   metadata    Json?
-  imageUrl    String?
+  imageUrl    String?  @map("image_url")
   references  String[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@index([userId, category])
+  @@map("encyclopedia_entries")
 }
 
 // Organizations / Factions
 model Organization {
   id          String   @id @default(cuid())
   user        User     @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String   @map("user_id") @db.Uuid
   project     Project? @relation(fields: [projectId], references: [id])
-  projectId   String?
+  projectId   String?  @map("project_id")
   name        String
   type        String?
   description String?  @db.Text
   goals       String?  @db.Text
-  imageUrl    String?
+  imageUrl    String?  @map("image_url")
   metadata    Json?
-  isShared             Boolean  @default(false)
-  sharedFromProjectId  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isShared             Boolean  @default(false) @map("is_shared")
+  sharedFromProjectId  String?  @map("shared_from_project_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@map("organizations")
 }
 
 // Species / Races
 model Species {
   id          String   @id @default(cuid())
   user        User     @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String   @map("user_id") @db.Uuid
   project     Project? @relation(fields: [projectId], references: [id])
-  projectId   String?
+  projectId   String?  @map("project_id")
   name        String
   description String?  @db.Text
   appearance  String?  @db.Text
   traits      String?
   lifespan    String?
   homeland    String?
-  imageUrl    String?
+  imageUrl    String?  @map("image_url")
   metadata    Json?
-  isShared             Boolean  @default(false)
-  sharedFromProjectId  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isShared             Boolean  @default(false) @map("is_shared")
+  sharedFromProjectId  String?  @map("shared_from_project_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@map("species")
 }
 
 // Character relationships (manual, typed)
@@ -414,30 +421,32 @@ model CalendarMonth {
 model Activity {
   id         String   @id @default(cuid())
   user       User     @relation(fields: [userId], references: [id])
-  userId     String
+  userId     String   @map("user_id") @db.Uuid
   type       String   // project_created, project_published, badge_earned, streak_milestone, goal_complete, follow_gained
   entityId   String?  // ID of the related entity (project, badge, etc.)
   entityType String?  // project, badge, goal
   metadata   Json?    // { title, wordCount, badgeName, streakDays, etc. }
-  createdAt  DateTime @default(now())
+  createdAt  DateTime @default(now()) @map("created_at")
 
   @@index([userId, createdAt])
   @@index([createdAt])
+  @@map("activities")
 }
 
 model Notification {
   id         String   @id @default(cuid())
   user       User     @relation(fields: [userId], references: [id])
-  userId     String
+  userId     String   @map("user_id") @db.Uuid
   type       String   // comment, cheer, follow, badge, message, group_invite
   title      String
   body       String?  @db.Text
-  entityId   String?
-  entityType String?
+  entityId   String?  @map("entity_id")
+  entityType String?  @map("entity_type")
   read       Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  createdAt  DateTime @default(now()) @map("created_at")
 
   @@index([userId, read, createdAt])
+  @@map("notifications")
 }
 
 // Project comments
@@ -476,37 +485,41 @@ model ProjectVersion {
 model Follow {
   id          String   @id @default(cuid())
   follower    User     @relation("following", fields: [followerId], references: [id])
-  followerId  String
+  followerId  String   @map("follower_id") @db.Uuid
   followee    User     @relation("followers", fields: [followeeId], references: [id])
-  followeeId  String
-  createdAt   DateTime @default(now())
+  followeeId  String   @map("followee_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
 
   @@unique([followerId, followeeId])
+  @@map("follows")
 }
 
 model Group {
   id          String   @id @default(cuid())
   name        String
   description String?
-  isPrivate   Boolean  @default(false)
+  isPrivate   Boolean  @default(false) @map("is_private")
   
   members     GroupMember[]
   
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("groups")
 }
 
 model GroupMember {
   id        String   @id @default(cuid())
   group     Group    @relation(fields: [groupId], references: [id])
-  groupId   String
+  groupId   String   @map("group_id")
   user      User     @relation(fields: [userId], references: [id])
-  userId    String
+  userId    String   @map("user_id") @db.Uuid
   role      String   @default("member") // "admin" | "member"
   
-  joinedAt  DateTime @default(now())
+  joinedAt  DateTime @default(now()) @map("joined_at")
 
   @@unique([groupId, userId])
+  @@map("group_members")
 }
 
 // Legacy NextAuth.js models — kept for existing data compatibility (Auth migrated to Supabase)
@@ -550,16 +563,17 @@ model VerificationToken {
 model AuditEvent {
   id         String   @id @default(cuid())
   user       User     @relation(fields: [userId], references: [id])
-  userId     String
+  userId     String   @map("user_id") @db.Uuid
   action     String   // e.g., "project.create", "user.update", "billing.checkout"
-  entityId   String?
-  entityType String?
+  entityId   String?  @map("entity_id")
+  entityType String?  @map("entity_type")
   metadata   Json     @default("{}")
   ip         String?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime @default(now()) @map("created_at")
 
   @@index([userId, createdAt])
   @@index([action, createdAt])
+  @@map("audit_events")
 }
 
 // Feature flags — persisted in DB and synced to Redis
@@ -571,22 +585,25 @@ model FeatureFlag {
   enabled     Boolean @default(false)
   value       Json    @default("false")
   category    String  @default("core")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("feature_flags")
 }
 
 model Message {
   id         String   @id @default(cuid())
   sender     User     @relation("SentMessages", fields: [senderId], references: [id])
-  senderId   String
+  senderId   String   @map("sender_id") @db.Uuid
   receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
-  receiverId String
+  receiverId String   @map("receiver_id") @db.Uuid
   content    String   @db.Text
   read       Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  createdAt  DateTime @default(now()) @map("created_at")
 
   @@index([senderId, receiverId, createdAt])
   @@index([receiverId, read, createdAt])
+  @@map("messages")
 }
 
 model UserBlock {

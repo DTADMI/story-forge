@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
+import { withErrorHandler } from "@/lib/api-handler";
 
-export async function GET(_request: NextRequest) {
+export const GET = withErrorHandler(async (_request: NextRequest) => {
   await requireAdmin();
 
   const users = await prisma.user.findMany({
@@ -22,4 +23,4 @@ export async function GET(_request: NextRequest) {
   });
 
   return NextResponse.json(users);
-}
+});
