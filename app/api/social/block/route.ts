@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   }
 
   await prisma.userBlock.create({
-    data: { blockerId: user.id, blockedId: body.targetUserId },
+    data: { blockerId: user.id, blockedId: parsed.data.targetUserId },
   });
 
   return NextResponse.json({ blocked: true });
@@ -39,7 +39,7 @@ export async function GET() {
   const user = await requireUser();
   const blocks = await prisma.userBlock.findMany({
     where: { blockerId: user.id },
-    include: { blocked: { select: { id: true, name: true, email: true, image: true } } },
+    include: { blocked: { select: { id: true, name: true, username: true, image: true } } },
   });
   return NextResponse.json(blocks.map((b) => ({ ...b, blocked: undefined, ...b.blocked })));
 }

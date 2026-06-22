@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { canCreateCharacter } from "@/lib/permissions";
@@ -22,14 +23,22 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const user = await requireUser();
   const body = await request.json();
 
-  const schema = z.object({ name: z.string().min(1).max(200) }).passthrough();
+  const schema = z.object({
+    name: z.string().min(1).max(200),
+    bio: z.string().max(5000).optional(),
+    traits: z.string().max(500).optional(),
+    quirks: z.string().max(500).optional(),
+    projectId: z.string().optional(),
+    metadata: z.unknown().optional(),
+    imageUrl: z.string().max(1000).optional(),
+  });
   const parsed = schema.safeParse(body);
   if (!parsed.success)
     return NextResponse.json(
       { error: "Validation failed", detail: parsed.error.message },
       { status: 400 }
     );
-  const { name, ...rest } = parsed.data;
+  const { name, metadata, ...rest } = parsed.data;
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
@@ -47,7 +56,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   }
 
   const character = await prisma.character.create({
-    data: { name, ...rest, userId: user.id },
+    data: {
+      name,
+      ...rest,
+      userId: user.id,
+      ...(metadata !== undefined ? { metadata: metadata as Prisma.InputJsonValue } : {}),
+    },
   });
   syncCharacterToNeo4j(character).catch(() => {});
   return NextResponse.json(character, { status: 201 });

@@ -1,9 +1,9 @@
 /**
- * Feature flags for StoryForge — client-safe.
+ * Feature flags for StoryForge — client-safe sync subset.
+ * Async Redis-backed functions are in `lib/flags-server.ts`.
  * Persistence: Redis key `storyforge:feature_flags` + DB table `public.feature_flags`
  * For server-side Prisma-backed loading, use `lib/flags-server.ts`.
  */
-import { getRedis } from "./redis";
 
 export type FlagType = "boolean" | "percentage" | "user_list" | "subscription_tier";
 
@@ -218,6 +218,7 @@ function normalizeKey(key: string): string {
 
 export async function loadFlags(): Promise<FeatureFlag[]> {
   try {
+    const { getRedis } = await import("./redis");
     const redis = getRedis();
     const stored = await redis.get(REDIS_KEY);
     if (stored && typeof stored === "object") {

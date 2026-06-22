@@ -18,7 +18,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const user = await requireUser();
   const { id } = await params;
   const body = await request.json();
-  const character = await prisma.character.update({ where: { id, userId: user.id }, data: body });
+  const allowedFields: Record<string, unknown> = {};
+  for (const key of ["name", "bio", "traits", "quirks", "projectId", "metadata", "imageUrl"]) {
+    if (key in body) allowedFields[key] = body[key];
+  }
+  const character = await prisma.character.update({
+    where: { id, userId: user.id },
+    data: allowedFields,
+  });
   syncCharacterToNeo4j(character).catch(() => {});
   return NextResponse.json(character);
 }

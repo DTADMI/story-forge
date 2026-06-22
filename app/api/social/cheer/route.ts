@@ -28,7 +28,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     data: {
       userId: receiverId,
       type,
-      title: `${user.email || "Someone"} sent you a cheer!`,
+      title: `${(user.user_metadata?.name as string) || user.email?.split("@")[0] || "Someone"} sent you a cheer!`,
       body: "Keep up the great writing!",
     },
   });

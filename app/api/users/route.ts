@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         { email: { contains: q, mode: "insensitive" } },
       ],
     },
-    select: { id: true, name: true, username: true, email: true, image: true },
+    select: { id: true, name: true, username: true, image: true },
     take: 10,
   });
 

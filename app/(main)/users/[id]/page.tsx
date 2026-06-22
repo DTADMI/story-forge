@@ -1,4 +1,5 @@
 import { getUser as getSupabaseUser } from "@/lib/supabase/server";
+import { safeUrl } from "@/lib/utils";
 import { apiFetch } from "@/lib/api";
 import { notFound, redirect } from "next/navigation";
 import { FollowButton } from "@/components/social/follow-button";
@@ -69,10 +70,10 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
           </div>
         )}
 
-        {user.website && (
+        {user.website && safeUrl(user.website) && (
           <div className="mt-4">
             <a
-              href={user.website}
+              href={safeUrl(user.website)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand hover:underline"

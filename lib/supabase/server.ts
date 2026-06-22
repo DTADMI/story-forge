@@ -2,8 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { createServerClient as createSupabaseServerClient } from "@supabase/ssr";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import type { Database } from "./database.types";
 
 function getEnv(): { url: string; anonKey: string } {
@@ -20,18 +19,6 @@ function getEnv(): { url: string; anonKey: string } {
 export const createServerClient = cache(async () => {
   const { url, anonKey } = getEnv();
   const cookieStore = await cookies();
-  const headerStore = await headers();
-  const authHeader = headerStore.get("authorization");
-  const bearerToken = authHeader?.startsWith("Bearer ")
-    ? authHeader.slice("Bearer ".length).trim()
-    : null;
-  const hasJwtBearer = Boolean(bearerToken && bearerToken.split(".").length === 3);
-
-  if (hasJwtBearer) {
-    return createSupabaseClient<Database>(url, anonKey, {
-      global: { headers: { Authorization: authHeader! } },
-    });
-  }
 
   return createSupabaseServerClient<Database>(url, anonKey, {
     cookies: {

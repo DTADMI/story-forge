@@ -1,5 +1,6 @@
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { safeUrl } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
@@ -76,9 +77,9 @@ export default async function ProfilePage() {
               <p className="text-sm text-muted-foreground">@{profile.username}</p>
             )}
             {profile.bio && <p className="text-sm mt-2 text-muted-foreground">{profile.bio}</p>}
-            {profile.website && (
+            {profile.website && safeUrl(profile.website) && (
               <a
-                href={profile.website}
+                href={safeUrl(profile.website)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-primary hover:underline mt-1 inline-block"

@@ -106,7 +106,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     data: {
       userId: receiverId,
       type: "new_message",
-      title: `New message from ${user.email || "a user"}`,
+      title: `New message from ${(user.user_metadata?.name as string) || user.email?.split("@")[0] || "a user"}`,
       body: content.length > 100 ? content.slice(0, 97) + "..." : content,
       entityId: message.id,
     },

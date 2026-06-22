@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUser } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { getCached, setCached, buildCacheKey } from "@/lib/cache";
 
 export async function GET(request: NextRequest) {
-  const user = await getUser();
+  const user = await requireUser();
   const { searchParams } = new URL(request.url);
   const period = searchParams.get("period") || "weekly";
   const scope = searchParams.get("scope") || "friends";
 
-  const cacheKey = buildCacheKey("leaderboard", period, scope, user?.id || "anon");
+  const cacheKey = buildCacheKey("leaderboard", period, scope, user.id);
   const cached = await getCached(cacheKey);
   if (cached) return NextResponse.json(cached);
 

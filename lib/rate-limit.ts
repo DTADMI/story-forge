@@ -51,9 +51,9 @@ export async function checkRateLimit(
   }
 
   // Redis path
+  const now = Math.floor(Date.now() / 1000);
   try {
     const redis = getRedis();
-    const now = Math.floor(Date.now() / 1000);
     const windowStart = now - windowSeconds;
 
     await redis.zremrangebyscore(key, 0, windowStart);
@@ -78,7 +78,8 @@ export async function checkRateLimit(
       resetAt: now + windowSeconds,
     };
   } catch {
-    return { allowed: true, remaining: maxRequests, resetAt: 0 };
+    // Fail closed on Redis errors — deny requests rather than allow bypass
+    return { allowed: false, remaining: 0, resetAt: now + windowSeconds };
   }
 }
 
