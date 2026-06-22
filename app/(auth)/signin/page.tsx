@@ -1,35 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase/client";
 import { isEnabledSync } from "@/lib/flags";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 
-export default function SignInPage() {
+function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const message =
+    searchParams.get("message") === "check_email"
+      ? "Check your email for a verification link."
+      : searchParams.get("message") === "account_created"
+        ? "Account created! Sign in to continue."
+        : searchParams.get("message") === "verified"
+          ? "Email verified! Sign in to continue."
+          : null;
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
     const supabase = createBrowserClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setError(error.message);
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError(signInError.message);
       setLoading(false);
-    } else {
-      router.push("/dashboard");
-      router.refresh();
+      return;
     }
+
+    router.push("/dashboard");
+    router.refresh();
   };
 
   const handleOAuth = async (provider: "google" | "github") => {
@@ -41,6 +57,7 @@ export default function SignInPage() {
   };
 
   const errorId = "signin-error";
+  const messageId = "signin-message";
 
   return (
     <div className="container mx-auto max-w-md px-4 py-16">
@@ -57,8 +74,18 @@ export default function SignInPage() {
       </div>
 
       <Card className="p-6">
+        {message && (
+          <p
+            id={messageId}
+            data-testid="status-message"
+            className="mb-4 rounded-md bg-primary/10 px-3 py-2 text-sm text-primary"
+          >
+            {message}
+          </p>
+        )}
+
         <form
-          aria-describedby={error ? errorId : undefined}
+          aria-describedby={error ? errorId : message ? messageId : undefined}
           onSubmit={handleSignIn}
           className="space-y-4"
         >
@@ -70,6 +97,7 @@ export default function SignInPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="you@example.com"
+              autoComplete="email"
             />
           </div>
           <div className="space-y-2">
@@ -80,6 +108,7 @@ export default function SignInPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
           {error && (
@@ -136,5 +165,13 @@ export default function SignInPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense>
+      <SignInForm />
+    </Suspense>
   );
 }

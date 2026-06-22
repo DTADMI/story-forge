@@ -17,25 +17,25 @@ enum VisibilityScope {
 }
 
 model User {
-  id            String   @id @default(cuid())
+  id            String   @id @db.Uuid
   name          String?
   email         String?  @unique
-  emailVerified DateTime?
+  emailVerified DateTime?  @map("email_verified")
   image         String?
   // Local auth
-  passwordHash  String?
+  passwordHash  String?    @map("password_hash")
 
   // Profile
   username      String?  @unique
   bio           String?
   website       String?
   settings      Json?
-  subscriptionStatus   String?
-  subscriptionExpiresAt DateTime?
+  subscriptionStatus   String?    @map("subscription_status")
+  subscriptionExpiresAt DateTime? @map("subscription_expires_at")
 
   // Role-based access
   role             String @default("reader")
-  subscriptionTier String @default("free")
+  subscriptionTier String @default("free") @map("subscription_tier")
 
   collaborations ProjectCollaborator[]
 
@@ -72,22 +72,24 @@ model User {
   favorites    ProjectFavorite[]
   votes        ProjectVote[]
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
 }
 
 model Project {
   id            String   @id @default(cuid())
   user          User     @relation(fields: [userId], references: [id])
-  userId        String
+  userId        String   @map("user_id") @db.Uuid
   title         String
   description   String?
   content       String?  @db.Text
   genre         String?
-  isPublic      Boolean  @default(false)
-  wordCount     Int      @default(0)
-  defaultScope  VisibilityScope @default(PRIVATE)
-  panelCount    Int      @default(0)
+  isPublic      Boolean  @default(false) @map("is_public")
+  wordCount     Int      @default(0) @map("word_count")
+  defaultScope  VisibilityScope @default(PRIVATE) @map("default_scope")
+  panelCount    Int      @default(0) @map("panel_count")
   settings      Json?
 
   collaborators ProjectCollaborator[]
@@ -108,8 +110,10 @@ model Project {
   votes              ProjectVote[]
   competitionEntries CompetitionEntry[]
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("projects")
 }
 
 model ProjectCollaborator {
