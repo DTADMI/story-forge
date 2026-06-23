@@ -24,7 +24,24 @@ export default function SignUpPage() {
     setError(null);
 
     try {
-      const res = await fetch("/api/auth/sign-up", {
+      const supabase = createBrowserClient();
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name || undefined,
+          },
+        },
+      });
+
+      if (signUpError) {
+        setError(signUpError.message || "Failed to create account");
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, name: name || undefined }),
@@ -38,8 +55,6 @@ export default function SignUpPage() {
         return;
       }
 
-      // Sign in to get session
-      const supabase = createBrowserClient();
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,

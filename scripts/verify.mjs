@@ -77,6 +77,7 @@ if (runIntegration) {
     "/api/debug",
     "/api/billing/webhook",
     "/api/admin/neo4j/resync",
+    "/api/auth/sign-up",       // legacy compatibility signup endpoint
     "/api/auth/verify",        // called from email link
     "/api/activity/feed",      // called from dashboard links
     "/api/gamification/badges", // called from profile badges page

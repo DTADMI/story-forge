@@ -2,10 +2,15 @@
   "ignoreCommand": "node scripts/vercel-ignore-build.mjs",
   "buildCommand": "pnpm exec prisma generate --schema prisma/schema.prisma && next build",
   "outputDirectory": ".next",
-  "installCommand": "npm install -g pnpm@10.33.4 && pnpm install --frozen-lockfile",
+  "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
-  "regions": ["iad1"],
+  "regions": [
+    "iad1"
+  ],
   "env": {
     "NEXT_PUBLIC_SITE_URL": "https://storyforge.app"
+  },
+  "git": {
+    "deploymentEnabled": false
   }
 }

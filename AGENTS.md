@@ -196,3 +196,9 @@ If any step fails, the commit is **blocked**. Fix the errors and try again.
 - Current MCP target is GitHub.
 - Use MCP for external context and inspection. Do not treat MCP as the source of truth for repo-side rollout scripts, migrations, or docs updates.
 - Keep active runtime hooks in `.codex/hooks.json`; do not rely on plugin-local hooks for repo enforcement.
+
+## Continuous Improvement Rule
+
+- Never bypass or work around a failing check, guardrail, deployment gate, or quality/security policy just to proceed. Fix the real root cause.
+- For every incident or failure, add at least one durable prevention mechanism in-repo before closing the work (rule, skill, script, hook, or test) so the same class of issue is less likely to recur.
+- Document the incident and the prevention change in the relevant technical docs/runbook when applicable.
