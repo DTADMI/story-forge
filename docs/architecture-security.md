@@ -1,5 +1,7 @@
 # Architecture Decisions & Security Documentation
 
+> **See also (root canonical strategy)**: `../../../docs/technical/vercel-supabase-security-cost-ops-2026-05-27.md` — the cross-project Vercel/Supabase security & cost-ops strategy. This doc keeps StoryForge-specific architecture and threat-model detail only.
+
 > Last updated: May 14, 2026
 
 ---

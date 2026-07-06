@@ -1,3 +1,5 @@
+<!-- CLUSTER-C CANONICAL: NF-root rules. Project-specific delta below. -->
+> **Canonical rules/process**: `../../../docs/technical/feature-flags-testing.md` (NF root). This doc keeps project-specific values/catalog only.
 # StoryForge — Feature Flags Testing Guide
 
 > Last updated: May 30, 2026

@@ -1,5 +1,7 @@
 # Supabase Postgres Migration Plan
 
+> **See also (root canonical strategy)**: `../../docs/technical/postgres-substitution-strategy.md` — the cross-project Postgres/Supabase substitution strategy. This doc keeps StoryForge-specific migration scope and schema deltas only.
+
 ## Decision Summary
 
 - Target: move `story-forge` database hosting to Supabase Postgres.
