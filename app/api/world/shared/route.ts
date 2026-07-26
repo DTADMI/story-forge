@@ -3,12 +3,7 @@ import { requireUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
 type SharableModel =
-  | "character"
-  | "location"
-  | "timelineEvent"
-  | "timelineevent"
-  | "organization"
-  | "species";
+  "character" | "location" | "timelineEvent" | "timelineevent" | "organization" | "species";
 
 function getModel(modelName: SharableModel) {
   switch (modelName) {
