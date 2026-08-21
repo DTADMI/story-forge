@@ -28,35 +28,36 @@
 
 | # | Item | Status | Action |
 |---|---|---|---|
-| 1 | Feature flags | ❌ | 0 flags found — create or verify location |
-| 2 | Docs README index | ❌ | Create `docs/README.md` |
-| 3 | Action plan | ❌ | This document |
-| 4 | E2E tests | ❌ | Create Playwright test suite |
-| 5 | Gaps/roadmap doc | ❌ | Create `docs/technical/gaps-roadmap.md` |
-| 6 | Performance optimization doc | ❌ | Create `docs/technical/performance-optimization.md` |
-| 7 | Encoding reference doc | ❌ | Create `docs/technical/encoding-reference.md` |
-| 8 | Migrations standardization | ⚠️ | Verify idempotency (IF NOT EXISTS, DROP POLICY) |
-| 9 | RLS policies | ⚠️ | Audit all tables for RLS coverage |
-| 10 | i18n completeness | ⚠️ | Verify all pages use t() |
+| 1 | Docs README index | ✅ | Created Aug 2026 |
+| 2 | Action plan | ✅ | This document |
+| 3 | Feature flags | ✅ | 21 flags in `lib/flags.ts` (only 2 disabled) |
+| 4 | E2E tests | ⚠️ | Vitest suite exists (AI, API, components) but no Playwright E2E yet |
+| 5 | Gaps/roadmap doc | ✅ | This document
+| 6 | Performance optimization doc | ✅ | Already present |
+| 7 | Encoding reference doc | ✅ | Already present |
+| 8 | Feature flags testing doc | ✅ | Already present |
+| 9 | Migrations standardization | ✅ | 10 migrations, 61+ RLS policies |
+| 10 | RLS policies | ✅ | Migration 007 — comprehensive RLS for Prisma tables |
 
 ## Recommended Actions
 
-### Phase 1 — Infrastructure (2-3h)
-- [ ] Create `lib/feature-flags.ts` with initial flags for all features
-- [ ] Set up Playwright E2E test infrastructure
-- [ ] Create `docs/README.md`, `docs/technical/gaps-roadmap.md`
+### Phase 1 — Infrastructure (Complete ✅)
+- [x] Feature flags verified — 21 flags in `lib/flags.ts`, Redis + DB-backed
+- [x] RLS policies verified — 61+ policies, dedicated migration (007)
+- [x] Standard docs verified — perf, encoding, feature-flags already present
+- [x] Create `docs/README.md`
 
-### Phase 2 — Security + Standards (2-3h)
-- [ ] Audit all Prisma models for RLS + migration idempotency
-- [ ] Create `docs/technical/performance-optimization.md`
-- [ ] Create `docs/technical/encoding-reference.md`
-- [ ] Create `docs/technical/feature-flags-testing.md`
+### Phase 2 — Test Coverage (2-3h)
+- [ ] Set up Playwright E2E test infrastructure
+- [ ] Write critical-path E2E specs (auth, project CRUD, AI features, collaboration)
+- [ ] Add CI job for E2E
 
 ### Phase 3 — Feature Audit (3-4h)
-- [ ] Full page-by-page feature audit
+- [ ] Full page-by-page feature audit (33 pages)
 - [ ] i18n coverage verification
 - [ ] AI adapter testing (OpenRouter/DeepSeek/OpenAI)
-- [ ] Storage and realtime testing
+- [ ] Stripe payments end-to-end test
+- [ ] Yjs real-time collaboration stress test
 
 ---
 
