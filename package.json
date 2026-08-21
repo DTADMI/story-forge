@@ -36,7 +36,10 @@
     "verify:all": "pnpm verify:integration && pnpm verify:flags && pnpm verify:pipelines",
     "verify": "node scripts/verify.mjs --all",
     "check:supabase-security": "node scripts/check-supabase-security.mjs",
-    "run-all-checks": "pnpm format:check && pnpm exec prisma generate --schema prisma/schema.prisma && pnpm lint && pnpm typecheck && pnpm test:run && pnpm check:supabase-security && pnpm build && pnpm verify"
+    "run-all-checks": "pnpm format:check && pnpm exec prisma generate --schema prisma/schema.prisma && pnpm lint && pnpm typecheck && pnpm test:run && pnpm check:supabase-security && pnpm build && pnpm verify",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:smoke": "playwright test tests/e2e/smoke.spec.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.0",
@@ -94,6 +97,7 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.65.0",
     "vite": "^7.3.6",
-    "vitest": "3.2.4"
+    "vitest": "3.2.4",
+    "@playwright/test": "^1.52.0"
   }
 }
