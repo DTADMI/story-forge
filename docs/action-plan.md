@@ -48,16 +48,16 @@
 - [x] Create `docs/README.md`
 
 ### Phase 2 — Test Coverage (2-3h)
-- [ ] Set up Playwright E2E test infrastructure
-- [ ] Write critical-path E2E specs (auth, project CRUD, AI features, collaboration)
-- [ ] Add CI job for E2E
+- [x] Playwright E2E test infrastructure — playwright.config.ts
+- [x] Critical-path E2E specs — tests/e2e/critical-path.spec.ts (5 suites: auth, CRUD, AI, collaboration, Stripe)
+- [x] CI E2E job — .github/workflows/e2e.yml
 
 ### Phase 3 — Feature Audit (3-4h)
-- [ ] Full page-by-page feature audit (33 pages)
-- [ ] i18n coverage verification
-- [ ] AI adapter testing (OpenRouter/DeepSeek/OpenAI)
-- [ ] Stripe payments end-to-end test
-- [ ] Yjs real-time collaboration stress test
+- [x] Page-by-page feature audit — scripts/audit-pages.mjs
+- [x] i18n coverage — integrated in scripts/audit-pages.mjs
+- [x] AI adapter testing — tests/e2e/ai-adapters.spec.ts
+- [x] Stripe payments E2E — integrated in critical-path.spec.ts
+- [x] Yjs collaboration stress test — tests/e2e/collaboration-stress.spec.ts
 
 ---
 

@@ -75,6 +75,17 @@ Note: The project is flat (no `web/` or `packages/` directories). AI logic lives
 
 ### Change Safety
 
+### Compilation Gate (NF-GATE-001)
+
+**Every batch of code changes MUST be verified by the project's compiler(s) before
+the batch is complete.** For TypeScript: npx tsc --noEmit. For Rust: cargo check.
+Scripts that generate code via text replacement MUST run compilation as their
+final step and abort on failure.
+
+See .agents/skills/compilation-gate/SKILL.md for the full procedure and 14 known
+pitfall classes.
+
+
 - Do not remove or overwrite user changes in a dirty worktree unless explicitly asked.
 - Avoid editing generated output, `.next/`, `dist/`, or generated Prisma client files.
 - Keep new product behavior behind feature flags and update docs accordingly.
