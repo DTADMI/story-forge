@@ -5,6 +5,11 @@
 
 import { test, expect } from '@playwright/test';
 
+// Use shared auth state from global setup for authenticated tests
+const authenticatedTest = test.extend({
+  storageState: 'e2e/.auth/storage-state.json',
+});
+
 const BASE_URL = 'http://localhost:3000';
 
 // ── Authentication ────────────────────────────────────────────────────────
@@ -37,12 +42,7 @@ test.describe('Authentication', () => {
 // ── Project CRUD ──────────────────────────────────────────────────────────
 
 test.describe('Project CRUD', () => {
-  test.beforeEach(async ({ page }) => {
-    // This test requires a logged-in session
-    // In CI, use a seeded test user or auth setup
-    test.skip(!process.env.CI, 'Requires authenticated session setup');
-  });
-
+  // These tests use authenticated storage state
   test('should create a new project', async ({ page }) => {
     await page.goto(`${BASE_URL}/projects`);
     await page.locator('button, a').filter({ hasText: /new project|create|nouveau/i }).first().click();
@@ -98,7 +98,6 @@ test.describe('AI Story Generation', () => {
   });
 
   test('should display error on AI failure', async ({ page }) => {
-    test.skip(!process.env.CI, 'Requires authenticated session');
     // This test would verify AI error handling when API key is missing
     await page.goto(`${BASE_URL}/projects`);
     await page.locator('[data-testid="project-card"], .project-card, article').first().click();
@@ -113,7 +112,6 @@ test.describe('AI Story Generation', () => {
 
 test.describe('Real-time Collaboration', () => {
   test('should show collaboration status indicator', async ({ page }) => {
-    test.skip(!process.env.CI, 'Requires authenticated session');
     await page.goto(`${BASE_URL}/projects`);
     await page.locator('[data-testid="project-card"], .project-card, article').first().click();
     // Yjs provider status — should show connected or disconnected
@@ -169,7 +167,6 @@ test.describe('Stripe Payments', () => {
   });
 
   test('should show account/billing page when logged in', async ({ page }) => {
-    test.skip(!process.env.CI, 'Requires authenticated session');
     await page.goto(`${BASE_URL}/account/billing`);
     await expect(page.locator('h1')).toContainText(/billing|facturation/i);
   });

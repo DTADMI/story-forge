@@ -5,12 +5,14 @@
 
 import { test, expect } from '@playwright/test';
 
+// Use shared auth state from global setup
+test.use({ storageState: 'e2e/.auth/storage-state.json' });
+
 const STRESS_USERS = 3;
 const CONCURRENT_EDITS = 20;
 
 test.describe('Yjs Collaboration Stress Test', () => {
   test('should sync concurrent text edits across multiple users', async ({ browser }) => {
-    test.skip(!process.env.CI, 'Requires authenticated session + running Yjs provider');
 
     const contexts = await Promise.all(
       Array.from({ length: STRESS_USERS }, () => browser.newContext()),
@@ -66,7 +68,6 @@ test.describe('Yjs Collaboration Stress Test', () => {
   });
 
   test('should handle user disconnect and reconnect', async ({ browser }) => {
-    test.skip(!process.env.CI, 'Requires authenticated session');
 
     const ctx1 = await browser.newContext();
     const ctx2 = await browser.newContext();

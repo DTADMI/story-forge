@@ -70,6 +70,15 @@ jobs:
           pnpm dev &
           npx wait-on http://localhost:3000 --timeout 30000
 
+      - name: Auth setup (create test user)
+        run: pnpm exec playwright test --project=chromium --grep "auth-setup-dummy" || true
+        env:
+          CI: true
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL || 'e2e-test@storyforge.local' }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD || 'E2eTestPass123!' }}
+
       - name: Run E2E tests
         run: pnpm exec playwright test --project=chromium
         env:
