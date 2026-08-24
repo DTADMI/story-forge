@@ -21,13 +21,17 @@ test.describe("Stripe — Checkout Flow", () => {
     expect(tierCount).toBeGreaterThan(0);
   });
 
-  test("should navigate to sign-in when unauthenticated user clicks subscribe", async ({ page }) => {
+  test("should navigate to sign-in when unauthenticated user clicks subscribe", async ({
+    page,
+  }) => {
     await page.goto(`${BASE_URL}/pricing`);
 
     // Click any subscribe/upgrade button
-    const subscribeBtn = page.locator(
-      'a[href*="subscribe"], a[href*="checkout"], button:has-text("Subscribe"), button:has-text("Upgrade"), button:has-text("Get Started")'
-    ).first();
+    const subscribeBtn = page
+      .locator(
+        'a[href*="subscribe"], a[href*="checkout"], button:has-text("Subscribe"), button:has-text("Upgrade"), button:has-text("Get Started")'
+      )
+      .first();
 
     if (await subscribeBtn.isVisible().catch(() => false)) {
       await subscribeBtn.click();
@@ -88,7 +92,11 @@ test.describe("Stripe — Checkout Session API", () => {
   test("should return redirect URL from checkout API", async ({ page }) => {
     // Test the checkout API endpoint directly
     const response = await page.request.post(`${BASE_URL}/api/billing/create-checkout`, {
-      data: { priceId: "price_test", successUrl: `${BASE_URL}/billing`, cancelUrl: `${BASE_URL}/pricing` },
+      data: {
+        priceId: "price_test",
+        successUrl: `${BASE_URL}/billing`,
+        cancelUrl: `${BASE_URL}/pricing`,
+      },
       failOnStatusCode: false,
     });
 

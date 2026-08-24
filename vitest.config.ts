@@ -13,6 +13,7 @@ export default defineConfig({
     pool: "forks",
     isolate: true,
     fileParallelism: false,
+    exclude: ["tests/e2e/**", "node_modules/**"],
   },
   esbuild: {
     jsx: "automatic",

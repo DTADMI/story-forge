@@ -3,34 +3,37 @@
 // Verifies real-time sync under concurrent edits from multiple simulated users.
 // =============================================================================
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // Use shared auth state from global setup
-test.use({ storageState: 'e2e/.auth/storage-state.json' });
+test.use({ storageState: "e2e/.auth/storage-state.json" });
 
 const STRESS_USERS = 3;
 const CONCURRENT_EDITS = 20;
 
-test.describe('Yjs Collaboration Stress Test', () => {
-  test('should sync concurrent text edits across multiple users', async ({ browser }) => {
-
+test.describe("Yjs Collaboration Stress Test", () => {
+  test("should sync concurrent text edits across multiple users", async ({ browser }) => {
     const contexts = await Promise.all(
-      Array.from({ length: STRESS_USERS }, () => browser.newContext()),
+      Array.from({ length: STRESS_USERS }, () => browser.newContext())
     );
-    const pages = await Promise.all(contexts.map(ctx => ctx.newPage()));
+    const pages = await Promise.all(contexts.map((ctx) => ctx.newPage()));
 
     // All users navigate to the same project
-    const projectUrl = `${process.env.TEST_PROJECT_URL || 'http://localhost:3000/projects/test-collab'}`;
-    await Promise.all(pages.map(p => p.goto(projectUrl)));
+    const projectUrl = `${process.env.TEST_PROJECT_URL || "http://localhost:3000/projects/test-collab"}`;
+    await Promise.all(pages.map((p) => p.goto(projectUrl)));
 
     // Wait for Yjs connection indicators
-    await Promise.all(pages.map(async (p, i) => {
-      await p.waitForSelector('[data-testid="connection-status"], .peer-connected', { timeout: 5000 }).catch(() => {});
-    }));
+    await Promise.all(
+      pages.map(async (p, i) => {
+        await p
+          .waitForSelector('[data-testid="connection-status"], .peer-connected', { timeout: 5000 })
+          .catch(() => {});
+      })
+    );
 
     // Each user makes concurrent edits
     const editPromises = pages.map(async (page, userIndex) => {
-      const editor = page.locator('[contenteditable], .ProseMirror, textarea').first();
+      const editor = page.locator("[contenteditable], .ProseMirror, textarea").first();
 
       for (let i = 0; i < CONCURRENT_EDITS; i++) {
         await editor.click();
@@ -43,14 +46,14 @@ test.describe('Yjs Collaboration Stress Test', () => {
     await Promise.all(editPromises);
 
     // Wait for Yjs sync to settle
-    await page.waitForTimeout(3000);
+    await pages[0].waitForTimeout(3000);
 
     // Verify all pages show consistent content
     const contents = await Promise.all(
-      pages.map(async p => {
-        const editor = p.locator('[contenteditable], .ProseMirror, textarea').first();
+      pages.map(async (p) => {
+        const editor = p.locator("[contenteditable], .ProseMirror, textarea").first();
         return editor.textContent();
-      }),
+      })
     );
 
     // All users should see the same combined text
@@ -59,42 +62,41 @@ test.describe('Yjs Collaboration Stress Test', () => {
     expect(uniqueContent.size).toBe(1);
 
     // Verify that each user's edits are present
-    const combinedText = [...uniqueContent][0] || '';
+    const combinedText = [...uniqueContent][0] || "";
     for (let u = 1; u <= STRESS_USERS; u++) {
       expect(combinedText).toContain(`User${u}`);
     }
 
-    await Promise.all(contexts.map(ctx => ctx.close()));
+    await Promise.all(contexts.map((ctx) => ctx.close()));
   });
 
-  test('should handle user disconnect and reconnect', async ({ browser }) => {
-
+  test("should handle user disconnect and reconnect", async ({ browser }) => {
     const ctx1 = await browser.newContext();
     const ctx2 = await browser.newContext();
     const page1 = await ctx1.newPage();
     const page2 = await ctx2.newPage();
 
-    const url = `${process.env.TEST_PROJECT_URL || 'http://localhost:3000/projects/test-collab'}`;
+    const url = `${process.env.TEST_PROJECT_URL || "http://localhost:3000/projects/test-collab"}`;
     await page1.goto(url);
     await page2.goto(url);
 
     // User 1 types
-    const editor1 = page1.locator('[contenteditable], .ProseMirror, textarea').first();
+    const editor1 = page1.locator("[contenteditable], .ProseMirror, textarea").first();
     await editor1.click();
-    await page1.keyboard.type('Hello from User 1. ');
+    await page1.keyboard.type("Hello from User 1. ");
 
     // User 2 verifies it appears
     await page1.waitForTimeout(1500);
-    const editor2 = page2.locator('[contenteditable], .ProseMirror, textarea').first();
+    const editor2 = page2.locator("[contenteditable], .ProseMirror, textarea").first();
     const contentAfterType = await editor2.textContent();
-    expect(contentAfterType).toContain('Hello from User 1');
+    expect(contentAfterType).toContain("Hello from User 1");
 
     // User 2 disconnects (close context)
     await ctx2.close();
 
     // User 1 types more
     await editor1.click();
-    await page1.keyboard.type('More text while alone. ');
+    await page1.keyboard.type("More text while alone. ");
 
     // User 2 reconnects (new context)
     const ctx2b = await browser.newContext();
@@ -103,9 +105,9 @@ test.describe('Yjs Collaboration Stress Test', () => {
     await page1.waitForTimeout(2000);
 
     // User 2 should see the text User 1 typed while they were away
-    const editor2b = page2b.locator('[contenteditable], .ProseMirror, textarea').first();
+    const editor2b = page2b.locator("[contenteditable], .ProseMirror, textarea").first();
     const contentAfterReconnect = await editor2b.textContent();
-    expect(contentAfterReconnect).toContain('More text while alone');
+    expect(contentAfterReconnect).toContain("More text while alone");
 
     await ctx1.close();
     await ctx2b.close();

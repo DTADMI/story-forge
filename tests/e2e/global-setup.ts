@@ -9,8 +9,12 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 const AUTH_FILE = path.join(process.cwd(), "e2efile:///.auth/user.json");
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.TEST_SUPABASE_URL || "http://localhost:54321";
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.TEST_SUPABASE_ANON_KEY || "test-anon-key";
+const SUPABASE_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.TEST_SUPABASE_URL || "http://localhost:54321";
+const SUPABASE_ANON_KEY =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  process.env.TEST_SUPABASE_ANON_KEY ||
+  "test-anon-key";
 const TEST_EMAIL = process.env.TEST_USER_EMAIL || "e2e-test@storyforge.local";
 const TEST_PASSWORD = process.env.TEST_USER_PASSWORD || "E2eTestPass123!";
 
@@ -58,7 +62,9 @@ async function globalSetup(_config: FullConfig) {
   }
 }
 
-function writeAuthState(data: { session: { access_token: string; refresh_token: string; expires_at?: number } | null }) {
+function writeAuthState(data: {
+  session: { access_token: string; refresh_token: string; expires_at?: number } | null;
+}) {
   if (!data.session) {
     fs.writeFileSync(AUTH_FILE, JSON.stringify({}));
     return;

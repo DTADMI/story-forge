@@ -40,7 +40,7 @@ function discoverPages(dir, basePath = '') {
           fullPath,
         });
       }
-    } catch {}
+    } catch { /* skip directories and unreadable files */ }
   }
 
   return pages;
