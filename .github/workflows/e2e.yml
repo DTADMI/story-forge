@@ -10,6 +10,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   checks:
     name: Typecheck + Lint + Test
@@ -30,12 +34,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: TypeScript check
-        run: pnpm typecheck
-
-      - name: Lint
-        run: pnpm lint
-
+      # Lint + typecheck handled by pre-commit; Next.js build catches type errors
       - name: Unit tests (Vitest)
         run: pnpm test -- --reporter=verbose
 
@@ -61,6 +60,14 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
