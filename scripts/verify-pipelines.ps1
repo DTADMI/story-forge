@@ -1,4 +1,4 @@
-# verify-pipelines.ps1
+﻿# verify-pipelines.ps1
 # Validates end-to-end feature pipelines defined in scripts/pipelines.json.
 # Checks that every referenced file exists and every claimed action is present.
 param(
@@ -24,7 +24,7 @@ Write-Host ""
 
 foreach ($pipelineName in $pipelines.PSObject.Properties.Name) {
   $pipeline = $pipelines.$pipelineName
-  Write-Host "$pipelineName — $($pipeline.description)" -ForegroundColor Cyan
+  Write-Host "$pipelineName -- $($pipeline.description)" -ForegroundColor Cyan
   
   foreach ($step in $pipeline.steps) {
     $totalSteps++

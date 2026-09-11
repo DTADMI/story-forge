@@ -1,4 +1,4 @@
-# agent-search.ps1
+﻿# agent-search.ps1
 # StoryForge content search script.
 # Excludes heavy folders by default.
 # Usage: .\scripts\agent-search.ps1 -Pattern "search term" [-Path "app\"] [-CaseSensitive]

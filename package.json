@@ -75,6 +75,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.52.0",
     "@prisma/client": "^7.9.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/jest-dom": "^6.10.0",
@@ -98,6 +99,6 @@
     "typescript-eslint": "^8.65.0",
     "vite": "^7.3.6",
     "vitest": "3.2.4",
-    "@playwright/test": "^1.52.0"
+    "yaml": "^2.9.0"
   }
 }

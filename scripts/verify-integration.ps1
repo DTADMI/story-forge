@@ -1,4 +1,4 @@
-# verify-integration.ps1
+﻿# verify-integration.ps1
 # Traces API route handlers → client fetch calls to detect disconnected pipelines.
 # Reports orphaned endpoints (backend exists, no client calls it) and
 # missing handlers (client fetches an endpoint that has no route file).

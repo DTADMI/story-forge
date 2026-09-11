@@ -1,4 +1,4 @@
-# verify-feature-flags.ps1
+﻿# verify-feature-flags.ps1
 # Detects feature flags defined in lib/flags.ts that are never gated in any code.
 # Also detects strings passed to isEnabled() that don't match any defined flag.
 param(
@@ -114,7 +114,7 @@ if ($unknownFlags.Count -gt 0) {
 if ($ungated.Count -gt 0) {
   Write-Host ""
   Write-Host "WARNING: $($ungated.Count) flags are defined but never gated. Consider adding gating or removing the flag." -ForegroundColor Yellow
-  # Warning only — don't fail CI for ungated flags (may be intentional)
+  # Warning only -- don't fail CI for ungated flags (may be intentional)
 }
 
 exit 0
