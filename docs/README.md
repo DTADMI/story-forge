@@ -47,7 +47,7 @@ story-forge/
 
 ## Feature Flags
 
-21 feature flags defined in `libfile:///flags.ts`, Redis-backed with DB fallback. Categories: core, social, monetization, experimental, wellbeing, ai.
+21 feature flags defined in `lib/flags.ts`, Redis-backed with DB fallback. Categories: core, social, monetization, experimental, wellbeing, ai.
 
 Only 2 disabled: `payments` (Stripe not yet configured) and `design_system_v2` (in progress).
 

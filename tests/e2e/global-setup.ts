@@ -8,7 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-const AUTH_FILE = path.join(process.cwd(), "e2efile:///.auth/user.json");
+const AUTH_FILE = path.join(process.cwd(), "e2e/.auth/user.json");
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.TEST_SUPABASE_URL || "http://localhost:54321";
 const SUPABASE_ANON_KEY =
@@ -102,7 +102,7 @@ function writeAuthState(data: {
   fs.writeFileSync(AUTH_FILE, JSON.stringify(authState, null, 2));
 
   // Also write Playwright storage state for easy reuse
-  const storageStatePath = path.join(process.cwd(), "e2efile:///.auth/storage-state.json");
+  const storageStatePath = path.join(process.cwd(), "e2e/.auth/storage-state.json");
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
   fs.writeFileSync(storageStatePath, JSON.stringify(storageState, null, 2));
 
