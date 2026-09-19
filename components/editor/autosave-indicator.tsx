@@ -118,7 +118,7 @@ export function AutosaveIndicator({
           ? "Saved"
           : status === "saving"
             ? "Saving..."
-            : "Unsaved changes — click to save now"
+            : "Unsaved changes - click to save now"
       }
     >
       {status === "saved" && (

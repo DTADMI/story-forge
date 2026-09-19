@@ -1,5 +1,5 @@
 // =============================================================================
-// StoryForge — Stripe Payments E2E Tests
+// StoryForge - Stripe Payments E2E Tests
 // Tests checkout flow, subscription management, and billing portal.
 // =============================================================================
 
@@ -10,7 +10,7 @@ const BASE_URL = "http://localhost:3000";
 // Use shared auth state from global setup
 test.use({ storageState: "e2e/.auth/storage-state.json" });
 
-test.describe("Stripe — Checkout Flow", () => {
+test.describe("Stripe - Checkout Flow", () => {
   test("should show pricing page with subscription tiers", async ({ page }) => {
     await page.goto(`${BASE_URL}/pricing`);
     await expect(page.locator("h1, h2").first()).toBeVisible();
@@ -55,7 +55,7 @@ test.describe("Stripe — Checkout Flow", () => {
   });
 });
 
-test.describe("Stripe — Subscription Management", () => {
+test.describe("Stripe - Subscription Management", () => {
   test("should show current subscription status on billing page", async ({ page }) => {
     await page.goto(`${BASE_URL}/billing`);
 
@@ -88,7 +88,7 @@ test.describe("Stripe — Subscription Management", () => {
   });
 });
 
-test.describe("Stripe — Checkout Session API", () => {
+test.describe("Stripe - Checkout Session API", () => {
   test("should return redirect URL from checkout API", async ({ page }) => {
     // Test the checkout API endpoint directly
     const response = await page.request.post(`${BASE_URL}/api/billing/create-checkout`, {
@@ -101,7 +101,7 @@ test.describe("Stripe — Checkout Session API", () => {
     });
 
     // May return 401 (unauthenticated), 400 (invalid price), or 303 (redirect)
-    // All are valid — the API is working
+    // All are valid - the API is working
     expect(response.status()).toBeGreaterThanOrEqual(200);
     expect(response.status()).toBeLessThan(500);
   });

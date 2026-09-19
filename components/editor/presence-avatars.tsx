@@ -37,7 +37,7 @@ export function PresenceAvatars({ projectId, currentUser }: PresenceAvatarsProps
         <span
           key={user.id}
           className="relative inline-flex shrink-0"
-          title={`${user.name} — viewing now`}
+          title={`${user.name} - viewing now`}
         >
           <span
             className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium text-white ${

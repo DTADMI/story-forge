@@ -1,4 +1,4 @@
-# Discord Integration — Phase 2 Plan
+# Discord Integration - Phase 2 Plan
 
 > May 14, 2026 | Status: Planning
 
@@ -8,7 +8,7 @@ Writing communities thrive on Discord. NaNoWriMo's Discord server has 50K+ membe
 
 ## Feature Set
 
-### D1 — Discord OAuth Sign-In
+### D1 - Discord OAuth Sign-In
 
 **Priority:** P2 | **Effort:** 1h
 
@@ -19,7 +19,7 @@ Supabase Auth supports Discord OAuth natively. Same pattern as Google OAuth alre
 - Add to Supabase Auth dashboard
 - Add "Continue with Discord" button alongside Google
 
-### D2 — Discord Bot: Writing Sprints
+### D2 - Discord Bot: Writing Sprints
 
 **Priority:** P2 | **Effort:** 8h
 
@@ -34,10 +34,10 @@ Discord Server → Bot (Node.js) → StoryForge API
 ```
 
 **Commands:**
-- `/sprint start [duration]` — Start a writing sprint (15m, 30m, 60m)
-- `/sprint join` — Join active sprint
-- `/sprint status` — Time remaining, participant count
-- `/sprint result` — Post results (words written, winner)
+- `/sprint start [duration]` - Start a writing sprint (15m, 30m, 60m)
+- `/sprint join` - Join active sprint
+- `/sprint status` - Time remaining, participant count
+- `/sprint result` - Post results (words written, winner)
 
 **Technical:**
 - Discord.js or Discordeno bot framework
@@ -45,28 +45,28 @@ Discord Server → Bot (Node.js) → StoryForge API
 - WebSocket connection for real-time sprint timer updates
 - Links Discord user ID to StoryForge user via OAuth
 
-### D3 — Discord Bot: Word Count Sharing
+### D3 - Discord Bot: Word Count Sharing
 
 **Priority:** P2 | **Effort:** 4h
 
 Share StoryForge writing progress to Discord channels.
 
-- `/share progress` — Post daily word count, streak, badges
-- `/share project` — Share project preview card (title, word count, genre)
+- `/share progress` - Post daily word count, streak, badges
+- `/share project` - Share project preview card (title, word count, genre)
 - Automatic daily summary (opt-in): posts yesterday's word count at 9 AM
 
-### D4 — Discord Bot: Community Challenges
+### D4 - Discord Bot: Community Challenges
 
 **Priority:** P3 | **Effort:** 6h
 
 Server-wide writing challenges managed by Discord bot.
 
-- `/challenge create [name] [target] [deadline]` — Create writing challenge
-- `/challenge join` — Join challenge
-- `/challenge leaderboard` — Show challenge progress
-- `/challenge complete` — Mark challenge as done
+- `/challenge create [name] [target] [deadline]` - Create writing challenge
+- `/challenge join` - Join challenge
+- `/challenge leaderboard` - Show challenge progress
+- `/challenge complete` - Mark challenge as done
 
-### D5 — Discord Webhooks: Activity Notifications
+### D5 - Discord Webhooks: Activity Notifications
 
 **Priority:** P3 | **Effort:** 3h
 
@@ -105,10 +105,10 @@ Push StoryForge activity to Discord channels via webhooks.
 ## Feature Flags
 
 All Discord features gated behind:
-- `discord_oauth` — OAuth sign-in
-- `discord_bot_sprints` — Writing sprint bot
-- `discord_bot_sharing` — Word count sharing
-- `discord_bot_challenges` — Community challenges
+- `discord_oauth` - OAuth sign-in
+- `discord_bot_sprints` - Writing sprint bot
+- `discord_bot_sharing` - Word count sharing
+- `discord_bot_challenges` - Community challenges
 
 ## Implementation Order
 

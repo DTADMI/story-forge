@@ -1,4 +1,4 @@
-# Story Forge — Modularity Assessment
+# Story Forge - Modularity Assessment
 
 **Date**: 2026-05-29
 **Status**: Content authoring platform; cleanest modularity in the portfolio.
@@ -8,12 +8,12 @@
 ### Strengths
 - **No monoliths**: No files exceed 25KB. All components are reasonably sized.
 - **Well-organized components** (76 files, 15 dirs):
-  - `components/world/` — Character, timeline, encyclopedia, magic, religion, language builders
-  - `components/editor/` — Story editor, storyboard, version history, export, collaboration
-  - `components/layout/` — Dashboard shell, header, sidebar, navigation
-  - `components/ai/` — AI writing, style, research, plot, character generation
-  - `components/social/` — Share, follow, cheer
-  - `components/pwa/` — Service worker, offline indicator, install prompt
+  - `components/world/` - Character, timeline, encyclopedia, magic, religion, language builders
+  - `components/editor/` - Story editor, storyboard, version history, export, collaboration
+  - `components/layout/` - Dashboard shell, header, sidebar, navigation
+  - `components/ai/` - AI writing, style, research, plot, character generation
+  - `components/social/` - Share, follow, cheer
+  - `components/pwa/` - Service worker, offline indicator, install prompt
   - `components/ui/`, `components/loading/`, `components/a11y/`
 - **Single responsibility**: Each component does one thing well
 
@@ -25,23 +25,23 @@
 
 ### Strengths
 - **Flat but clean lib/** (36 files, 1 dir):
-  - `lib/ai.ts`, `lib/ai-types.ts`, `lib/ai-usage.ts` — AI integration well-separated
-  - `lib/prisma.ts` — Database client
-  - `lib/neo4j.ts`, `lib/neo4j-sync.ts` — Graph database
-  - `lib/redis.ts` — Caching
-  - `lib/stripe.ts` — Payments
-  - `lib/email.ts` — Notifications
-  - `lib/api.ts`, `lib/client-api.ts`, `lib/api-handler.ts` — API layer
-  - `lib/export-pdf.ts`, `lib/export-epub.ts` — Export formats
+  - `lib/ai.ts`, `lib/ai-types.ts`, `lib/ai-usage.ts` - AI integration well-separated
+  - `lib/prisma.ts` - Database client
+  - `lib/neo4j.ts`, `lib/neo4j-sync.ts` - Graph database
+  - `lib/redis.ts` - Caching
+  - `lib/stripe.ts` - Payments
+  - `lib/email.ts` - Notifications
+  - `lib/api.ts`, `lib/client-api.ts`, `lib/api-handler.ts` - API layer
+  - `lib/export-pdf.ts`, `lib/export-epub.ts` - Export formats
   - `lib/activity.ts`, `lib/audit.ts`, `lib/permissions.ts`, `lib/rate-limit.ts`
-  - `lib/validation.ts`, `lib/utils.ts`, `lib/env.ts` — Utilities
+  - `lib/validation.ts`, `lib/utils.ts`, `lib/env.ts` - Utilities
 
 ### Concerns
 - **Only 1 subdirectory** (`lib/supabase/`). As project grows, group files:
-  - `lib/world/` — neo4j, timeline, encyclopedia services
-  - `lib/ai/` — ai.ts, ai-types.ts, ai-usage.ts
-  - `lib/export/` — export-pdf.ts, export-epub.ts
-- **`lib/utils.ts`** — Watch for utility bloat. Split before it becomes a catch-all.
+  - `lib/world/` - neo4j, timeline, encyclopedia services
+  - `lib/ai/` - ai.ts, ai-types.ts, ai-usage.ts
+  - `lib/export/` - export-pdf.ts, export-epub.ts
+- **`lib/utils.ts`** - Watch for utility bloat. Split before it becomes a catch-all.
 
 ## 3. Cross-Project Reuse Potential
 
@@ -85,4 +85,4 @@
 **Priority Actions**:
 1. Group lib/ files into subdirectories as project grows (world/, ai/, export/)
 2. Watch `lib/utils.ts` growth; split before it becomes bloated
-3. Maintain current component discipline — this is the gold standard for NF projects
+3. Maintain current component discipline - this is the gold standard for NF projects

@@ -12,7 +12,7 @@ export default function AboutPage() {
           <h1 className="font-display text-3xl font-extrabold tracking-tight">About StoryForge</h1>
           <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
             A gamified writing platform designed to help writers build worlds, track characters, and
-            share stories — all while protecting your wellbeing.
+            share stories - all while protecting your wellbeing.
           </p>
         </div>
       </section>

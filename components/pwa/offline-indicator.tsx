@@ -44,10 +44,10 @@ export function OfflineIndicator() {
       {offline ? (
         <>
           <WifiOff className="h-4 w-4" />
-          You&apos;re offline — changes will sync when you reconnect
+          You&apos;re offline - changes will sync when you reconnect
         </>
       ) : (
-        "Back online — your connection has been restored"
+        "Back online - your connection has been restored"
       )}
     </div>
   );

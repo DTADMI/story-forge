@@ -78,7 +78,7 @@ export async function checkRateLimit(
       resetAt: now + windowSeconds,
     };
   } catch {
-    // Fail closed on Redis errors — deny requests rather than allow bypass
+    // Fail closed on Redis errors - deny requests rather than allow bypass
     return { allowed: false, remaining: 0, resetAt: now + windowSeconds };
   }
 }

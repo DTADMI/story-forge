@@ -11,7 +11,7 @@ export function getRedis(): Redis {
   if (!url || !token) {
     if (process.env.NODE_ENV === "development") {
       console.warn(
-        "Upstash Redis not configured — using in-memory fallback. Set UPSTASH_REDIS_URL and UPSTASH_REDIS_TOKEN."
+        "Upstash Redis not configured - using in-memory fallback. Set UPSTASH_REDIS_URL and UPSTASH_REDIS_TOKEN."
       );
     }
     // Return a no-op compatible client for dev

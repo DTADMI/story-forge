@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * verify.mjs — Systematic verification for StoryForge.
+ * verify.mjs - Systematic verification for StoryForge.
  * Runs integration trace, feature flag gate check, and pipeline validation.
  * Cross-platform (Node.js). Used in CI and pre-commit.
  */
@@ -190,7 +190,7 @@ if (runPipelines) {
   let failedSteps = 0;
 
   for (const [name, pipeline] of Object.entries(pipelines)) {
-    console.log(`  ${name} — ${pipeline.description}`);
+    console.log(`  ${name} - ${pipeline.description}`);
     for (const step of pipeline.steps) {
       totalSteps++;
       const fullPath = join(root, step.file);
@@ -218,7 +218,7 @@ if (runPipelines) {
           exitCode = 1;
         }
       } else if (action === "refreshes session, guards protected routes") {
-        // Auth is handled by app/(main)/layout.tsx via getUser() — no middleware.ts needed
+        // Auth is handled by app/(main)/layout.tsx via getUser() - no middleware.ts needed
         console.log("    PASS: middleware (app router layout guards auth)");
       } else if (action.startsWith("handles ")) {
         if (/export\s+(async\s+)?function|export\s+const\s+(GET|POST|PATCH|DELETE|PUT)\s*=/.test(content)) {

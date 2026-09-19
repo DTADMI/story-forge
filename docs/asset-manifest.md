@@ -1,10 +1,10 @@
-# StoryForge — Asset Manifest
+# StoryForge - Asset Manifest
 
 > Generated: May 14, 2026 | License: MIT (all assets)
 
 ## Philosophy
 
-All StoryForge assets are **inline SVG components** — no external downloads, no CDN dependencies, no binary files to track. This follows QuestHunt's approach of self-contained, version-controlled assets. Every SVG is hand-crafted, optimized, and embedded directly in TypeScript components for zero-latency rendering and tree-shaking.
+All StoryForge assets are **inline SVG components** - no external downloads, no CDN dependencies, no binary files to track. This follows QuestHunt's approach of self-contained, version-controlled assets. Every SVG is hand-crafted, optimized, and embedded directly in TypeScript components for zero-latency rendering and tree-shaking.
 
 ## Asset Inventory
 

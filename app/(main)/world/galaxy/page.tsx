@@ -116,7 +116,7 @@ export default async function GalaxyPage() {
       <header>
         <h1 className="text-3xl font-extrabold">Galaxy View</h1>
         <p className="text-fg/60 mt-1">
-          Interconnected visualization of your world — characters, events, locations, and
+          Interconnected visualization of your world - characters, events, locations, and
           organizations.
         </p>
       </header>

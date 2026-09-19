@@ -8,9 +8,9 @@ Google and GitHub OAuth buttons are implemented on `/signin` and `/signup` pages
 
 ## Pertinence Analysis
 
-### Google OAuth — 🟢 Pertinent
+### Google OAuth - 🟢 Pertinent
 
-**Use case:** A writer discovers StoryForge via a friend's shared project link. They want to leave a comment. Without an account, they can't. With Google OAuth, it's one click. No password to remember, no email verification. This is the dominant sign-up path for consumer SaaS — 60-80% of sign-ups use Google on platforms that offer it.
+**Use case:** A writer discovers StoryForge via a friend's shared project link. They want to leave a comment. Without an account, they can't. With Google OAuth, it's one click. No password to remember, no email verification. This is the dominant sign-up path for consumer SaaS - 60-80% of sign-ups use Google on platforms that offer it.
 
 **Added value:**
 - Eliminates password fatigue (writers already have too many accounts)
@@ -20,7 +20,7 @@ Google and GitHub OAuth buttons are implemented on `/signin` and `/signup` pages
 
 **Recommendation:** Keep. It's table-stakes for any consumer web app in 2026.
 
-### GitHub OAuth — 🔴 Not Pertinent
+### GitHub OAuth - 🔴 Not Pertinent
 
 **Use case:** A technical writer or developer who wants to write documentation, code-heavy tutorials, or developer-focused content. They use GitHub daily and prefer it over Google.
 
@@ -30,9 +30,9 @@ Google and GitHub OAuth buttons are implemented on `/signin` and `/signup` pages
 - Requires maintaining a GitHub OAuth app registration
 - Serves almost no users
 
-**Recommendation:** Remove. Replace with nothing — keep the form clean with email + Google only.
+**Recommendation:** Remove. Replace with nothing - keep the form clean with email + Google only.
 
-### Discord OAuth — 🟡 Potentially Pertinent (Future)
+### Discord OAuth - 🟡 Potentially Pertinent (Future)
 
 **Use case:** Writing communities on Discord (NaNoWriMo servers, genre-specific writing groups, critique circles). A writer who is active in a writing Discord discovers StoryForge through the community. Discord OAuth lets them sign in with their existing community identity, and potentially bridges their Discord presence with their StoryForge activity.
 
@@ -45,7 +45,7 @@ Google and GitHub OAuth buttons are implemented on `/signin` and `/signup` pages
 
 **Recommendation:** Consider for Phase 2, alongside community/social features. Not urgent.
 
-### Email-Only — 🟢 Baseline (Current, Keep)
+### Email-Only - 🟢 Baseline (Current, Keep)
 
 **Use case:** Writers who prefer not to link accounts, or who use email aliases for their writing identity (pen names). Email is the universal fallback that works for everyone.
 

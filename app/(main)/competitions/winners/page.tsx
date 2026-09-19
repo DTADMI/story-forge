@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Competition Winners — StoryForge",
+  title: "Competition Winners - StoryForge",
   description: "Past competition winners and top entries",
 };
 

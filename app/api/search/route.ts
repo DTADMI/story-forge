@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: [], disabled: true });
   }
 
-  // Prepare tsquery — plainto_tsquery handles user input safely
+  // Prepare tsquery - plainto_tsquery handles user input safely
   const tsquery = q
     .split(/\s+/)
     .filter(Boolean)

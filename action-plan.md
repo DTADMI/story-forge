@@ -1,4 +1,4 @@
-# StoryForge — Action Plan
+# StoryForge - Action Plan
 
 A gamified creative writing platform for novelists, screenwriters, comic creators, and visual storytellers. StoryForge
 helps writers build consistent habits, craft immersive worlds, and share stories with granular privacy controls.
@@ -44,7 +44,7 @@ story-forge/
 ### Platform Foundation
 
 - [x] Next.js 16 App Router with TypeScript, Tailwind CSS 4, Prisma 7 ORM
-- [x] Supabase Auth (email/password, OAuth) — NextAuth v4 removed
+- [x] Supabase Auth (email/password, OAuth) - NextAuth v4 removed
 - [x] Supabase client layer: server, client, middleware, admin
 - [x] Upstash Redis with no-op dev fallback
 - [x] Feature flags: 20 flags, Redis-backed, DB fallback, types, categories
@@ -166,10 +166,10 @@ story-forge/
 ### Documentation
 
 - [x] `AGENTS.md` with architecture map, hard rules, Supabase/Redis/RLS rules
-- [x] `docs/story-forge-documentation.md` — comprehensive platform spec
-- [x] `docs/technical/feature-flags-testing.md` — flag testing guide
-- [x] `docs/remaining-gaps.md` — prioritized gap assessment
-- [x] `docs/feature-recommendations.md` — feature roadmap with cost/benefit
+- [x] `docs/story-forge-documentation.md` - comprehensive platform spec
+- [x] `docs/technical/feature-flags-testing.md` - flag testing guide
+- [x] `docs/remaining-gaps.md` - prioritized gap assessment
+- [x] `docs/feature-recommendations.md` - feature roadmap with cost/benefit
 - [x] Specialized docs: architecture-security, database analysis, email plan, OAuth analysis, realtime research, Discord phase 2 plan
 - [x] `.env.example` with full config (Supabase, Redis, OpenRouter, Stripe, Neo4j, Resend)
 
@@ -196,7 +196,7 @@ story-forge/
 ### Security & Compliance
 - [ ] Rotate production secrets (CVE-2025-66478 / CVE-2025-55182)
 - [ ] PII handling, data export/delete
-- [ ] Accessibility audit (WCAG 2.1 AA) — full 50+ page audit
+- [ ] Accessibility audit (WCAG 2.1 AA) - full 50+ page audit
 
 ---
 
@@ -205,8 +205,8 @@ story-forge/
 ## 2026-05-29 Implementation Status
 
 ### Architecture
-- i18n: Now using cross-project React Context pattern (`lib/i18n/`) — migrated from `next-intl`
-- Default locale: `fr` (Quebec French) — respects Quebec language laws
+- i18n: Now using cross-project React Context pattern (`lib/i18n/`) - migrated from `next-intl`
+- Default locale: `fr` (Quebec French) - respects Quebec language laws
 - Single Next.js 16 App Router on Vercel with Supabase + Upstash Redis
 - Prisma ORM with pg adapter on Supabase Postgres (38 models)
 - Feature flags: 20 flags, Redis-backed, DB fallback
@@ -230,11 +230,11 @@ story-forge/
 - Updated `docs/technical/i18n-status.md`
 
 ### Competitions UI
-- Created `app/(main)/competitions/page.tsx` — browse active/past competitions
-- Created `app/(main)/competitions/[id]/page.tsx` — competition detail with entries
-- Created `app/(main)/competitions/[id]/enter-form.tsx` — enter dialog with project selection
-- Created `app/(main)/competitions/winners/page.tsx` — past winners showcase
-- Created `components/competitions/competition-card.tsx` — card + enter dialog components
+- Created `app/(main)/competitions/page.tsx` - browse active/past competitions
+- Created `app/(main)/competitions/[id]/page.tsx` - competition detail with entries
+- Created `app/(main)/competitions/[id]/enter-form.tsx` - enter dialog with project selection
+- Created `app/(main)/competitions/winners/page.tsx` - past winners showcase
+- Created `components/competitions/competition-card.tsx` - card + enter dialog components
 
 ### Design System V2
 - Created 14 new UI components: Accordion, Alert, Avatar, Checkbox, DropdownMenu, Label, Popover, Progress, RadioGroup/Select, Skeleton, Switch, Table, Tooltip
@@ -243,12 +243,12 @@ story-forge/
 ### Flags Enabled/Changed
 - 20 feature flags defined in `lib/flags.ts`
 - `projects_v2` enabled
-- `design_system_v2` disabled (never gated behavior — kept for future V2 gating)
+- `design_system_v2` disabled (never gated behavior - kept for future V2 gating)
 - 5 AI feature flags (writing, character, plot, style, research)
 
 ---
  
-## Completed (May 23, 2026 — Round 4)
+## Completed (May 23, 2026 - Round 4)
 
 ### TanStack Query & UX shell
 - [x] Shared client API error parsing + query client defaults
@@ -257,7 +257,7 @@ story-forge/
 - [x] Quest Hunt-inspired dashboard shell/header/sidebar/mobile nav refresh
 - [x] Migrated notifications, admin flags, world search, encyclopedia category builders, editor collaboration surfaces, group/profile flows, and core AI writing/character panels to TanStack Query / Mutation
 
-## Completed (May 22, 2026 — Round 3)
+## Completed (May 22, 2026 - Round 3)
 
 ### Critical Fixes
 - [x] Signup route: fixed `createUser` fallback + case-insensitive email match + token expiry
@@ -283,38 +283,38 @@ story-forge/
 
 ---
 
-## Completed (May 29, 2026 — Round 5)
+## Completed (May 29, 2026 - Round 5)
 
 ### Real-Time Collaboration (CRDT/Yjs)
 - [x] Installed `yjs`, `y-websocket`, `@tiptap/extension-collaboration`, `@tiptap/extension-collaboration-cursor`, `lib0`
-- [x] Created `lib/yjs-provider.ts` — Yjs document provider using Supabase Realtime Broadcast for sync
-- [x] Created `lib/yjs-collaboration.ts` — React hook (`useYjsCollaboration`) for collaborative editing
+- [x] Created `lib/yjs-provider.ts` - Yjs document provider using Supabase Realtime Broadcast for sync
+- [x] Created `lib/yjs-collaboration.ts` - React hook (`useYjsCollaboration`) for collaborative editing
 - [x] Created cursor awareness layer via `@tiptap/extension-collaboration-cursor` with colored user labels
-- [x] Updated `components/editor/editor.tsx` — accepts optional `collaborationExtensions` and `editable` prop
-- [x] Updated `components/editor/project-editor.tsx` — integrates collaboration hook, sync indicator
-- [x] Updated `app/(main)/projects/[id]/page.tsx` — passes `currentUser` to `ProjectEditor`
+- [x] Updated `components/editor/editor.tsx` - accepts optional `collaborationExtensions` and `editable` prop
+- [x] Updated `components/editor/project-editor.tsx` - integrates collaboration hook, sync indicator
+- [x] Updated `app/(main)/projects/[id]/page.tsx` - passes `currentUser` to `ProjectEditor`
 - [x] Added collaboration cursor CSS styles to `styles/globals.css`
 - [x] Feature-gated behind `real_time_collaboration` flag
 
 ### AI Monitoring
-- [x] Created `lib/ai-monitoring.ts` — Redis-backed request metrics (latency, success rate, tokens, per-feature)
-- [x] Created `app/api/ai/monitor/route.ts` — admin API endpoint for AI metrics dashboard
-- [x] Updated `lib/ai.ts` — `wrapWithMonitoring` adapter records all AI requests automatically
-- [x] Updated `lib/ai-types.ts` — added `_feature` field for per-feature tracking
-- [x] Updated `app/api/ai/suggest/route.ts` — passes feature for monitoring
+- [x] Created `lib/ai-monitoring.ts` - Redis-backed request metrics (latency, success rate, tokens, per-feature)
+- [x] Created `app/api/ai/monitor/route.ts` - admin API endpoint for AI metrics dashboard
+- [x] Updated `lib/ai.ts` - `wrapWithMonitoring` adapter records all AI requests automatically
+- [x] Updated `lib/ai-types.ts` - added `_feature` field for per-feature tracking
+- [x] Updated `app/api/ai/suggest/route.ts` - passes feature for monitoring
 
 ### Test Coverage Expansion
-- [x] `__tests__/api/competitions.test.ts` — list, detail, enter, validation (7 tests)
-- [x] `__tests__/api/messages.test.ts` — create, list, validation (5 tests)
-- [x] `__tests__/api/notifications.test.ts` — list, mark read, mark all read (4 tests)
-- [x] `__tests__/api/admin-flags.test.ts` — user list, flags, subscription update (4 tests)
-- [x] `__tests__/api/world-building.test.ts` — locations, species, organizations CRUD (6 tests)
+- [x] `__tests__/api/competitions.test.ts` - list, detail, enter, validation (7 tests)
+- [x] `__tests__/api/messages.test.ts` - create, list, validation (5 tests)
+- [x] `__tests__/api/notifications.test.ts` - list, mark read, mark all read (4 tests)
+- [x] `__tests__/api/admin-flags.test.ts` - user list, flags, subscription update (4 tests)
+- [x] `__tests__/api/world-building.test.ts` - locations, species, organizations CRUD (6 tests)
 
 ### Infrastructure
-- [x] `middleware.ts` updated — removed unused parameter
-- [x] All lint warnings/errors resolved — 0 warnings, 0 errors
+- [x] `middleware.ts` updated - removed unused parameter
+- [x] All lint warnings/errors resolved - 0 warnings, 0 errors
 
-## Completed (Jun 18, 2026 — Round 7)
+## Completed (Jun 18, 2026 - Round 7)
 
 ### Dead Code Cleanup
 - [x] Removed `next-intl` dependency (`i18n/routing.ts`, `i18n/request.ts`, `messages/`, package.json dep, next.config.mjs plugin wrapper)

@@ -1,5 +1,5 @@
 // =============================================================================
-// StoryForge — Yjs Collaboration Stress Test
+// StoryForge - Yjs Collaboration Stress Test
 // Verifies real-time sync under concurrent edits from multiple simulated users.
 // =============================================================================
 

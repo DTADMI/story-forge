@@ -1,6 +1,6 @@
 <!-- CLUSTER-C CANONICAL: NF-root rules. Project-specific delta below. -->
 > **Canonical rules/process**: `../../../docs/technical/feature-flags-testing.md` (NF root). This doc keeps project-specific values/catalog only.
-# StoryForge — Feature Flags Testing Guide
+# StoryForge - Feature Flags Testing Guide
 
 > Last updated: May 30, 2026
 
@@ -30,7 +30,7 @@ StoryForge uses a Redis-backed feature flag system with env-var fallback. Flags 
 | `ai_research_assistant` | AI Research Assistant | boolean | ai | **true** | ✅ Server: research route. Client: ai-research component |
 | `projects_v2` | Projects V2 | boolean | core | **true** | ✅ Client: project-editor fallback when disabled |
 | `wellbeing` | Writing Wellbeing | boolean | wellbeing | **true** | ✅ Client: project-editor break reminder timer |
-| `design_system_v2` | Design System V2 | boolean | core | **false** | None — acknowledged dead code, no V1/V2 split |
+| `design_system_v2` | Design System V2 | boolean | core | **false** | None - acknowledged dead code, no V1/V2 split |
 | `real_time_collaboration` | Real-time Collaboration | boolean | core | **true** | ✅ Client: Yjs provider, collaboration hook, presence avatars, editor sync, sync indicators |
 | `groups_feature` | Writing Groups | boolean | social | **true** | ✅ Server: groups/join/leave API routes. Client: sidebar filter, dashboard card |
 | `public_feed` | Public Story Feed | boolean | social | **true** | ✅ Server: public projects API. Client: feed page |
@@ -67,7 +67,7 @@ key.toLowerCase().replace(/[^a-z0-9_]/g, "_")
 
 ## Architecture Notes
 
-- `isEnabled(key)` — server-only async. Uses Prisma DB fallback.
-- `isEnabledSync(key)` — client-safe sync. Reads cached flags or defaults.
-- `loadFlags()` — async loader from Redis with env-var fallback.
-- `initFlags()` — server-side init that loads from DB + Redis.
+- `isEnabled(key)` - server-only async. Uses Prisma DB fallback.
+- `isEnabledSync(key)` - client-safe sync. Reads cached flags or defaults.
+- `loadFlags()` - async loader from Redis with env-var fallback.
+- `initFlags()` - server-side init that loads from DB + Redis.

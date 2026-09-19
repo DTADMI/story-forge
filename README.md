@@ -33,7 +33,7 @@ Help writers and visual storytellers show up regularly and enjoy the creative pr
 - **Reducing friction to create:** TipTap rich-text editor with autosave, word count tracking, project versioning, and
   visual asset organization
 - **Comprehensive world-building tools:** Characters with visual references, locations, timeline events, dialogue/script
-  scenes, and flexible metadata—perfect for novels, comics, graphic novels, screenplays, and webtoons
+  scenes, and flexible metadata-perfect for novels, comics, graphic novels, screenplays, and webtoons
 - **Visual storytelling support:** Character design galleries, location reference boards, scene scripting with
   dialogue/panel breakdowns, and image metadata for sequential art
 - **Gentle gamification:** Ink currency system, daily/weekly goals (words or panels), streak tracking, milestone badges,
@@ -210,7 +210,7 @@ Color & Design System
 - **Ink Currency:** Virtual currency system with InkPot wallets and transaction history
 - **Goals:** Daily/weekly targets (word count for writers, panel/page count for comic creators) with progress tracking
 - **Badges:** Milestone achievements (total words, pages completed, streaks, etc.) with award tracking
-- **Progress Logging:** Timestamped activity tracking per goal—track writing sessions or comic production milestones
+- **Progress Logging:** Timestamped activity tracking per goal-track writing sessions or comic production milestones
 
 **Social Features**
 
@@ -527,7 +527,7 @@ Environment
 
 ---
 
-## Payments (Stripe) — behind `payments` flag
+## Payments (Stripe) - behind `payments` flag
 
 Environment (API):
 
@@ -559,7 +559,7 @@ the checkout request body if needed.
 
 ---
 
-## Social — Follow/followers (MVP)
+## Social - Follow/followers (MVP)
 
 Schema:
 
@@ -573,8 +573,8 @@ API endpoints (guarded):
 
 Web pages:
 
-- `(main)/social/followers` — your followers
-- `(main)/social/following` — who you follow
+- `(main)/social/followers` - your followers
+- `(main)/social/following` - who you follow
 
 ---
 

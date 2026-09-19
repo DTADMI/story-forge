@@ -40,21 +40,21 @@ Other Clients
 
 ### Implementation Phases
 
-#### Phase 1 — Presence + Cursors (4 hours)
+#### Phase 1 - Presence + Cursors (4 hours)
 
 - Initialize Yjs `Awareness` in the editor
 - Broadcast cursor positions via Supabase Realtime Broadcast
 - Show remote user cursors and names in the editor viewport
 - Feature flag: `real_time_collaboration`
 
-#### Phase 2 — Real-time Text Sync (8 hours)
+#### Phase 2 - Real-time Text Sync (8 hours)
 
 - Bind TipTap editor to Yjs (`y-prosemirror` / `@tiptap/extension-collaboration`)
 - Sync document updates via Supabase Realtime
 - Handle merge conflicts via Yjs built-in merge
 - Add user join/leave notifications to the editor UI
 
-#### Phase 3 — Offline Support (6 hours)
+#### Phase 3 - Offline Support (6 hours)
 
 - Yjs IndexedDB persistence for offline edits
 - Conflict-free merge on reconnect

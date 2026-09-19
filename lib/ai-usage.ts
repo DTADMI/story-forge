@@ -1,5 +1,5 @@
 /**
- * AI usage tracking — Redis-backed daily quota tracking.
+ * AI usage tracking - Redis-backed daily quota tracking.
  * Enforces subscription-tier limits and provides usage stats.
  */
 import { getRedis } from "@/lib/redis";
@@ -29,7 +29,7 @@ export async function trackAiUsage(
   const limit = getAILimit(subscriptionTier);
   const today = formatDateKey();
 
-  // Free tier — no AI access
+  // Free tier - no AI access
   if (limit === 0) {
     return { allowed: false, remaining: 0, limit: 0 };
   }
@@ -58,7 +58,7 @@ export async function trackAiUsage(
     const remaining = limit - (count as number) - 1;
     return { allowed: true, remaining, limit };
   } catch {
-    // Redis unavailable — fail open
+    // Redis unavailable - fail open
     return { allowed: true, remaining: limit, limit };
   }
 }
@@ -149,6 +149,6 @@ export async function resetAiUsage(userId: string): Promise<void> {
       await redis.del(`${baseKey}:feature:${feature}`);
     }
   } catch {
-    // Redis unavailable — nothing to do
+    // Redis unavailable - nothing to do
   }
 }

@@ -1,5 +1,5 @@
 // =============================================================================
-// StoryForge — AI Adapter Tests
+// StoryForge - AI Adapter Tests
 // Verifies OpenRouter, DeepSeek, and OpenAI adapter connectivity and responses.
 // =============================================================================
 

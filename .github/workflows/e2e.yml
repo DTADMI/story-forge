@@ -1,4 +1,4 @@
-# StoryForge — CI E2E job (appended to existing ci.yml)
+# StoryForge - CI E2E job (appended to existing ci.yml)
 # Adds E2E testing step to run Playwright tests in CI
 # =============================================================================
 

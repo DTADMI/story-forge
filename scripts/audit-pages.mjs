@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // =============================================================================
-// StoryForge — Page-by-Page Feature Audit Script
+// StoryForge - Page-by-Page Feature Audit Script
 // Scans all pages/routes and reports what features are present on each.
 //
 // Usage: node scripts/audit-pages.mjs
@@ -116,7 +116,7 @@ function checkI18nCoverage(pages) {
 
 function generateReport(pages) {
   console.log('\n═══════════════════════════════════════════════');
-  console.log('  StoryForge — Page-by-Page Feature Audit     ');
+  console.log('  StoryForge - Page-by-Page Feature Audit     ');
   console.log('═══════════════════════════════════════════════\n');
 
   console.log(`Total pages discovered: ${pages.length}\n`);

@@ -52,7 +52,7 @@ export default function EraDetailPage() {
       { [field]: value },
       {
         onSuccess: () => {
-          // data will be stale, refetch needed — but for optimistic UI we leave it
+          // data will be stale, refetch needed - but for optimistic UI we leave it
         },
       }
     );

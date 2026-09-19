@@ -1,5 +1,5 @@
 // =============================================================================
-// StoryForge — Critical Path E2E Tests
+// StoryForge - Critical Path E2E Tests
 // Covers: auth flow, project CRUD, AI story generation, collaboration, Stripe
 // =============================================================================
 
@@ -144,7 +144,7 @@ test.describe("Real-time Collaboration", () => {
   test("should show collaboration status indicator", async ({ page }) => {
     await page.goto(`${BASE_URL}/projects`);
     await page.locator('[data-testid="project-card"], .project-card, article').first().click();
-    // Yjs provider status — should show connected or disconnected
+    // Yjs provider status - should show connected or disconnected
     const hasConnectionIndicator = await page
       .locator('[data-testid="connection-status"], .connection-status, [title*="connection"]')
       .isVisible()

@@ -1,4 +1,4 @@
-# StoryForge — Remaining Gaps & Implementation Plan
+# StoryForge - Remaining Gaps & Implementation Plan
 
 > Last updated: May 30, 2026
 
@@ -25,22 +25,22 @@
 
 ## Remaining Items
 
-### HIGH — In Progress
+### HIGH - In Progress
 
 | # | Item | Effort | Details |
 |---|---|---|---|
 | H1 | Pervasive hardcoded English strings | 8h | Only 2 of ~165 components/pages use `useI18n()`. Majority of app UI is hardcoded English. Needs systematic migration to `t()` calls. |
 | H2 | React 19.2 review | 2h | Review breaking changes since React 19.0, verify all APIs (use, cache, form actions) are current. |
 
-### MEDIUM — Planned
+### MEDIUM - Planned
 
 | # | Item | Effort | Details |
 |---|---|---|---|
 | M1 | Yjs Phase 2: offline support | 6h | IndexedDB persistence for offline edits, conflict resolution refinement, sync-on-reconnect. |
 | M2 | Accessibiliy audit (WCAG 2.1 AA) | 4h | ARIA labels, focus management, keyboard nav exist in auth forms + editor toolbar. Full audit across all 50+ pages needed. |
-| M3 | Rotate production secrets | 2h | CVE-2025-66478 / CVE-2025-55182 response — rotate Supabase JWT, Stripe, Redis, OpenRouter secrets. |
+| M3 | Rotate production secrets | 2h | CVE-2025-66478 / CVE-2025-55182 response - rotate Supabase JWT, Stripe, Redis, OpenRouter secrets. |
 
-### LOW — Defer
+### LOW - Defer
 
 | # | Item | Effort | Details |
 |---|---|---|---|
@@ -55,7 +55,7 @@
 
 ---
 
-## Completed (May 30, 2026 — Round 6)
+## Completed (May 30, 2026 - Round 6)
 
 ### Infrastructure
 - [x] `React.cache()` wrappers on `createServerClient()` and `getUser()` in `lib/supabase/server.ts`
@@ -84,10 +84,10 @@
 - Covers Supabase JWT, Stripe, Redis, OpenRouter, Neo4j, Vercel secrets
 
 **New API tests:**
-- `__tests__/api/social-admin.test.ts` — 5 tests covering followers, following, groups CRUD
+- `__tests__/api/social-admin.test.ts` - 5 tests covering followers, following, groups CRUD
 
 **Comic panel templates:**
-- `components/editor/panel-templates.tsx` — 12 pre-built layout templates (single, split, grid, hero-shot, dialogue, action-sequence, establishing, cliffhanger, etc.)
+- `components/editor/panel-templates.tsx` - 12 pre-built layout templates (single, split, grid, hero-shot, dialogue, action-sequence, establishing, cliffhanger, etc.)
 
 ### Round 4 (this session)
 

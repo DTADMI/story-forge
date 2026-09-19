@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Characters — StoryForge" };
+export const metadata: Metadata = { title: "Characters - StoryForge" };
 
 export default async function CharactersPage({
   searchParams,

@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
         },
       });
     } catch (dbError) {
-      // User record might already exist from trigger — non-critical
+      // User record might already exist from trigger - non-critical
       console.warn("[signup] DB user upsert warning:", dbError);
     }
 

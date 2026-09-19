@@ -47,7 +47,7 @@ export default async function AdminModerationPage() {
               <div key={p.id} className="flex justify-between text-sm py-1 border-b border-fg/5">
                 <div>
                   <span className="truncate block max-w-[200px]">{p.title}</span>
-                  <span className="text-xs text-fg/40">{p.user?.username || "—"}</span>
+                  <span className="text-xs text-fg/40">{p.user?.username || "-"}</span>
                 </div>
                 <Link
                   href={`/admin/moderation/${p.id}`}
@@ -67,7 +67,7 @@ export default async function AdminModerationPage() {
               <div key={c.id} className="flex justify-between text-sm py-1 border-b border-fg/5">
                 <div>
                   <span className="truncate block max-w-[200px]">{c.name}</span>
-                  <span className="text-xs text-fg/40">{c.user?.username || "—"}</span>
+                  <span className="text-xs text-fg/40">{c.user?.username || "-"}</span>
                 </div>
                 <Link
                   href={`/admin/moderation/${c.id}`}

@@ -14,7 +14,7 @@ function getPrismaInstance(): PrismaClient {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
     if (process.env.CI) {
-      console.warn("[Prisma] DATABASE_URL not set — returning CI build-safe stub.");
+      console.warn("[Prisma] DATABASE_URL not set - returning CI build-safe stub.");
       return new PrismaClient();
     }
     throw new Error(

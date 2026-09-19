@@ -1,4 +1,4 @@
-// Stop review hook — validates changes before session ends.
+// Stop review hook - validates changes before session ends.
 // This runs automatically when the agent session stops (via .codex/hooks.json).
 
 const { execSync } = await import("node:child_process");
@@ -7,7 +7,7 @@ const path = await import("node:path");
 
 const checks = [];
 
-// Check 1: Git status — are there uncommitted changes?
+// Check 1: Git status - are there uncommitted changes?
 try {
   const status = execSync("git status --porcelain", { encoding: "utf-8" }).trim();
   if (status) {
@@ -20,7 +20,7 @@ try {
   checks.push({ name: "git status", status: "ok", detail: "not a git repo" });
 }
 
-// Check 2: Documentation consistency — does action-plan.md mention recent changes?
+// Check 2: Documentation consistency - does action-plan.md mention recent changes?
 try {
   const actionPlan = path.join(process.cwd(), "action-plan.md");
   if (fs.existsSync(actionPlan)) {

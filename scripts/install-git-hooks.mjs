@@ -5,7 +5,7 @@ import path from "node:path";
 const hooksPath = path.join(process.cwd(), ".githooks");
 
 if (!fs.existsSync(hooksPath)) {
-  console.log("No .githooks directory found — skipping hook installation.");
+  console.log("No .githooks directory found - skipping hook installation.");
   process.exit(0);
 }
 
@@ -22,7 +22,7 @@ if (fs.existsSync(preCommitPath)) {
     fs.chmodSync(preCommitPath, 0o755);
     console.log("pre-commit hook marked as executable");
   } catch {
-    // Windows doesn't support chmod — that's fine
+    // Windows doesn't support chmod - that's fine
   }
 }
 

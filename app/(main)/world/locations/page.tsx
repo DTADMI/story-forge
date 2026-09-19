@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 
-export const metadata: Metadata = { title: "Locations — StoryForge" };
+export const metadata: Metadata = { title: "Locations - StoryForge" };
 
 export default async function LocationsPage({
   searchParams,

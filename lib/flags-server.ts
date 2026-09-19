@@ -34,7 +34,7 @@ async function loadFlagsWithDB(): Promise<FeatureFlag[]> {
     const dbFlags = await getPrismaFeatureFlags();
     if (dbFlags.length > 0) return dbFlags;
   } catch {
-    // DB unavailable — fall through
+    // DB unavailable - fall through
   }
   return loadFlags();
 }

@@ -1,5 +1,5 @@
 /**
- * Feature flags for StoryForge — client-safe sync subset.
+ * Feature flags for StoryForge - client-safe sync subset.
  * Async Redis-backed functions are in `lib/flags-server.ts`.
  * Persistence: Redis key `storyforge:feature_flags` + DB table `public.feature_flags`
  * For server-side Prisma-backed loading, use `lib/flags-server.ts`.
@@ -26,7 +26,7 @@ function envFallback(key: string, fallback: boolean): boolean {
   return s === "1" || s === "true" || s === "yes" || s === "on";
 }
 
-// Default flags — same IDs as before
+// Default flags - same IDs as before
 const DEFAULT_FLAGS: FeatureFlag[] = [
   {
     id: "payments",
@@ -225,7 +225,7 @@ export async function loadFlags(): Promise<FeatureFlag[]> {
       return stored as FeatureFlag[];
     }
   } catch {
-    // Redis unavailable — fall through to defaults
+    // Redis unavailable - fall through to defaults
   }
 
   // Env-var fallback

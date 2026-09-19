@@ -1,5 +1,5 @@
 /**
- * StoryForge AI Adapter — multi-provider with OpenRouter, DeepSeek, OpenAI, and mock.
+ * StoryForge AI Adapter - multi-provider with OpenRouter, DeepSeek, OpenAI, and mock.
  * Handles model selection, streaming, retries, and usage tracking.
  */
 import type {
@@ -40,7 +40,7 @@ const MOCK_RESPONSES: Record<string, string> = {
     name: "[Mock] Aurelia",
     traits: ["brave", "impulsive", "loyal"],
     backstory: "A former soldier with a mysterious past.",
-    arc: "Redemption arc — from lone wolf to trusted leader.",
+    arc: "Redemption arc - from lone wolf to trusted leader.",
   }),
   plot: JSON.stringify({
     analysis:
@@ -56,7 +56,7 @@ const MOCK_RESPONSES: Record<string, string> = {
   research: JSON.stringify({
     findings: "[Mock] Medieval blacksmiths typically used charcoal forges reaching 1100-1200°C.",
     sources: ["Medieval Technology and Social Change (White, 1962)"],
-    reliability: "Speculative — verify with additional sources.",
+    reliability: "Speculative - verify with additional sources.",
   }),
 };
 

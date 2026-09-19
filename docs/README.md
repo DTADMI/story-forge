@@ -1,4 +1,4 @@
-# Story Forge — Documentation
+# Story Forge - Documentation
 
 > **Owner**: Nebula Forge Digital Studio  
 > **Last Updated**: 2026-08-20  
@@ -82,4 +82,4 @@ pnpm db:seed          # Seed database
 
 ---
 
-*Document maintained by Nebula Forge Digital Studio — August 2026*
+*Document maintained by Nebula Forge Digital Studio - August 2026*

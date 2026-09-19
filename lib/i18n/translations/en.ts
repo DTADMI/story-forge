@@ -2,7 +2,7 @@ export const en = {
   home: {
     title: "StoryForge",
     description:
-      "A gamified writing platform that helps you build worlds, track characters and relationships, and share your stories with the right audience. Stay motivated with streaks, goals, and gems — all while protecting your wellbeing.",
+      "A gamified writing platform that helps you build worlds, track characters and relationships, and share your stories with the right audience. Stay motivated with streaks, goals, and gems - all while protecting your wellbeing.",
     cta: {
       signIn: "Sign in",
       pricing: "Pricing",

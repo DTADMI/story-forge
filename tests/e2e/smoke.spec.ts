@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
 
 // ============================================================================
-// Story Forge — E2E Smoke Tests
+// Story Forge - E2E Smoke Tests
 // ============================================================================
 
-test.describe("StoryForge — Public Pages", () => {
+test.describe("StoryForge - Public Pages", () => {
   test("home page loads", async ({ page }) => {
     const response = await page.goto("/");
     expect(response?.status()).toBeLessThan(400);
@@ -22,7 +22,7 @@ test.describe("StoryForge — Public Pages", () => {
   });
 });
 
-test.describe("StoryForge — Auth Flow", () => {
+test.describe("StoryForge - Auth Flow", () => {
   test("redirects to signin when accessing dashboard unauthenticated", async ({ page }) => {
     await page.goto("/dashboard");
     await page.waitForURL(/\/signin/);
@@ -35,7 +35,7 @@ test.describe("StoryForge — Auth Flow", () => {
   });
 });
 
-test.describe("StoryForge — Core Pages (authenticated placeholder)", () => {
+test.describe("StoryForge - Core Pages (authenticated placeholder)", () => {
   test("dashboard page redirects to auth", async ({ page }) => {
     // Without auth, dashboard should redirect to signin
     await page.goto("/dashboard");
@@ -87,12 +87,12 @@ test.describe("StoryForge — Core Pages (authenticated placeholder)", () => {
 
   test("competitions page loads or redirects", async ({ page }) => {
     const response = await page.goto("/competitions");
-    // May be public or redirect — either is valid
+    // May be public or redirect - either is valid
     expect(response?.status()).toBeLessThan(500);
   });
 });
 
-test.describe("StoryForge — Admin Pages", () => {
+test.describe("StoryForge - Admin Pages", () => {
   test("admin dashboard redirects to auth", async ({ page }) => {
     await page.goto("/admin/dashboard");
     await page.waitForURL(/\/signin/);
@@ -112,7 +112,7 @@ test.describe("StoryForge — Admin Pages", () => {
   });
 });
 
-test.describe("StoryForge — Responsive", () => {
+test.describe("StoryForge - Responsive", () => {
   test("home page at 320px mobile viewport", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 568 });
     await page.goto("/");
@@ -131,7 +131,7 @@ test.describe("StoryForge — Responsive", () => {
   });
 });
 
-test.describe("StoryForge — i18n", () => {
+test.describe("StoryForge - i18n", () => {
   test("home page serves French by default", async ({ page }) => {
     // Set Accept-Language to French
     await page.setExtraHTTPHeaders({ "Accept-Language": "fr" });

@@ -29,7 +29,7 @@ export const createServerClient = cache(async () => {
         try {
           cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
         } catch {
-          // Ignored — SSR setAll from Server Component
+          // Ignored - SSR setAll from Server Component
         }
       },
     },

@@ -94,10 +94,10 @@ export default function ModerationReviewPage() {
             <p className="font-medium">
               {entity.user ? (
                 <Link href={`/admin/users/${entity.user.id}`} className="hover:text-brand">
-                  {entity.user.username || entity.user.name || "—"}
+                  {entity.user.username || entity.user.name || "-"}
                 </Link>
               ) : (
-                "—"
+                "-"
               )}
             </p>
           </div>
@@ -126,15 +126,15 @@ export default function ModerationReviewPage() {
           <div className="space-y-3">
             <div>
               <span className="text-xs text-fg/40">Traits</span>
-              <p className="text-sm">{entity.traits || "—"}</p>
+              <p className="text-sm">{entity.traits || "-"}</p>
             </div>
             <div>
               <span className="text-xs text-fg/40">Quirks</span>
-              <p className="text-sm">{entity.quirks || "—"}</p>
+              <p className="text-sm">{entity.quirks || "-"}</p>
             </div>
             <div>
               <span className="text-xs text-fg/40">Bio</span>
-              <p className="text-sm mt-1 whitespace-pre-wrap">{entity.bio || "—"}</p>
+              <p className="text-sm mt-1 whitespace-pre-wrap">{entity.bio || "-"}</p>
             </div>
           </div>
         )}

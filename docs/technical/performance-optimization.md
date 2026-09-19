@@ -1,6 +1,6 @@
 <!-- CLUSTER-C CANONICAL: NF-root rules. Project-specific delta below. -->
 > **Canonical rules/process**: `../../../docs/technical/performance-optimization.md` (NF root). This doc keeps project-specific values/catalog only.
-# StoryForge — Performance Optimization
+# StoryForge - Performance Optimization
 
 **Last Updated**: 2026-06-18
 
@@ -41,9 +41,9 @@
 
 ### `optimizePackageImports`
 Configured in `next.config.mjs`:
-- `lucide-react` — tree-shakes icon imports
-- `date-fns` — tree-shakes date functions  
-- `@radix-ui/react-slot` — tree-shakes slot primitive
+- `lucide-react` - tree-shakes icon imports
+- `date-fns` - tree-shakes date functions  
+- `@radix-ui/react-slot` - tree-shakes slot primitive
 
 ### Code Splitting
 - TipTap editor: dynamically imported via `next/dynamic` with `ssr: false`
@@ -70,12 +70,12 @@ Configured in `next.config.mjs`:
 - [x] `poweredByHeader: false` to reduce response size
 - [x] `serverActions.bodySizeLimit: '2mb'` to prevent large uploads
 - [x] `revalidate` exports on all 6 public/marketing pages with tiered values
-- [ ] `cacheComponents: true` (PPR) — blocked by `revalidate` export incompatibility in Next.js 16.2.6
+- [ ] `cacheComponents: true` (PPR) - blocked by `revalidate` export incompatibility in Next.js 16.2.6
 - [ ] `generateStaticParams` for high-traffic dynamic routes
 - [ ] Vercel Analytics / Speed Insights integration
 
 ### PPR / `cacheComponents` Note
-Next.js 16.2.6 merged `experimental.ppr` into `cacheComponents`. Enabling `cacheComponents: true` is incompatible with `revalidate` exports on pages — pages using `revalidate` must migrate to `staleTimes`-based cache lifetimes or `dynamic` config. This migration is deferred until Next.js provides a clear migration path for ISR pages under PPR.
+Next.js 16.2.6 merged `experimental.ppr` into `cacheComponents`. Enabling `cacheComponents: true` is incompatible with `revalidate` exports on pages - pages using `revalidate` must migrate to `staleTimes`-based cache lifetimes or `dynamic` config. This migration is deferred until Next.js provides a clear migration path for ISR pages under PPR.
 
 ## Database Performance
 
@@ -96,8 +96,8 @@ Next.js 16.2.6 merged `experimental.ppr` into `cacheComponents`. Enabling `cache
 
 ## Known Performance Gaps
 
-1. Root layout `force-dynamic` prevents any static rendering — justified by auth-state dependency
-2. `cacheComponents` not enabled — blocked by `revalidate` incompatibility with Next.js 16.2.6
-3. No `generateStaticParams` for `/projects/[id]` or `/users/[id]` — these are dynamic per-user pages
+1. Root layout `force-dynamic` prevents any static rendering - justified by auth-state dependency
+2. `cacheComponents` not enabled - blocked by `revalidate` incompatibility with Next.js 16.2.6
+3. No `generateStaticParams` for `/projects/[id]` or `/users/[id]` - these are dynamic per-user pages
 4. No CDN caching headers on public API responses
-5. AI feature calls are synchronous and may block SSR — consider streaming
+5. AI feature calls are synchronous and may block SSR - consider streaming

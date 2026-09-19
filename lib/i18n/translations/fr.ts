@@ -2,7 +2,7 @@ export const fr = {
   home: {
     title: "StoryForge",
     description:
-      "Une plateforme d'écriture ludifiée qui vous aide à construire des mondes, suivre des personnages et leurs relations, et partager vos histoires avec le bon public. Restez motivé avec des séries, des objectifs et des gemmes — tout en protégeant votre bien-être.",
+      "Une plateforme d'écriture ludifiée qui vous aide à construire des mondes, suivre des personnages et leurs relations, et partager vos histoires avec le bon public. Restez motivé avec des séries, des objectifs et des gemmes - tout en protégeant votre bien-être.",
     cta: {
       signIn: "Se connecter",
       pricing: "Tarifs",

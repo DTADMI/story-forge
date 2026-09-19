@@ -1,10 +1,10 @@
-# StoryForge — Systematic Verification Framework
+# StoryForge - Systematic Verification Framework
 
 > Last updated: May 22, 2026
 
 ## Purpose
 
-Prevent the class of bugs where backend infrastructure exists but client code never triggers it — the "disconnected pipeline" anti-pattern (e.g., gamification progress API existed but no client ever called it).
+Prevent the class of bugs where backend infrastructure exists but client code never triggers it - the "disconnected pipeline" anti-pattern (e.g., gamification progress API existed but no client ever called it).
 
 ## Verification Layers
 
@@ -21,17 +21,17 @@ Prevent the class of bugs where backend infrastructure exists but client code ne
 
 Scans the codebase in two passes:
 
-**Pass 1 — API Surface**: Finds all exported HTTP handlers in `app/api/`:
+**Pass 1 - API Surface**: Finds all exported HTTP handlers in `app/api/`:
 - Pattern: `export async function (GET|POST|PATCH|PUT|DELETE)` 
 - Reports: method, route path, file location
 
-**Pass 2 — Client Usage**: Finds all API calls in `app/` and `components/`:
+**Pass 2 - Client Usage**: Finds all API calls in `app/` and `components/`:
 - Pattern: `fetch(...)`, `/api/...` string literals
 - Reports: method, URL path, source file location
 
 **Cross-reference**: Produces a report of:
-- **Orphaned endpoints**: API handlers with zero client callers (GAP — backend exists, no UI triggers it)
-- **Missing handlers**: Client fetch calls to endpoints that don't have a handler file (GAP — UI calls, no backend)
+- **Orphaned endpoints**: API handlers with zero client callers (GAP - backend exists, no UI triggers it)
+- **Missing handlers**: Client fetch calls to endpoints that don't have a handler file (GAP - UI calls, no backend)
 - **Connected**: Both sides exist (OK)
 
 ### 2. Feature Flag Gate (`verify-feature-flags.ps1`)
@@ -115,7 +115,7 @@ Verification runs in CI after the build step (see `.github/workflows/ci.yml`). F
 
 ## Prevention Rules
 
-1. **Every new API endpoint must have at least one client caller** — verified by integration trace
-2. **Every new feature flag must gate at least one UI or API path** — verified by flag gate script
-3. **Every data pipeline must be traceable end-to-end** — verified by pipeline check
-4. **No dead exports** — verified by dead code check (manual, pre-commit)
+1. **Every new API endpoint must have at least one client caller** - verified by integration trace
+2. **Every new feature flag must gate at least one UI or API path** - verified by flag gate script
+3. **Every data pipeline must be traceable end-to-end** - verified by pipeline check
+4. **No dead exports** - verified by dead code check (manual, pre-commit)

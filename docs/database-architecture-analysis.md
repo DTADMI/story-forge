@@ -1,6 +1,6 @@
 # Database & Backend Architecture Analysis
 
-> May 14, 2026 — Comparative analysis for Nebula Forge portfolio
+> May 14, 2026 - Comparative analysis for Nebula Forge portfolio
 
 ---
 
@@ -98,7 +98,7 @@ Next.js App → neo4j-driver (Bolt protocol) → Neo4j AuraDB (cloud)
 - **Native graph traversal**: Cypher queries traverse relationships in O(1) per hop. 1000x faster than SQL JOINs for deep graphs.
 - **Flexible schema**: Nodes and relationships can have arbitrary properties. No migrations for new relationship types.
 - **Visual exploration**: Neo4j Bloom for non-technical data browsing.
-- **Graph algorithms**: Shortest path, PageRank, community detection, centrality — built-in.
+- **Graph algorithms**: Shortest path, PageRank, community detection, centrality - built-in.
 - **Cypher query language**: Expressive, readable. `MATCH (c:Character)-[r:ALLY_OF]->(ally) RETURN c, r, ally`.
 - **GraphQL integration**: `@neo4j/graphql-js` auto-generates GraphQL API from type definitions.
 
@@ -111,7 +111,7 @@ Next.js App → neo4j-driver (Bolt protocol) → Neo4j AuraDB (cloud)
 - **Operational complexity**: Different backup/restore/monitoring from Postgres.
 
 ### Best For
-- Social networks (follows, friends, blocks — all graph-native)
+- Social networks (follows, friends, blocks - all graph-native)
 - Recommendation engines ("people who liked X also liked Y")
 - Character/event relationship visualization
 - Knowledge graphs and semantic search
@@ -195,20 +195,20 @@ Client SDK (Rust/TS/C#) → WebSocket → SpacetimeDB module (Rust/C#)
 
 ## 6. Per-Project Recommendations
 
-### QuestHunt — Supabase (Keep)
+### QuestHunt - Supabase (Keep)
 **Rationale:** QH has 207 tables, 442 RLS policies, mobile clients with anonymous access, GPS verification functions, and AR features. The RLS-first architecture with Postgres functions (SECURITY DEFINER with explicit search_path) is the correct design for this use case. SpacetimeDB could handle the real-time game state better but would require rewriting all auth, authorization, and 500+ queries. Not worth it.
 
-### StoryForge — Supabase + Neo4j (Hybrid, Recommended)
+### StoryForge - Supabase + Neo4j (Hybrid, Recommended)
 **Rationale:** SF has two distinct data domains:
 1. **Relational core** (projects, users, subscriptions, comments, messages, gamification): Best on Supabase/Prisma. ACID, SQL, RLS, auth, storage all needed.
 2. **Graph core** (character relationships, event connections, family trees, interconnected galaxy visualization): Best on Neo4j. Native graph traversal, Cypher, Bloom, graph algorithms.
 
 The hybrid approach: Supabase for everything except the character/event relationship graph. A `CharacterRelationship` table in Supabase syncs to Neo4j nodes via a simple ETL. The galaxy visualization queries Neo4j directly. All other features stay on Supabase.
 
-### VelvetGalaxy — Neo4j (Primary)
-**Rationale:** The social graph IS the product. Follows, friends, blocks, content recommendations, similarity scores, community detection — all graph-native. Neo4j's Cypher queries for "friends of friends who liked X" are 100x simpler than SQL recursive CTEs. Supabase could handle auth + storage but the core data belongs in a graph DB.
+### VelvetGalaxy - Neo4j (Primary)
+**Rationale:** The social graph IS the product. Follows, friends, blocks, content recommendations, similarity scores, community detection - all graph-native. Neo4j's Cypher queries for "friends of friends who liked X" are 100x simpler than SQL recursive CTEs. Supabase could handle auth + storage but the core data belongs in a graph DB.
 
-### LibraKeeper — Supabase (Keep)
+### LibraKeeper - Supabase (Keep)
 **Rationale:** Financial ledgers need ACID, audit trails, double-entry accounting, and regulatory compliance. Postgres is the gold standard for this. Neo4j can't do financial-grade ACID at the same level. Convex's document model would make financial queries painful. SpacetimeDB is too immature for financial data.
 
 ---
@@ -217,7 +217,7 @@ The hybrid approach: Supabase for everything except the character/event relation
 
 ### StoryForge: Supabase → Supabase + Neo4j
 - **What changes:** Add Neo4j for character/event relationship graph. Everything else stays on Supabase/Prisma.
-- **What doesn't change:** Auth, projects, comments, messages, gamification, storage, admin — all unchanged.
+- **What doesn't change:** Auth, projects, comments, messages, gamification, storage, admin - all unchanged.
 - **New dependency:** `neo4j-driver` (~200KB). Neo4j AuraDB free tier (50K nodes, 175K relationships) is sufficient for launch.
 - **Sync strategy:** When a CharacterRelationship is created/deleted in Prisma, fire a background job to upsert the corresponding Neo4j node/relationship. Simple, eventual consistency.
 

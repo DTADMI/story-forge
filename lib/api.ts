@@ -1,6 +1,6 @@
 /**
  * Simple API fetch helper for StoryForge.
- * Uses cookie-based Supabase Auth — no JWT signing needed.
+ * Uses cookie-based Supabase Auth - no JWT signing needed.
  *
  * For server components: use `prisma` from `@/lib/prisma` directly.
  * For client components: use this wrapper which forwards cookies.

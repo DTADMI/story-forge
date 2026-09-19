@@ -119,7 +119,7 @@ export function GalaxyGraph({ data }: GalaxyGraphProps) {
     }));
   }, [filteredNodes]);
 
-  // Render function — reads from refs, paints to canvas
+  // Render function - reads from refs, paints to canvas
   const renderFn = useCallback(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;

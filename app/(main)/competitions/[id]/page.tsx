@@ -8,7 +8,7 @@ import { EnterCompetitionForm } from "./enter-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Competition Details — StoryForge",
+  title: "Competition Details - StoryForge",
 };
 
 const statusColors: Record<string, string> = {

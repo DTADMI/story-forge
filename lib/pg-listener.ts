@@ -1,4 +1,4 @@
-// PG LISTEN/NOTIFY listener — flushes caches on feature flag changes
+// PG LISTEN/NOTIFY listener - flushes caches on feature flag changes
 // Uses Supabase Realtime (Postgres Changes)
 import { createServerClient } from "@/lib/supabase/server";
 

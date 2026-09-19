@@ -120,7 +120,7 @@ function Detail({ label, value }: { label: string; value?: string | null }) {
   return (
     <div>
       <p className="text-xs text-fg/40">{label}</p>
-      <p className="font-medium">{value || "—"}</p>
+      <p className="font-medium">{value || "-"}</p>
     </div>
   );
 }

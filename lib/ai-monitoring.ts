@@ -1,5 +1,5 @@
 /**
- * AI monitoring — tracks latency, success rate, and per-feature metrics.
+ * AI monitoring - tracks latency, success rate, and per-feature metrics.
  * Data stored in Redis with 7-day TTL for dashboard visualization.
  */
 import { getRedis } from "@/lib/redis";
@@ -76,7 +76,7 @@ export async function recordAiRequest(metric: AiRequestMetric): Promise<void> {
     await redis.hincrby(globalKey, "totalTokens", metric.tokensInput + metric.tokensOutput);
     await redis.expire(globalKey, TTL);
   } catch {
-    // Non-critical — fail silently
+    // Non-critical - fail silently
   }
 }
 

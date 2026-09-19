@@ -61,7 +61,7 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session — extends cookie lifetime on every navigation
+  // Refresh session - extends cookie lifetime on every navigation
   await supabase.auth.getUser();
 
   // Security headers

@@ -1,4 +1,4 @@
-# StoryForge — Local Development Setup
+# StoryForge - Local Development Setup
 
 ## Prerequisites
 
@@ -84,7 +84,7 @@ Copy `.env.example` to `.env.local` and fill in:
 - **Database**: PostgreSQL on Supabase, accessed via Prisma ORM
 - **Cache**: Upstash Redis (feature flags, rate limiting)
 - **Storage**: Supabase Storage (media + private-media buckets)
-- **Feature flags**: `lib/flags.ts` — Redis-backed with DB fallback
+- **Feature flags**: `lib/flags.ts` - Redis-backed with DB fallback
 
 ## Project Structure
 

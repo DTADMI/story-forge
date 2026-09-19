@@ -1,4 +1,4 @@
-// Session start hook — validates coding environment before work begins.
+// Session start hook - validates coding environment before work begins.
 // This runs automatically when the agent session starts (via .codex/hooks.json).
 
 const checks = [];

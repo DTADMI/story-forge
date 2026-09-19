@@ -38,7 +38,7 @@ export const PATCH = withErrorHandler(
     if (body.bio !== undefined) profileData.bio = body.bio;
     if (body.website !== undefined) profileData.website = body.website;
 
-    // Handle settings fields — merge with existing settings
+    // Handle settings fields - merge with existing settings
     const settingsFields = [
       "defaultPublicationScope",
       "breakReminders",

@@ -127,12 +127,12 @@ export default async function AdminAuditPage({
                     <td className="p-3 text-fg/50 text-xs">
                       {event.entityType
                         ? `${event.entityType}${event.entityId ? ` / ${event.entityId.slice(0, 12)}` : ""}`
-                        : "—"}
+                        : "-"}
                     </td>
                     <td className="p-3 text-fg/50 font-mono text-xs">
                       {event.userId.slice(0, 12)}
                     </td>
-                    <td className="p-3 text-fg/50 font-mono text-xs">{event.ip || "—"}</td>
+                    <td className="p-3 text-fg/50 font-mono text-xs">{event.ip || "-"}</td>
                   </tr>
                 ))}
               </tbody>

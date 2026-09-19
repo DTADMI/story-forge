@@ -1,6 +1,6 @@
 # Architecture Decisions & Security Documentation
 
-> **See also (root canonical strategy)**: `../../../docs/technical/vercel-supabase-security-cost-ops-2026-05-27.md` — the cross-project Vercel/Supabase security & cost-ops strategy. This doc keeps StoryForge-specific architecture and threat-model detail only.
+> **See also (root canonical strategy)**: `../../../docs/technical/vercel-supabase-security-cost-ops-2026-05-27.md` - the cross-project Vercel/Supabase security & cost-ops strategy. This doc keeps StoryForge-specific architecture and threat-model detail only.
 
 > Last updated: May 14, 2026
 
@@ -12,7 +12,7 @@
 
 | Dimension | Naked Supabase (QH pattern) | Supabase + Prisma (SF pattern) |
 |---|---|---|
-| **ORM** | None — `@supabase/supabase-js` + raw `pg` | Prisma 7.2 with `@prisma/adapter-pg` |
+| **ORM** | None - `@supabase/supabase-js` + raw `pg` | Prisma 7.2 with `@prisma/adapter-pg` |
 | **Access control** | RLS on every table (primary) | Application-level guards + RLS (defense-in-depth) |
 | **Migrations** | Custom SQL + rollout/rollback pairs | Prisma Migrate |
 | **Type safety** | Generated `Database` types | Prisma client types (auto-generated) |
@@ -22,7 +22,7 @@
 
 ### Recommendation
 
-**StoryForge should keep Prisma + Supabase.** The data model has 19 models with deep relational nesting (Characters↔Timeline↔Locations↔Projects↔Users, bidirectional Follow, Groups↔Members). Prisma's relation traversal eliminates hundreds of lines of manual join logic. The trade-off — Prisma bypasses RLS — is mitigated by application-level guards in route handlers (`requireUser()` + `prisma.project.findFirst({ where: { userId: user.id } })`). RLS serves as defense-in-depth but is not the primary access control layer.
+**StoryForge should keep Prisma + Supabase.** The data model has 19 models with deep relational nesting (Characters↔Timeline↔Locations↔Projects↔Users, bidirectional Follow, Groups↔Members). Prisma's relation traversal eliminates hundreds of lines of manual join logic. The trade-off - Prisma bypasses RLS - is mitigated by application-level guards in route handlers (`requireUser()` + `prisma.project.findFirst({ where: { userId: user.id } })`). RLS serves as defense-in-depth but is not the primary access control layer.
 
 **QuestHunt should stay on naked Supabase.** QH's data model is flatter (quests, waypoints, puzzles, profiles) with tiered access (admin, creator, player, anonymous). RLS-first architecture is the correct choice because access patterns vary dramatically by tier, and RLS policies enforce this at the database level with zero application code. The custom SQL migration system gives precise control over complex Postgres functions (SECURITY DEFINER, search_path), which Prisma cannot express.
 
@@ -45,7 +45,7 @@ If QH were to switch to Prisma:
 
 **Example A: "Get a project with characters, timeline events, and locations"**
 
-SF (Prisma) — 1 round-trip with deep includes:
+SF (Prisma) - 1 round-trip with deep includes:
 ```typescript
 const project = await prisma.project.findFirst({
   where: { id, userId: user.id },
@@ -60,7 +60,7 @@ const project = await prisma.project.findFirst({
 // Single optimized SQL query. All nested data populated automatically.
 ```
 
-QH equivalent — 4+ round-trips with manual stitching:
+QH equivalent - 4+ round-trips with manual stitching:
 ```typescript
 const { data: quest } = await supabase.from("quests").select("*").eq("id", id).single();
 const { data: waypoints } = await supabase.from("waypoints").select("*").eq("quest_id", id);
@@ -71,7 +71,7 @@ const enriched = { ...quest, waypoints, progress, creator };
 
 **Example B: "Get timeline events with characters and locations"**
 
-SF (Prisma) — 1 query:
+SF (Prisma) - 1 query:
 ```typescript
 const events = await prisma.timelineEvent.findMany({
   where: { userId: user.id, projectId },
@@ -79,7 +79,7 @@ const events = await prisma.timelineEvent.findMany({
 });
 ```
 
-QH activity feed — 3 round-trips + manual merge:
+QH activity feed - 3 round-trips + manual merge:
 ```typescript
 const { data: activities } = await supabase.from("activities").select("*").range(0, 20);
 const userIds = [...new Set(activities.map(a => a.user_id))];
@@ -90,7 +90,7 @@ const { data: reactions } = await supabase.from("activity_reactions").select("*"
 
 **Example C: "Get user badges with definitions"**
 
-SF (Prisma) — 1 query:
+SF (Prisma) - 1 query:
 ```typescript
 const badges = await prisma.userBadge.findMany({
   where: { userId: user.id },
@@ -98,7 +98,7 @@ const badges = await prisma.userBadge.findMany({
 });
 ```
 
-QH — badge definitions in TypeScript constants, earned from DB, merged in code:
+QH - badge definitions in TypeScript constants, earned from DB, merged in code:
 ```typescript
 const badgeDefs = BADGE_DEFINITIONS; // from @/lib/badges
 const earned = await buildBadgeCatalogForUser({ admin, userId });
@@ -112,11 +112,11 @@ const earned = await buildBadgeCatalogForUser({ admin, userId });
 | **Models** | 18 (small, dense graph) | 207 (large, wide, shallow) |
 | **Depth** | 3 levels, many-to-many | 1-2 levels, flat FK |
 | **Round-trips** | 1 per complex query | 3-5 per complex query |
-| **ORM payoff** | High — `include` saves 3-5 round-trips | Low — flat queries are just `select().eq()` |
+| **ORM payoff** | High - `include` saves 3-5 round-trips | Low - flat queries are just `select().eq()` |
 | **RLS** | Not needed (centralized API) | Critical (mobile, guest, roles) |
 | **Switch cost** | 2-3 weeks | 3-4 weeks |
 
-Neither should switch — each is optimal for its data model.
+Neither should switch - each is optimal for its data model.
 
 ---
 
@@ -234,7 +234,7 @@ export const POST = withRateLimit(async (request: NextRequest) => {
 |---|---|---|
 | **Algorithm** | Token bucket via Redis sorted sets | Same (matching implementation) |
 | **Key format** | `admin:${userId}`, per-user | `rate:<tier>:<ip>`, per-IP |
-| **Cost tracking** | Yes — tracks daily/monthly spend | Not yet (can be added) |
+| **Cost tracking** | Yes - tracks daily/monthly spend | Not yet (can be added) |
 | **Granularity** | Per-admin-user with feature-specific limits | Per-IP with tier-based limits |
 | **Fail mode** | Blocks on Redis failure | Fails open (allows request) |
 | **Admin control** | Configurable via AI settings page | Configurable via constants + future admin UI |
@@ -247,14 +247,14 @@ export const POST = withRateLimit(async (request: NextRequest) => {
 
 ```
 (app)/(admin)/
-├── layout.tsx          → AdminLayout — checks isAdmin(), shows sidebar nav
+├── layout.tsx          → AdminLayout - checks isAdmin(), shows sidebar nav
 ├── dashboard/page.tsx  → Stats (users, projects, characters, groups) + recent lists
 ├── flags/page.tsx      → Feature flag toggles per category (client component, auto-saves)
 ├── users/page.tsx      → User table with role, status, project/character counts
 └── moderation/page.tsx → Latest projects + characters for review
 
 (app)/api/admin/
-└── flags/route.ts      → GET/PUT — requires admin, reads/writes Redis
+└── flags/route.ts      → GET/PUT - requires admin, reads/writes Redis
 ```
 
 ### Access Control
@@ -291,4 +291,4 @@ WHERE id = '<user-uuid>';
 | zod | 4.3.6 | 3.24.0 | 4.3.6 / 3.24.3 | SF on v3 for compatibility |
 | vitest | 4.1.5 | 4.1.5 | 4.1.5 | |
 | stripe | 20.4.0 | N/A (used in SF web) | 20.4.0 | |
-| @tiptap/react | 3.22.4 | 3.14.0 | 3.22.4 | SF behind — upgrade pending |
+| @tiptap/react | 3.22.4 | 3.14.0 | 3.22.4 | SF behind - upgrade pending |

@@ -1,4 +1,4 @@
-// StoryForge E2E auth setup — creates and authenticates a test user for CI.
+// StoryForge E2E auth setup - creates and authenticates a test user for CI.
 // Uses Supabase auth API directly to create a session, avoiding UI flakiness.
 //
 // Usage: added to playwright.config.ts as globalSetup
@@ -30,7 +30,7 @@ async function globalSetup(_config: FullConfig) {
   });
 
   if (signInError) {
-    // User doesn't exist — create one
+    // User doesn't exist - create one
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: TEST_EMAIL,
       password: TEST_PASSWORD,
@@ -39,7 +39,7 @@ async function globalSetup(_config: FullConfig) {
 
     if (signUpError) {
       console.warn(`[auth-setup] Could not create test user: ${signUpError.message}`);
-      // Write empty auth file — tests will skip
+      // Write empty auth file - tests will skip
       fs.writeFileSync(AUTH_FILE, JSON.stringify({}));
       return;
     }

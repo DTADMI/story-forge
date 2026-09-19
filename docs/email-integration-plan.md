@@ -6,9 +6,9 @@ Resend matches the existing QuestHunt email stack and provides a simple REST API
 
 ## Setup
 
-1. **Resend API Key** — Obtain from [resend.com](https://resend.com). Store as `RESEND_API_KEY` in Vercel env vars and `.env.local`.
-2. **Domain Verification** — Add DNS records (SPF, DKIM, DMARC) for the sending domain (`mail.storyforge.app`).
-3. **Email Templates** — Create React Email templates in `web/src/emails/` using `@react-email/components`.
+1. **Resend API Key** - Obtain from [resend.com](https://resend.com). Store as `RESEND_API_KEY` in Vercel env vars and `.env.local`.
+2. **Domain Verification** - Add DNS records (SPF, DKIM, DMARC) for the sending domain (`mail.storyforge.app`).
+3. **Email Templates** - Create React Email templates in `web/src/emails/` using `@react-email/components`.
 
 ## Architecture
 

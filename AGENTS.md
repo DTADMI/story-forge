@@ -90,7 +90,7 @@ pitfall classes.
 - Avoid editing generated output, `.next/`, `dist/`, or generated Prisma client files.
 - Keep new product behavior behind feature flags and update docs accordingly.
 - Growth ideas, themes, and events must remain feature-flag gated and controllable from the admin dashboard.
-- **Never use `--no-verify`, `--no-gpg-sign`, or any hook-skipping flag on git commits or pushes.** The pre-commit hook runs `pnpm format:check`, `pnpm exec prisma generate`, `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, and `pnpm build`. These must pass before every commit. If a hook takes too long, increase the tool timeout — do not bypass the hook.
+- **Never use `--no-verify`, `--no-gpg-sign`, or any hook-skipping flag on git commits or pushes.** The pre-commit hook runs `pnpm format:check`, `pnpm exec prisma generate`, `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, and `pnpm build`. These must pass before every commit. If a hook takes too long, increase the tool timeout - do not bypass the hook.
 
 ### Content Platform Rules
 
@@ -175,11 +175,11 @@ pitfall classes.
 
 - Active Codex lifecycle hooks live in `.codex/hooks.json`.
 - Repo Git hooks live in `.githooks/` and are installed by `node scripts/install-git-hooks.mjs`.
-- The pre-commit hook runs `format:check`, `prisma generate`, `lint`, `typecheck`, `test:run`, and `build` — ALL must pass before a commit is created.
+- The pre-commit hook runs `format:check`, `prisma generate`, `lint`, `typecheck`, `test:run`, and `build` - ALL must pass before a commit is created.
 - Run `pnpm run-all-checks` locally to verify everything passes before committing.
 - **Never use `--no-verify` or any hook-skipping flag on commits or pushes.**
 - CI mirrors the same checks: `format:check` → `prisma generate` → `typecheck` → `test:run` → `build` → `verify`.
-- If a commit causes CI to fail, fix it immediately — do not stack more commits on top of a broken CI pipeline.
+- If a commit causes CI to fail, fix it immediately - do not stack more commits on top of a broken CI pipeline.
 
 ### Pre-Commit Requirement (Strict)
 
@@ -187,10 +187,10 @@ Before every commit, the pre-commit hook runs ALL of these (hard failure on any)
 
 | Step | Command | Why |
 |---|---|---|
-| Format | `pnpm format:check` | Ensures Prettier compliance — no style drift |
+| Format | `pnpm format:check` | Ensures Prettier compliance - no style drift |
 | Prisma | `prisma generate` | Regenerates types so tsc can resolve DB models |
 | Lint | `pnpm lint` | 0 errors required (warnings allowed) |
-| Typecheck | `pnpm typecheck` | `tsc --noEmit` — catches type errors, missing imports, case mismatches |
+| Typecheck | `pnpm typecheck` | `tsc --noEmit` - catches type errors, missing imports, case mismatches |
 | Tests | `pnpm test:run` | All tests must pass |
 | Build | `pnpm build` | Production build must succeed |
 

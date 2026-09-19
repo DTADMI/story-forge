@@ -538,7 +538,7 @@ erDiagram
    - id, project_id, name, bio
    - appearance, personality (JSONB)
    - relationships (JSONB for dynamic fields)
-   - images (array of URLs) — for character design sheets, visual references (comics/graphic novels)
+   - images (array of URLs) - for character design sheets, visual references (comics/graphic novels)
    - tags (array)
 
 4. **WorldBuilding**
@@ -553,7 +553,7 @@ erDiagram
 
 6. **Dialogues**
    - id, project_id, title, participants (array of character_ids)
-   - content (structured; JSON) — supports comic scripts, screenplays, and sequential dialogue
+   - content (structured; JSON) - supports comic scripts, screenplays, and sequential dialogue
    - optional timeline_event_id
    - Perfect for comic panel scripts and screenplay formatting
 
@@ -568,11 +568,11 @@ erDiagram
    - GROUP_MEMBER (group_id, user_id, role)
 
 9. **Gamification**
-    - GOAL (user_id, type, target, cadence) — supports multiple goal types: word_count, panel_count, page_count,
+    - GOAL (user_id, type, target, cadence) - supports multiple goal types: word_count, panel_count, page_count,
       scenes_completed
-    - PROGRESS_LOG (user_id, goal_id, value, timestamp) — tracks writing or comic production progress
-    - INK_POT (user_id, balance) — renamed from GEM_WALLET
-    - INK_TX (user_id, amount, reason, metadata) — renamed from GEM_TX
+    - PROGRESS_LOG (user_id, goal_id, value, timestamp) - tracks writing or comic production progress
+    - INK_POT (user_id, balance) - renamed from GEM_WALLET
+    - INK_TX (user_id, amount, reason, metadata) - renamed from GEM_TX
 
 10. **Notifications**
 
@@ -660,8 +660,8 @@ Messaging
 
 - Profile fields editable: `name`, `username`, `bio`, `website`.
 - API endpoints:
-    - `GET /users/:id` — returns user public profile fields (MVP: self usage from web)
-    - `PATCH /users/:id` — update basic profile fields with validation
+    - `GET /users/:id` - returns user public profile fields (MVP: self usage from web)
+    - `PATCH /users/:id` - update basic profile fields with validation
 - Web route: `/profile` under authenticated `(main)` area; SSR with server actions for updates.
 
 ### Subscription Foundations

@@ -20,7 +20,7 @@ export default function HomePage() {
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground text-balance">
               A gamified creative writing platform for novelists, screenwriters, and visual
-              storytellers. Build immersive worlds, track characters, and share stories — all while
+              storytellers. Build immersive worlds, track characters, and share stories - all while
               protecting your wellbeing.
             </p>
             <div className="flex items-center justify-center gap-4 pt-4">

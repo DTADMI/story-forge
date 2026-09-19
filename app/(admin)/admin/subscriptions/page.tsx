@@ -101,7 +101,7 @@ export default async function AdminSubscriptionsPage() {
                   <td className="py-2 pr-4 text-xs text-fg/40">
                     {u.subscriptionExpiresAt
                       ? new Date(u.subscriptionExpiresAt).toLocaleDateString()
-                      : "—"}
+                      : "-"}
                   </td>
                 </tr>
               );

@@ -1,4 +1,4 @@
-# StoryForge — i18n Status Audit
+# StoryForge - i18n Status Audit
 
 **Audit Date**: 2026-05-29
 
@@ -6,7 +6,7 @@
 
 | Aspect | Value |
 |--------|-------|
-| Pattern | React Context pattern (`lib/i18n/`) — cross-project standard |
+| Pattern | React Context pattern (`lib/i18n/`) - cross-project standard |
 | Config | `lib/i18n/config.ts` |
 | Server Resolver | `lib/i18n/server.ts` (`getServerLocale`, `getServerTranslations`) |
 | Client Provider | `lib/i18n/provider.tsx` (`I18nProvider`, `useI18n`) |
@@ -40,17 +40,17 @@
 | "téléverser" (vs "upload") | 2 occurrences | Present |
 | "tableau de bord" (vs "dashboard") | 3 occurrences | Present |
 
-## Historical Issues — Resolved
+## Historical Issues - Resolved
 
-- [x] Default locale was `en` — now `fr`
-- [x] Was using `next-intl` — migrated to cross-project Context pattern
-- [x] Hardcoded `lang="en"` in `<html>` — now dynamic from `getServerLocale()`
-- [x] Quebec French vocabulary was weak — "courriel", "téléverser" added
-- [x] Hardcoded English "Viewers:" in presence-avatars — now uses `t("social.viewers")`
+- [x] Default locale was `en` - now `fr`
+- [x] Was using `next-intl` - migrated to cross-project Context pattern
+- [x] Hardcoded `lang="en"` in `<html>` - now dynamic from `getServerLocale()`
+- [x] Quebec French vocabulary was weak - "courriel", "téléverser" added
+- [x] Hardcoded English "Viewers:" in presence-avatars - now uses `t("social.viewers")`
 
 ## Remaining Work
 
-- [ ] Expand `useI18n()` usage beyond the 2 migrated components (Header User, Presence Avatars) — most pages still use hardcoded English strings
+- [ ] Expand `useI18n()` usage beyond the 2 migrated components (Header User, Presence Avatars) - most pages still use hardcoded English strings
 - [ ] Add i18n lint checks to pre-commit (hardcoded English string detection)
 
 ## Recent Changes (2026-06-18)
@@ -68,5 +68,5 @@
 - Default locale `fr` respects Quebec language laws
 - Now uses the cross-project React Context pattern from root AGENTS.md
 - Quebec French vocabulary has been improved with proper terms
-- Migration from next-intl to Context pattern is structurally complete — routing and plugin removed
-- Hardcoded English strings remain in the majority of pages/components — this is a deferred P1 task
+- Migration from next-intl to Context pattern is structurally complete - routing and plugin removed
+- Hardcoded English strings remain in the majority of pages/components - this is a deferred P1 task

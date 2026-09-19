@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 
-export const metadata: Metadata = { title: "Eras — StoryForge" };
+export const metadata: Metadata = { title: "Eras - StoryForge" };
 
 export default async function ErasPage({
   searchParams,

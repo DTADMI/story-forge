@@ -1,4 +1,4 @@
-# Supabase + Prisma + Neo4j — Hybrid Architecture for StoryForge
+# Supabase + Prisma + Neo4j - Hybrid Architecture for StoryForge
 
 > May 14, 2026
 

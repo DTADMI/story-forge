@@ -67,7 +67,7 @@ export interface AiFeatureConfig {
 }
 
 export const AI_MODELS = {
-  /** Primary model — fast, cheap, good for suggestions and simple tasks */
+  /** Primary model - fast, cheap, good for suggestions and simple tasks */
   default: "openai/gpt-4o-mini",
   /** High-quality model for complex analysis (plot, style, research) */
   premium: "anthropic/claude-3.5-haiku",

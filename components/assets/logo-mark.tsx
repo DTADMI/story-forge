@@ -1,4 +1,4 @@
-/** StoryForge logomark — quill forming an "S" with ink drop. MIT License. */
+/** StoryForge logomark - quill forming an "S" with ink drop. MIT License. */
 export function LogoMark({ className, size = 32 }: { className?: string; size?: number }) {
   return (
     <svg
