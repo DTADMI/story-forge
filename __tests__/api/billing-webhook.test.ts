@@ -9,11 +9,12 @@ vi.mock("@/lib/prisma", () => ({
 
 const mockConstructEvent = vi.fn();
 
-vi.mock("stripe", () => ({
-  default: vi.fn(() => ({
-    webhooks: { constructEvent: mockConstructEvent },
-  })),
-}));
+vi.mock("stripe", () => {
+  class MockStripe {
+    webhooks = { constructEvent: mockConstructEvent };
+  }
+  return { default: MockStripe };
+});
 
 import { prisma } from "@/lib/prisma";
 
