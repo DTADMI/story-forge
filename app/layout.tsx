@@ -11,9 +11,38 @@ import { getServerLocale } from "@/lib/i18n/server";
 export const dynamic = "force-dynamic";
 // root layout requires force-dynamic: auth-state-dependent UI via Providers, feature flag resolution,
 // and session-aware component rendering throughout the entire route tree
+
+const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://storyforge.app").replace(/\/+$/, "");
+
+/** Donnees structurees Schema.org : identifient l'editeur et le site pour les moteurs. */
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${appUrl}/#organization`,
+      name: "Nebula Forge Digital Studio",
+      url: appUrl,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${appUrl}/#website`,
+      url: appUrl,
+      name: "StoryForge",
+      inLanguage: ["en-CA", "fr-CA"],
+      publisher: { "@id": `${appUrl}/#organization` },
+    },
+  ],
+};
+
 export const metadata = {
+  metadataBase: new URL(appUrl),
   title: "StoryForge",
   description: "Gamified creative writing platform for novelists, screenwriters, and storytellers.",
+  alternates: {
+    canonical: "/",
+    languages: { "en-CA": "/", "fr-CA": "/", "x-default": "/" },
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -58,6 +87,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={`${inter.variable} ${spaceGrotesk.variable}`}
     >
       <body className="font-sans antialiased bg-background text-foreground min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
+        />
         <SkipLink />
         <ServerI18nProvider>
           <Providers>
