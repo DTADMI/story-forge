@@ -74,24 +74,24 @@ export function SettingsForm({
       <Card className="space-y-4 p-6">
         <h2 className="text-lg font-bold">Profile</h2>
         <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input
+          <label htmlFor="field-78" className="block text-sm font-medium">Name</label>
+          <input id="field-78"
             value={name}
             onChange={(event) => setName(event.target.value)}
             className="mt-1 w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">Username</label>
-          <input
+          <label htmlFor="field-86" className="block text-sm font-medium">Username</label>
+          <input id="field-86"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
             className="mt-1 w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">Bio</label>
-          <textarea
+          <label htmlFor="field-94" className="block text-sm font-medium">Bio</label>
+          <textarea id="field-94"
             value={bio}
             onChange={(event) => setBio(event.target.value)}
             rows={3}
@@ -109,8 +109,8 @@ export function SettingsForm({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">Default Publication Scope</label>
-          <select
+          <label htmlFor="field-113" className="block text-sm font-medium">Default Publication Scope</label>
+          <select id="field-113"
             value={defaultScope}
             onChange={(event) => setDefaultScope(event.target.value)}
             className="mt-1 w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"

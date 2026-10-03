@@ -44,6 +44,8 @@ export function AvatarUploadForm({ userId }: { userId: string }) {
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"
+        aria-label="Upload avatar"
+        title="Upload avatar"
         onChange={(event) => {
           const file = event.target.files?.[0];
           if (file) uploadMutation.mutate(file);

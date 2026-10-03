@@ -91,8 +91,8 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Days per Week</label>
-          <input
+          <label htmlFor="field-95" className="block text-sm font-medium mb-1">Days per Week</label>
+          <input id="field-95"
             type="number"
             value={weekLength}
             onChange={(e) => setWeekLength(Math.max(1, Math.min(14, Number(e.target.value))))}
@@ -125,6 +125,8 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
               <div className="flex flex-col gap-1">
                 <button
                   onClick={() => moveMonth(index, "up")}
+                  aria-label="Move up"
+                  title="Move up"
                   disabled={index === 0}
                   className="p-0.5 rounded hover:bg-fg/5 disabled:opacity-30"
                 >
@@ -132,6 +134,8 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
                 </button>
                 <button
                   onClick={() => moveMonth(index, "down")}
+                  aria-label="Move down"
+                  title="Move down"
                   disabled={index === months.length - 1}
                   className="p-0.5 rounded hover:bg-fg/5 disabled:opacity-30"
                 >
@@ -149,6 +153,8 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
                 <input
                   type="number"
                   value={month.days}
+                  aria-label="Days in month"
+                  title="Days in month"
                   onChange={(e) =>
                     updateMonth(index, "days", Math.max(1, Math.min(60, Number(e.target.value))))
                   }
@@ -160,6 +166,8 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
               </div>
               <button
                 onClick={() => removeMonth(index)}
+                aria-label="Delete month"
+                title="Delete month"
                 className="p-1 rounded hover:bg-red-500/10 text-fg/40 hover:text-red-500"
               >
                 <Trash2 className="h-3.5 w-3.5" />

@@ -29,6 +29,8 @@ export function ScopeSelector({ userId, currentScope }: { userId: string; curren
   return (
     <select
       value={scope}
+      aria-label="Default publication scope"
+      title="Default publication scope"
       onChange={(event) => {
         const nextScope = event.target.value;
         setScope(nextScope);

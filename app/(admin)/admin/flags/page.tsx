@@ -260,6 +260,8 @@ export default function AdminFlagsPage() {
                     <p className="text-xs text-fg/40">{flag.description}</p>
                   </div>
                   <button
+                    aria-label="Toggle flag"
+                    title="Toggle flag"
                     onClick={async () => {
                       const updatedFlags = flags.map((entry) =>
                         entry.id === flag.id

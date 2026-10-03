@@ -28,8 +28,8 @@ export default async function NewCharacterPage() {
       <Card className="p-6">
         <form action={createCharacter} className="grid gap-4">
           <div>
-            <label className="block text-sm font-medium">Name</label>
-            <input
+            <label htmlFor="name-32" className="block text-sm font-medium">Name</label>
+            <input id="name-32"
               name="name"
               required
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
@@ -44,8 +44,8 @@ export default async function NewCharacterPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Bio / Backstory</label>
-            <textarea
+            <label htmlFor="bio-48" className="block text-sm font-medium">Bio / Backstory</label>
+            <textarea id="bio-48"
               name="bio"
               rows={5}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"

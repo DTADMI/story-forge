@@ -51,10 +51,10 @@ export default async function NewDialoguePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">
+            <label htmlFor="content-57" className="block text-sm font-medium">
               Dialogue Content (JSON array of speaker/line objects, or plain text)
             </label>
-            <textarea
+            <textarea id="content-57"
               name="content"
               rows={12}
               placeholder='[{"speaker":"ALICE","line":"Hello!"},{"speaker":"BOB","line":"Hi."}]'

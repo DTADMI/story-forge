@@ -98,8 +98,8 @@ export default function EraDetailPage() {
 
       <Card className="p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
+          <label htmlFor="field-102" className="block text-sm font-medium mb-1">Name</label>
+          <input id="field-102"
             defaultValue={era.name}
             onBlur={(e) => handleUpdate("name", e.target.value)}
             className="w-full border rounded-md px-3 py-2 text-sm bg-background"
@@ -108,8 +108,8 @@ export default function EraDetailPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea
+          <label htmlFor="field-112" className="block text-sm font-medium mb-1">Description</label>
+          <textarea id="field-112"
             defaultValue={era.description || ""}
             onBlur={(e) => handleUpdate("description", e.target.value)}
             className="w-full border rounded-md px-3 py-2 text-sm bg-background min-h-[80px]"
@@ -119,16 +119,16 @@ export default function EraDetailPage() {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">Start Date</label>
-            <input
+            <label htmlFor="field-123" className="block text-sm font-medium mb-1">Start Date</label>
+            <input id="field-123"
               defaultValue={era.startDate || ""}
               onBlur={(e) => handleUpdate("startDate", e.target.value)}
               className="w-full border rounded-md px-3 py-2 text-sm bg-background"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">End Date</label>
-            <input
+            <label htmlFor="field-131" className="block text-sm font-medium mb-1">End Date</label>
+            <input id="field-131"
               defaultValue={era.endDate || ""}
               onBlur={(e) => handleUpdate("endDate", e.target.value)}
               className="w-full border rounded-md px-3 py-2 text-sm bg-background"
@@ -137,8 +137,8 @@ export default function EraDetailPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Color</label>
-          <input
+          <label htmlFor="field-141" className="block text-sm font-medium mb-1">Color</label>
+          <input id="field-141"
             type="color"
             defaultValue={era.color || "#6366f1"}
             onBlur={(e) => handleUpdate("color", e.target.value)}

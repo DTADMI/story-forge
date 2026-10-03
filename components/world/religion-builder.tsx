@@ -82,6 +82,8 @@ export function ReligionBuilder({ onSaved }: ReligionBuilderProps) {
                 <span>{deity}</span>
                 <button
                   onClick={() => setDeities((current) => current.filter((_, i) => i !== index))}
+                  aria-label="Delete deity"
+                  title="Delete deity"
                   className="text-fg/30 hover:text-red-500"
                 >
                   <Trash2 className="h-3 w-3" />

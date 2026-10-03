@@ -55,8 +55,8 @@ export function MagicBuilder({ onSaved }: MagicBuilderProps) {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">Type</label>
-        <select
+        <label htmlFor="field-59" className="mb-1 block text-sm font-medium">Type</label>
+        <select id="field-59"
           value={type}
           onChange={(event) => setType(event.target.value)}
           className="w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
@@ -132,6 +132,8 @@ export function MagicBuilder({ onSaved }: MagicBuilderProps) {
                 <span>{spell}</span>
                 <button
                   onClick={() => setSpells((current) => current.filter((_, i) => i !== index))}
+                  aria-label="Delete spell"
+                  title="Delete spell"
                   className="text-fg/30 hover:text-red-500"
                 >
                   <Trash2 className="h-3 w-3" />

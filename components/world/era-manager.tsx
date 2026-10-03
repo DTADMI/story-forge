@@ -149,8 +149,8 @@ export function EraManager({ onChanged }: EraManagerProps) {
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="mb-1 block text-xs font-medium">Color</label>
-              <input
+              <label htmlFor="field-153" className="mb-1 block text-xs font-medium">Color</label>
+              <input id="field-153"
                 type="color"
                 value={color}
                 onChange={(event) => setColor(event.target.value)}
@@ -235,6 +235,8 @@ export function EraManager({ onChanged }: EraManagerProps) {
                 </button>
                 <button
                   onClick={() => deleteEraMutation.mutate(era.id)}
+                  aria-label="Delete era"
+                  title="Delete era"
                   className="text-fg/30 hover:text-red-500"
                 >
                   <Trash2 className="h-3 w-3" />

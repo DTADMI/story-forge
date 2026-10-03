@@ -127,6 +127,8 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                 <span className="w-6 text-sm font-bold text-fg/50">#{panel.number}</span>
                 <div className="flex items-center gap-1">
                   <button
+                    aria-label="Move up"
+                    title="Move up"
                     onClick={() => {
                       if (index === 0) return;
                       const updated = [...panels];
@@ -141,6 +143,8 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                     <ArrowUp className="h-3.5 w-3.5" />
                   </button>
                   <button
+                    aria-label="Move down"
+                    title="Move down"
                     onClick={() => {
                       if (index === panels.length - 1) return;
                       const updated = [...panels];
@@ -157,6 +161,8 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                 </div>
                 <div className="flex-1" />
                 <button
+                  aria-label="Delete panel"
+                  title="Delete panel"
                   onClick={() =>
                     persistPanels(
                       panels
@@ -187,8 +193,8 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-fg/50">Character</label>
-                  <select
+                  <label htmlFor="field-191" className="mb-1 block text-xs font-medium text-fg/50">Character</label>
+                  <select id="field-191"
                     value={panel.characterId}
                     onChange={(event) =>
                       setPanels((current) =>
@@ -222,8 +228,8 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-fg/50">Location</label>
-                  <select
+                  <label htmlFor="field-226" className="mb-1 block text-xs font-medium text-fg/50">Location</label>
+                  <select id="field-226"
                     value={panel.locationId}
                     onChange={(event) =>
                       setPanels((current) =>

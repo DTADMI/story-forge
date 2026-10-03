@@ -59,7 +59,7 @@ export function ShareButton({ type, id, title }: ShareButtonProps) {
         <div className="absolute right-0 top-full mt-2 w-72 bg-bg border border-fg/15 rounded-lg shadow-lg z-50 p-3">
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-semibold">Share</h4>
-            <button onClick={() => setOpen(false)} className="p-0.5 rounded hover:bg-fg/5">
+            <button onClick={() => setOpen(false)} aria-label="Close" title="Close" className="p-0.5 rounded hover:bg-fg/5">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -110,8 +110,8 @@ export function ShareButton({ type, id, title }: ShareButtonProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-fg/50 mb-1">Embed</label>
-              <textarea
+              <label htmlFor="field-114" className="block text-xs font-medium text-fg/50 mb-1">Embed</label>
+              <textarea id="field-114"
                 readOnly
                 value={embedCode}
                 onClick={(e) => (e.target as HTMLTextAreaElement).select()}

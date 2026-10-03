@@ -59,24 +59,24 @@ export default async function DialogueDetailPage({ params }: { params: Promise<{
       <Card className="p-6">
         <form action={updateDialogue.bind(null, id)} className="grid gap-4">
           <div>
-            <label className="block text-sm font-medium">Scene Title</label>
-            <input
+            <label htmlFor="title-63" className="block text-sm font-medium">Scene Title</label>
+            <input id="title-63"
               name="title"
               defaultValue={dialogue.title ?? ""}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Project (optional)</label>
-            <input
+            <label htmlFor="projectId-71" className="block text-sm font-medium">Project (optional)</label>
+            <input id="projectId-71"
               name="projectId"
               defaultValue={dialogue.projectId ?? ""}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Dialogue Content (JSON)</label>
-            <textarea
+            <label htmlFor="content-79" className="block text-sm font-medium">Dialogue Content (JSON)</label>
+            <textarea id="content-79"
               name="content"
               rows={16}
               defaultValue={contentStr}

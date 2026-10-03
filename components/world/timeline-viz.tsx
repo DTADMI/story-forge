@@ -205,6 +205,8 @@ export function TimelineViz({ events, eras = [] }: { events: TimelineEvent[]; er
       <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-bg border border-fg/10 rounded-lg px-3 py-1.5 shadow-sm">
         <button
           onClick={() => setScale((s) => Math.max(0.3, s - 0.2))}
+          aria-label="Zoom out"
+          title="Zoom out"
           className="text-fg/60 hover:text-fg text-sm font-bold px-1"
         >
           -
@@ -212,6 +214,8 @@ export function TimelineViz({ events, eras = [] }: { events: TimelineEvent[]; er
         <span className="text-xs text-fg/40">{Math.round(scale * 100)}%</span>
         <button
           onClick={() => setScale((s) => Math.min(3, s + 0.2))}
+          aria-label="Zoom in"
+          title="Zoom in"
           className="text-fg/60 hover:text-fg text-sm font-bold px-1"
         >
           +

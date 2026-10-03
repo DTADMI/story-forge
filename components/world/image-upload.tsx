@@ -188,6 +188,8 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
             {!isUploading && (
               <button
                 type="button"
+                aria-label="Remove image"
+                title="Remove image"
                 onClick={(e) => {
                   e.stopPropagation();
                   setPreview(null);
@@ -224,6 +226,8 @@ export function ImageUpload({ entityType, entityId, currentUrl }: ImageUploadPro
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp,image/gif"
+        aria-label="Upload image"
+        title="Upload image"
         onChange={handleFileSelect}
         className="hidden"
       />

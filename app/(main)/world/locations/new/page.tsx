@@ -27,16 +27,16 @@ export default async function NewLocationPage() {
       <Card className="p-6">
         <form action={createLocation} className="grid gap-4">
           <div>
-            <label className="block text-sm font-medium">Name</label>
-            <input
+            <label htmlFor="name-31" className="block text-sm font-medium">Name</label>
+            <input id="name-31"
               name="name"
               required
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Description</label>
-            <textarea
+            <label htmlFor="description-39" className="block text-sm font-medium">Description</label>
+            <textarea id="description-39"
               name="description"
               rows={5}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"

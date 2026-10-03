@@ -158,8 +158,8 @@ export function RelationshipManager({ characterId }: { characterId: string }) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium mb-1">Type</label>
-              <select
+              <label htmlFor="field-162" className="block text-xs font-medium mb-1">Type</label>
+              <select id="field-162"
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="w-full rounded-md border border-fg/20 px-2 py-1.5 text-xs bg-bg"
@@ -221,6 +221,8 @@ export function RelationshipManager({ characterId }: { characterId: string }) {
                     </div>
                     <button
                       onClick={() => handleDelete(r.id)}
+                      aria-label="Delete relationship"
+                      title="Delete relationship"
                       className="text-fg/30 hover:text-red-500"
                     >
                       <Trash2 className="h-3 w-3" />

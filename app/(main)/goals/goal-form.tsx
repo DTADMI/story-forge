@@ -58,8 +58,8 @@ export function GoalForm() {
       className="space-y-4"
     >
       <div>
-        <label className="mb-1 block text-sm font-medium">Type</label>
-        <select
+        <label htmlFor="field-62" className="mb-1 block text-sm font-medium">Type</label>
+        <select id="field-62"
           value={type}
           onChange={(event) => setType(event.target.value)}
           className="border-fg/20 flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] focus-visible:ring-offset-2 focus-visible:outline-none dark:border-white/10 dark:bg-[color:var(--bg)] dark:ring-offset-[color:var(--bg)]"
@@ -72,8 +72,8 @@ export function GoalForm() {
         </select>
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium">Target</label>
-        <input
+        <label htmlFor="field-76" className="mb-1 block text-sm font-medium">Target</label>
+        <input id="field-76"
           type="number"
           value={target}
           onChange={(event) => setTarget(Number(event.target.value))}

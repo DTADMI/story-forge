@@ -75,8 +75,8 @@ export default function NewOrganizationPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Type</label>
-            <select
+            <label htmlFor="field-79" className="block text-sm font-medium mb-1">Type</label>
+            <select id="field-79"
               value={type}
               onChange={(e) => setType(e.target.value)}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"

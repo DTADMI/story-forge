@@ -111,6 +111,8 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
           />
           <button
             onClick={addWord}
+            aria-label="Add word"
+            title="Add word"
             className="inline-flex items-center gap-1 rounded-md bg-brand px-3 py-1.5 text-xs text-white hover:bg-brand/90"
           >
             <Plus className="h-3 w-3" />
@@ -129,6 +131,8 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
                 </span>
                 <button
                   onClick={() => setVocabulary((current) => current.filter((_, i) => i !== index))}
+                  aria-label="Delete word"
+                  title="Delete word"
                   className="text-fg/30 hover:text-red-500"
                 >
                   <Trash2 className="h-3 w-3" />

@@ -54,8 +54,8 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
       <Card className="p-6">
         <form action={updateLocation.bind(null, id)} className="grid gap-4">
           <div>
-            <label className="block text-sm font-medium">Name</label>
-            <input
+            <label htmlFor="name-58" className="block text-sm font-medium">Name</label>
+            <input id="name-58"
               name="name"
               required
               defaultValue={location.name}
@@ -63,8 +63,8 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Description</label>
-            <textarea
+            <label htmlFor="description-67" className="block text-sm font-medium">Description</label>
+            <textarea id="description-67"
               name="description"
               rows={5}
               defaultValue={location.description ?? ""}
@@ -81,8 +81,8 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Project (optional)</label>
-            <input
+            <label htmlFor="projectId-85" className="block text-sm font-medium">Project (optional)</label>
+            <input id="projectId-85"
               name="projectId"
               defaultValue={location.projectId ?? ""}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"

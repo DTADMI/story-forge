@@ -36,8 +36,8 @@ export function TimelineEditForm({
   return (
     <form action={action} onSubmit={handleSubmit} className="grid gap-4">
       <div>
-        <label className="block text-sm font-medium">Title</label>
-        <input
+        <label htmlFor="title-40" className="block text-sm font-medium">Title</label>
+        <input id="title-40"
           name="title"
           required
           defaultValue={event.title}
@@ -45,16 +45,16 @@ export function TimelineEditForm({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium">Date (flexible format)</label>
-        <input
+        <label htmlFor="date-49" className="block text-sm font-medium">Date (flexible format)</label>
+        <input id="date-49"
           name="date"
           defaultValue={event.date ?? ""}
           className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium">Description</label>
-        <textarea
+        <label htmlFor="description-57" className="block text-sm font-medium">Description</label>
+        <textarea id="description-57"
           name="description"
           rows={4}
           defaultValue={event.description ?? ""}
@@ -69,8 +69,8 @@ export function TimelineEditForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Project (optional)</label>
-        <input
+        <label htmlFor="projectId-73" className="block text-sm font-medium">Project (optional)</label>
+        <input id="projectId-73"
           name="projectId"
           defaultValue={event.projectId ?? ""}
           className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"

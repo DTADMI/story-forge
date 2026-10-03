@@ -56,8 +56,8 @@ export function OrganizationEditForm({ org }: { org: Organization }) {
       <h2 className="text-lg font-bold mb-4">Edit Organization</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
+          <label htmlFor="field-60" className="block text-sm font-medium mb-1">Name</label>
+          <input id="field-60"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -65,8 +65,8 @@ export function OrganizationEditForm({ org }: { org: Organization }) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Type</label>
-          <select
+          <label htmlFor="field-69" className="block text-sm font-medium mb-1">Type</label>
+          <select id="field-69"
             value={type}
             onChange={(e) => setType(e.target.value)}
             className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
@@ -79,8 +79,8 @@ export function OrganizationEditForm({ org }: { org: Organization }) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea
+          <label htmlFor="field-83" className="block text-sm font-medium mb-1">Description</label>
+          <textarea id="field-83"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
@@ -88,8 +88,8 @@ export function OrganizationEditForm({ org }: { org: Organization }) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Goals</label>
-          <textarea
+          <label htmlFor="field-92" className="block text-sm font-medium mb-1">Goals</label>
+          <textarea id="field-92"
             value={goals}
             onChange={(e) => setGoals(e.target.value)}
             rows={3}
@@ -97,8 +97,8 @@ export function OrganizationEditForm({ org }: { org: Organization }) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Project (optional)</label>
-          <input
+          <label htmlFor="field-101" className="block text-sm font-medium mb-1">Project (optional)</label>
+          <input id="field-101"
             value={projectId}
             onChange={(e) => setProjectId(e.target.value)}
             className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"

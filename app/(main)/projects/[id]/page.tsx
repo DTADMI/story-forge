@@ -106,24 +106,24 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <h2 className="text-lg font-bold mb-4">Project Settings</h2>
         <form action={updateSettings.bind(null, project.id)} className="grid gap-4 max-w-xl">
           <div>
-            <label className="block text-sm font-medium">Title</label>
-            <input
+            <label htmlFor="title-110" className="block text-sm font-medium">Title</label>
+            <input id="title-110"
               name="title"
               defaultValue={project.title}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Description</label>
-            <textarea
+            <label htmlFor="description-118" className="block text-sm font-medium">Description</label>
+            <textarea id="description-118"
               name="description"
               defaultValue={project.description || ""}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Visibility</label>
-            <select
+            <label htmlFor="defaultScope-126" className="block text-sm font-medium">Visibility</label>
+            <select id="defaultScope-126"
               name="defaultScope"
               defaultValue={project.defaultScope}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"

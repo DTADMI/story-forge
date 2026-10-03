@@ -57,8 +57,8 @@ export default async function CharacterDetailPage({ params }: { params: Promise<
       <Card className="p-6">
         <form action={updateCharacter.bind(null, id)} className="grid gap-4">
           <div>
-            <label className="block text-sm font-medium">Name</label>
-            <input
+            <label htmlFor="name-61" className="block text-sm font-medium">Name</label>
+            <input id="name-61"
               name="name"
               required
               defaultValue={character.name}
@@ -84,8 +84,8 @@ export default async function CharacterDetailPage({ params }: { params: Promise<
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Bio / Backstory</label>
-            <textarea
+            <label htmlFor="bio-88" className="block text-sm font-medium">Bio / Backstory</label>
+            <textarea id="bio-88"
               name="bio"
               rows={5}
               defaultValue={character.bio ?? ""}
@@ -93,8 +93,8 @@ export default async function CharacterDetailPage({ params }: { params: Promise<
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Project (optional)</label>
-            <input
+            <label htmlFor="projectId-97" className="block text-sm font-medium">Project (optional)</label>
+            <input id="projectId-97"
               name="projectId"
               defaultValue={character.projectId ?? ""}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"

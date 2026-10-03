@@ -202,6 +202,8 @@ export function CollaboratorManager({ projectId }: CollaboratorManagerProps) {
               <div className="flex items-center gap-1.5">
                 <select
                   value={collaborator.role}
+                  aria-label="Collaborator role"
+                  title="Collaborator role"
                   onChange={(event) =>
                     updateCollaboratorMutation.mutate({
                       userId: collaborator.user.id,

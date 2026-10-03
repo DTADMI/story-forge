@@ -42,8 +42,8 @@ export default function ResetPasswordPage() {
             Enter your email and we&apos;ll send you a reset link.
           </p>
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
+            <label htmlFor="field-46" className="block text-sm font-medium mb-1">Email</label>
+            <input id="field-46"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

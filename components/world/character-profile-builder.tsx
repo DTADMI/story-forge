@@ -147,10 +147,10 @@ export function CharacterProfileBuilder({ character, onSaved }: CharacterProfile
               {section.fields.map((field) =>
                 field.type === "textarea" ? (
                   <div key={field.key}>
-                    <label className="block text-xs font-medium text-fg/50 mb-1">
+                    <label htmlFor="field-153" className="block text-xs font-medium text-fg/50 mb-1">
                       {field.label}
                     </label>
-                    <textarea
+                    <textarea id="field-153"
                       value={(form[field.key] as string) ?? ""}
                       onChange={(e) => update(field.key, e.target.value)}
                       rows={3}
@@ -159,10 +159,10 @@ export function CharacterProfileBuilder({ character, onSaved }: CharacterProfile
                   </div>
                 ) : (
                   <div key={field.key}>
-                    <label className="block text-xs font-medium text-fg/50 mb-1">
+                    <label htmlFor="field-165" className="block text-xs font-medium text-fg/50 mb-1">
                       {field.label}
                     </label>
-                    <input
+                    <input id="field-165"
                       value={(form[field.key] as string) ?? ""}
                       onChange={(e) => update(field.key, e.target.value)}
                       className="w-full rounded-md border border-fg/20 px-2 py-1.5 text-xs bg-bg"

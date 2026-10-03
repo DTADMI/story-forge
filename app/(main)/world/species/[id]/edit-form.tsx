@@ -55,8 +55,8 @@ export function SpeciesEditForm({ species }: { species: Species }) {
       <h2 className="text-lg font-bold mb-4">Edit Species</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
+          <label htmlFor="field-59" className="block text-sm font-medium mb-1">Name</label>
+          <input id="field-59"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -64,8 +64,8 @@ export function SpeciesEditForm({ species }: { species: Species }) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea
+          <label htmlFor="field-68" className="block text-sm font-medium mb-1">Description</label>
+          <textarea id="field-68"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
@@ -73,8 +73,8 @@ export function SpeciesEditForm({ species }: { species: Species }) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Appearance</label>
-          <textarea
+          <label htmlFor="field-77" className="block text-sm font-medium mb-1">Appearance</label>
+          <textarea id="field-77"
             value={appearance}
             onChange={(e) => setAppearance(e.target.value)}
             rows={3}
@@ -83,16 +83,16 @@ export function SpeciesEditForm({ species }: { species: Species }) {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Traits</label>
-            <input
+            <label htmlFor="field-87" className="block text-sm font-medium mb-1">Traits</label>
+            <input id="field-87"
               value={traits}
               onChange={(e) => setTraits(e.target.value)}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Lifespan</label>
-            <input
+            <label htmlFor="field-95" className="block text-sm font-medium mb-1">Lifespan</label>
+            <input id="field-95"
               value={lifespan}
               onChange={(e) => setLifespan(e.target.value)}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
@@ -100,16 +100,16 @@ export function SpeciesEditForm({ species }: { species: Species }) {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Homeland</label>
-          <input
+          <label htmlFor="field-104" className="block text-sm font-medium mb-1">Homeland</label>
+          <input id="field-104"
             value={homeland}
             onChange={(e) => setHomeland(e.target.value)}
             className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Project (optional)</label>
-          <input
+          <label htmlFor="field-112" className="block text-sm font-medium mb-1">Project (optional)</label>
+          <input id="field-112"
             value={projectId}
             onChange={(e) => setProjectId(e.target.value)}
             className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
