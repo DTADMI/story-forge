@@ -278,4 +278,15 @@ export const en = {
     },
     voiceMessageLabel: "Voice message",
   },
+  audio: {
+    listen: "Listen to this article",
+    play: "Play",
+    pause: "Pause",
+    speed: "Playback speed",
+    voice: "Voice",
+    seek: "Progress",
+    skipBack: "Previous sentence",
+    skipForward: "Next sentence",
+    unavailable: "Speech is not available on this device.",
+  },
 } as const;

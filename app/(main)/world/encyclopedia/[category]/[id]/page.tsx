@@ -6,6 +6,8 @@ import Link from "next/link";
 import NextImage from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { EncyclopediaEntryDelete } from "./delete";
+import { ArticleAudioPlayer } from "@/components/audio/article-audio-player";
+import { getServerLocale } from "@/lib/i18n/server";
 
 const categoryLabels: Record<string, string> = {
   research: "Research",
@@ -42,6 +44,7 @@ export default async function EncyclopediaEntryDetailPage({
   if (!entry) notFound();
 
   const label = categoryLabels[category] || category;
+  const lang = await getServerLocale();
 
   let referencedEntries: { id: string; title: string }[] = [];
   const entryMeta = entry.metadata as Record<string, unknown>;
@@ -115,6 +118,9 @@ export default async function EncyclopediaEntryDetailPage({
           />
         </div>
       )}
+
+      {/* Read-aloud (storage-free, browser speech synthesis) */}
+      <ArticleAudioPlayer text={entry.content} title={entry.title} lang={lang} />
 
       {/* Content */}
       <Card className="p-6 mb-6">

@@ -279,4 +279,15 @@ export const fr = {
     },
     voiceMessageLabel: "Message vocal",
   },
+  audio: {
+    listen: "Écouter cet article",
+    play: "Lecture",
+    pause: "Pause",
+    speed: "Vitesse de lecture",
+    voice: "Voix",
+    seek: "Progression",
+    skipBack: "Phrase précédente",
+    skipForward: "Phrase suivante",
+    unavailable: "La synthèse vocale n'est pas disponible sur cet appareil.",
+  },
 } as const;
