@@ -184,19 +184,19 @@ story-forge/
 ## In Progress
 
 - [*] Migrate hardcoded English strings to `useI18n()` across all pages/components (only 2 of ~165 migrated)
-- [*] Yjs Phase 2: offline support, document sync refinement
+- [*] Yjs Phase 2: offline support, document sync refinement (`docs/realtime-collaboration-research.md`)
 
 ---
 
 ## Planned
 
 ### Infrastructure & Tooling
-- [ ] React 19.2 review
+- [ ] React 19.2 review (`docs/dependency-audit.md`)
 
 ### Security & Compliance
-- [ ] Rotate production secrets (CVE-2025-66478 / CVE-2025-55182)
-- [ ] PII handling, data export/delete
-- [ ] Accessibility audit (WCAG 2.1 AA) - full 50+ page audit
+- [ ] Rotate production secrets (CVE-2025-66478 / CVE-2025-55182) (`docs/architecture-security.md`)
+- [ ] PII handling, data export/delete (`docs/architecture-security.md`)
+- [ ] Accessibility audit (WCAG 2.1 AA) - full 50+ page audit (`docs/remaining-gaps.md`)
 
 ---
 
