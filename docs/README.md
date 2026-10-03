@@ -19,6 +19,7 @@ Story Forge is a collaborative writing platform with AI-powered assistance, worl
 | [Feature Recommendations](feature-recommendations.md) | Prioritized feature backlog |
 | [Dependency Audit](dependency-audit.md) | Package inventory and upgrade status |
 | [Technical Docs](technical/) | Performance, encoding, feature flags, i18n |
+| [Audio Narration](technical/audio-articles.md) | Storage-free read-aloud for encyclopedia entries |
 
 ## Architecture
 
