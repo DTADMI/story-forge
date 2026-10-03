@@ -132,7 +132,7 @@ export function RelationshipManager({ characterId }: { characterId: string }) {
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Type to search..."
+                placeholder="Type to search..." title="Type to search..."
                 className="w-full rounded-md border border-fg/20 pl-7 pr-3 py-1.5 text-xs bg-bg"
               />
             </div>
@@ -177,7 +177,7 @@ export function RelationshipManager({ characterId }: { characterId: string }) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full rounded-md border border-fg/20 px-2 py-1.5 text-xs bg-bg"
-                placeholder="e.g. Twin sister"
+                placeholder="e.g. Twin sister" title="e.g. Twin sister"
               />
             </div>
           </div>

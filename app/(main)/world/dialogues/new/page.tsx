@@ -38,7 +38,7 @@ export default async function NewDialoguePage() {
             <label className="block text-sm font-medium">Scene Title</label>
             <input
               name="title"
-              placeholder="e.g. The Confrontation"
+              placeholder="e.g. The Confrontation" title="e.g. The Confrontation"
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>
@@ -46,7 +46,7 @@ export default async function NewDialoguePage() {
             <label className="block text-sm font-medium">Project (optional)</label>
             <input
               name="projectId"
-              placeholder="Project ID"
+              placeholder="Project ID" title="Project ID"
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>

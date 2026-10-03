@@ -23,7 +23,7 @@ export function TimelineForm({ action }: { action: (formData: FormData) => void 
         <input
           name="title"
           required
-          placeholder="e.g. The Inciting Incident"
+          placeholder="e.g. The Inciting Incident" title="e.g. The Inciting Incident"
           className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
         />
       </div>
@@ -31,7 +31,7 @@ export function TimelineForm({ action }: { action: (formData: FormData) => void 
         <label className="block text-sm font-medium">Date (flexible format)</label>
         <input
           name="date"
-          placeholder="e.g. Chapter 3, 1920s, Day 47"
+          placeholder="e.g. Chapter 3, 1920s, Day 47" title="e.g. Chapter 3, 1920s, Day 47"
           className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
         />
       </div>
@@ -40,7 +40,7 @@ export function TimelineForm({ action }: { action: (formData: FormData) => void 
         <textarea
           name="description"
           rows={4}
-          placeholder="What happens at this point in the story..."
+          placeholder="What happens at this point in the story..." title="What happens at this point in the story..."
           className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
         />
       </div>
@@ -55,7 +55,7 @@ export function TimelineForm({ action }: { action: (formData: FormData) => void 
         <label className="block text-sm font-medium">Project (optional)</label>
         <input
           name="projectId"
-          placeholder="Project ID"
+          placeholder="Project ID" title="Project ID"
           className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
         />
       </div>

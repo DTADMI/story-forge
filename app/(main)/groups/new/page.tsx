@@ -69,7 +69,7 @@ export default function NewGroupPage() {
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="What is this group about?"
+              placeholder="What is this group about?" title="What is this group about?"
               rows={3}
               className="border-fg/20 placeholder:text-fg/50 flex w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-[color:var(--bg)] dark:ring-offset-[color:var(--bg)]"
             />

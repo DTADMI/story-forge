@@ -105,7 +105,7 @@ export default function WorldSearchPage() {
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search characters, locations, timeline, encyclopedia..."
+          placeholder="Search characters, locations, timeline, encyclopedia..." title="Search characters, locations, timeline, encyclopedia..."
           className="w-full rounded-md border border-fg/20 bg-bg py-3 pr-4 pl-10 text-sm"
           autoFocus
         />

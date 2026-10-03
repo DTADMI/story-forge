@@ -51,7 +51,7 @@ export function PrivateNotes({ entityType, entityId, initialNotes }: PrivateNote
             onChange={(e) => setNotes(e.target.value)}
             rows={6}
             className="w-full rounded-md border border-dashed border-fg/20 bg-fg/[0.03] px-3 py-2 text-sm resize-y"
-            placeholder="Write private notes here..."
+            placeholder="Write private notes here..." title="Write private notes here..."
           />
           <div className="flex justify-end">
             <button

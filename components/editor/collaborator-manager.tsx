@@ -144,7 +144,7 @@ export function CollaboratorManager({ projectId }: CollaboratorManagerProps) {
               type="text"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search users by username..."
+              placeholder="Search users by username..." title="Search users by username..."
               className="w-full rounded-md border border-fg/20 bg-bg py-1.5 pr-3 pl-8 text-sm"
             />
           </div>

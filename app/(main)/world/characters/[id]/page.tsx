@@ -69,7 +69,7 @@ export default async function CharacterDetailPage({ params }: { params: Promise<
             <label className="block text-sm font-medium">Traits / Keywords</label>
             <input
               name="traits"
-              placeholder="e.g. Brave, Impatient, Noble"
+              placeholder="e.g. Brave, Impatient, Noble" title="e.g. Brave, Impatient, Noble"
               defaultValue={character.traits ?? ""}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
@@ -78,7 +78,7 @@ export default async function CharacterDetailPage({ params }: { params: Promise<
             <label className="block text-sm font-medium">Quirks</label>
             <input
               name="quirks"
-              placeholder="e.g. Always wears mismatched socks"
+              placeholder="e.g. Always wears mismatched socks" title="e.g. Always wears mismatched socks"
               defaultValue={character.quirks ?? ""}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />

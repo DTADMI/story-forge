@@ -180,7 +180,7 @@ export function Storyboard({ projectId, initialPanels, characters, locations }: 
                   )
                 }
                 onBlur={() => savePanelsMutation.mutate(panels)}
-                placeholder="Panel description..."
+                placeholder="Panel description..." title="Panel description..."
                 className="min-h-[60px] w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
                 rows={2}
               />

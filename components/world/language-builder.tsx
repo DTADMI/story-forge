@@ -55,7 +55,7 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="e.g. Elvish"
+          placeholder="e.g. Elvish" title="e.g. Elvish"
           className="w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
         />
       </div>
@@ -67,7 +67,7 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
           onChange={(event) => setPhonology(event.target.value)}
           rows={2}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Sound inventory, phonotactics..."
+          placeholder="Sound inventory, phonotactics..." title="Sound inventory, phonotactics..."
         />
       </div>
 
@@ -78,7 +78,7 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
           onChange={(event) => setGrammarRules(event.target.value)}
           rows={3}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Word order, morphology, syntax..."
+          placeholder="Word order, morphology, syntax..." title="Word order, morphology, syntax..."
         />
       </div>
 
@@ -89,7 +89,7 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
           onChange={(event) => setScript(event.target.value)}
           rows={2}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Writing system description..."
+          placeholder="Writing system description..." title="Writing system description..."
         />
       </div>
 
@@ -99,14 +99,14 @@ export function LanguageBuilder({ onSaved }: LanguageBuilderProps) {
           <input
             value={newWord}
             onChange={(event) => setNewWord(event.target.value)}
-            placeholder="Word"
+            placeholder="Word" title="Word"
             className="flex-1 rounded-md border border-fg/20 bg-bg px-2 py-1.5 text-sm"
           />
           <input
             value={newMeaning}
             onChange={(event) => setNewMeaning(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && (event.preventDefault(), addWord())}
-            placeholder="Meaning"
+            placeholder="Meaning" title="Meaning"
             className="flex-1 rounded-md border border-fg/20 bg-bg px-2 py-1.5 text-sm"
           />
           <button

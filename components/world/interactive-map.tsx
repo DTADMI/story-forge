@@ -119,7 +119,7 @@ export function InteractiveMap({ locations, mapUrl, onPinSave, onPinClick }: Int
           <input
             value={newPinName}
             onChange={(e) => setNewPinName(e.target.value)}
-            placeholder="Location name..."
+            placeholder="Location name..." title="Location name..."
             className="flex-1 rounded-md border border-fg/20 px-2 py-1 text-xs bg-bg"
             onKeyDown={(e) => e.key === "Enter" && confirmAddPin()}
           />

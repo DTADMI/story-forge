@@ -101,7 +101,7 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
               onKeyDown={(event) => {
                 if (event.key === "Enter") handleSearchSubmit();
               }}
-              placeholder="Search your world, lore, and story systems..."
+              placeholder="Search your world, lore, and story systems..." title="Search your world, lore, and story systems..."
               className="h-10 w-full rounded-md border border-input bg-background py-2 pr-4 pl-10 text-sm shadow-xs transition-all duration-200 placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none"
             />
           </div>

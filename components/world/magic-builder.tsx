@@ -49,7 +49,7 @@ export function MagicBuilder({ onSaved }: MagicBuilderProps) {
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="e.g. The Weave"
+          placeholder="e.g. The Weave" title="e.g. The Weave"
           className="w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
         />
       </div>
@@ -76,7 +76,7 @@ export function MagicBuilder({ onSaved }: MagicBuilderProps) {
           onChange={(event) => setSource(event.target.value)}
           rows={2}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Where does magic come from?"
+          placeholder="Where does magic come from?" title="Where does magic come from?"
         />
       </div>
 
@@ -87,7 +87,7 @@ export function MagicBuilder({ onSaved }: MagicBuilderProps) {
           onChange={(event) => setCostsAndLimitations(event.target.value)}
           rows={2}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="What are the costs and limits of using magic?"
+          placeholder="What are the costs and limits of using magic?" title="What are the costs and limits of using magic?"
         />
       </div>
 
@@ -98,7 +98,7 @@ export function MagicBuilder({ onSaved }: MagicBuilderProps) {
           onChange={(event) => setSchoolsComponents(event.target.value)}
           rows={2}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Verbal, somatic, material components or schools of magic"
+          placeholder="Verbal, somatic, material components or schools of magic" title="Verbal, somatic, material components or schools of magic"
         />
       </div>
 
@@ -109,7 +109,7 @@ export function MagicBuilder({ onSaved }: MagicBuilderProps) {
             value={newSpell}
             onChange={(event) => setNewSpell(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && (event.preventDefault(), addSpell())}
-            placeholder="Add a spell..."
+            placeholder="Add a spell..." title="Add a spell..."
             className="flex-1 rounded-md border border-fg/20 bg-bg px-3 py-1.5 text-sm"
           />
           <button

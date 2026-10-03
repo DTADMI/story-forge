@@ -61,7 +61,7 @@ export function AiResearchPanel({ context, projectId, className = "" }: AiResear
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch();
           }}
-          placeholder="Ask about historical facts, science, culture..."
+          placeholder="Ask about historical facts, science, culture..." title="Ask about historical facts, science, culture..."
           className="flex-1 px-3 py-2 text-sm rounded-lg border border-fg/20 bg-bg text-fg placeholder-fg/40 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/20"
         />
         <button

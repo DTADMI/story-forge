@@ -69,7 +69,7 @@ export default function NewSpeciesPage() {
               onChange={(e) => setName(e.target.value)}
               required
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-              placeholder="Species or race name"
+              placeholder="Species or race name" title="Species or race name"
             />
           </div>
 
@@ -80,7 +80,7 @@ export default function NewSpeciesPage() {
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y"
-              placeholder="Describe this species..."
+              placeholder="Describe this species..." title="Describe this species..."
             />
           </div>
 
@@ -91,7 +91,7 @@ export default function NewSpeciesPage() {
               onChange={(e) => setAppearance(e.target.value)}
               rows={3}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y"
-              placeholder="Physical characteristics"
+              placeholder="Physical characteristics" title="Physical characteristics"
             />
           </div>
 
@@ -102,7 +102,7 @@ export default function NewSpeciesPage() {
                 value={traits}
                 onChange={(e) => setTraits(e.target.value)}
                 className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-                placeholder="e.g. Agile, Long-lived"
+                placeholder="e.g. Agile, Long-lived" title="e.g. Agile, Long-lived"
               />
             </div>
             <div>
@@ -111,7 +111,7 @@ export default function NewSpeciesPage() {
                 value={lifespan}
                 onChange={(e) => setLifespan(e.target.value)}
                 className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-                placeholder="e.g. 200 years"
+                placeholder="e.g. 200 years" title="e.g. 200 years"
               />
             </div>
           </div>
@@ -122,7 +122,7 @@ export default function NewSpeciesPage() {
               value={homeland}
               onChange={(e) => setHomeland(e.target.value)}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-              placeholder="e.g. The Northern Reaches"
+              placeholder="e.g. The Northern Reaches" title="e.g. The Northern Reaches"
             />
           </div>
 
@@ -132,7 +132,7 @@ export default function NewSpeciesPage() {
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-              placeholder="Associate with a project"
+              placeholder="Associate with a project" title="Associate with a project"
             />
           </div>
 

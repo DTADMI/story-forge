@@ -86,7 +86,7 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Elven Calendar"
+            placeholder="e.g. Elven Calendar" title="e.g. Elven Calendar"
             className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
           />
         </div>
@@ -143,7 +143,7 @@ export function CalendarBuilder({ onSave }: CalendarBuilderProps) {
                 value={month.name}
                 onChange={(e) => updateMonth(index, "name", e.target.value)}
                 className="flex-1 rounded-md border border-fg/20 px-2 py-1.5 text-xs bg-bg"
-                placeholder="Month name"
+                placeholder="Month name" title="Month name"
               />
               <div className="flex items-center gap-1">
                 <input

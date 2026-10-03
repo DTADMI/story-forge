@@ -143,7 +143,7 @@ export function EraManager({ onChanged }: EraManagerProps) {
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="e.g. The Golden Age"
+              placeholder="e.g. The Golden Age" title="e.g. The Golden Age"
               className="w-full rounded-md border border-fg/20 bg-bg px-2 py-1.5 text-xs"
             />
           </div>
@@ -162,7 +162,7 @@ export function EraManager({ onChanged }: EraManagerProps) {
               <input
                 value={startDate}
                 onChange={(event) => setStartDate(event.target.value)}
-                placeholder="e.g. 0 AE"
+                placeholder="e.g. 0 AE" title="e.g. 0 AE"
                 className="w-full rounded-md border border-fg/20 bg-bg px-2 py-1.5 text-xs"
               />
             </div>
@@ -171,7 +171,7 @@ export function EraManager({ onChanged }: EraManagerProps) {
               <input
                 value={endDate}
                 onChange={(event) => setEndDate(event.target.value)}
-                placeholder="e.g. 1000 AE"
+                placeholder="e.g. 1000 AE" title="e.g. 1000 AE"
                 className="w-full rounded-md border border-fg/20 bg-bg px-2 py-1.5 text-xs"
               />
             </div>

@@ -79,7 +79,7 @@ export default function NewEncyclopediaEntryPage() {
               onChange={(e) => setTitle(e.target.value)}
               required
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-              placeholder="Entry title"
+              placeholder="Entry title" title="Entry title"
             />
           </div>
 
@@ -93,7 +93,7 @@ export default function NewEncyclopediaEntryPage() {
               required
               rows={8}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y"
-              placeholder="Write your entry content..."
+              placeholder="Write your entry content..." title="Write your entry content..."
             />
           </div>
 
@@ -103,7 +103,7 @@ export default function NewEncyclopediaEntryPage() {
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-              placeholder="Associate with a project"
+              placeholder="Associate with a project" title="Associate with a project"
             />
           </div>
 

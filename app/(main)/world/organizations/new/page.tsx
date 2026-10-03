@@ -70,7 +70,7 @@ export default function NewOrganizationPage() {
               onChange={(e) => setName(e.target.value)}
               required
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-              placeholder="Organization name"
+              placeholder="Organization name" title="Organization name"
             />
           </div>
 
@@ -96,7 +96,7 @@ export default function NewOrganizationPage() {
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y"
-              placeholder="Describe this organization..."
+              placeholder="Describe this organization..." title="Describe this organization..."
             />
           </div>
 
@@ -107,7 +107,7 @@ export default function NewOrganizationPage() {
               onChange={(e) => setGoals(e.target.value)}
               rows={3}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg resize-y"
-              placeholder="What are their goals?"
+              placeholder="What are their goals?" title="What are their goals?"
             />
           </div>
 
@@ -117,7 +117,7 @@ export default function NewOrganizationPage() {
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
               className="w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
-              placeholder="Associate with a project"
+              placeholder="Associate with a project" title="Associate with a project"
             />
           </div>
 

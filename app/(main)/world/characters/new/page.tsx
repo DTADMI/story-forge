@@ -39,7 +39,7 @@ export default async function NewCharacterPage() {
             <label className="block text-sm font-medium">Traits / Keywords</label>
             <input
               name="traits"
-              placeholder="e.g. Brave, Impatient, Noble"
+              placeholder="e.g. Brave, Impatient, Noble" title="e.g. Brave, Impatient, Noble"
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />
           </div>

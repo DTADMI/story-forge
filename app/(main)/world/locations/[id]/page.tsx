@@ -75,7 +75,7 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
             <label className="block text-sm font-medium">Map URL (optional)</label>
             <input
               name="mapUrl"
-              placeholder="https://..."
+              placeholder="https://..." title="https://..."
               defaultValue={location.mapUrl ?? ""}
               className="mt-1 w-full rounded-md border border-fg/20 px-3 py-2 text-sm bg-bg"
             />

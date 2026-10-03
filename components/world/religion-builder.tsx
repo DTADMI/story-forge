@@ -49,7 +49,7 @@ export function ReligionBuilder({ onSaved }: ReligionBuilderProps) {
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="e.g. The Church of Light"
+          placeholder="e.g. The Church of Light" title="e.g. The Church of Light"
           className="w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
         />
       </div>
@@ -61,7 +61,7 @@ export function ReligionBuilder({ onSaved }: ReligionBuilderProps) {
             value={newDeity}
             onChange={(event) => setNewDeity(event.target.value)}
             onKeyDown={(event) => event.key === "Enter" && (event.preventDefault(), addDeity())}
-            placeholder="Add a deity..."
+            placeholder="Add a deity..." title="Add a deity..."
             className="flex-1 rounded-md border border-fg/20 bg-bg px-3 py-1.5 text-sm"
           />
           <button
@@ -99,7 +99,7 @@ export function ReligionBuilder({ onSaved }: ReligionBuilderProps) {
           onChange={(event) => setTenets(event.target.value)}
           rows={3}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Core beliefs and tenets..."
+          placeholder="Core beliefs and tenets..." title="Core beliefs and tenets..."
         />
       </div>
 
@@ -110,7 +110,7 @@ export function ReligionBuilder({ onSaved }: ReligionBuilderProps) {
           onChange={(event) => setRituals(event.target.value)}
           rows={3}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Religious rituals and practices..."
+          placeholder="Religious rituals and practices..." title="Religious rituals and practices..."
         />
       </div>
 
@@ -121,7 +121,7 @@ export function ReligionBuilder({ onSaved }: ReligionBuilderProps) {
           onChange={(event) => setHolyTexts(event.target.value)}
           rows={2}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Sacred texts and scriptures..."
+          placeholder="Sacred texts and scriptures..." title="Sacred texts and scriptures..."
         />
       </div>
 
@@ -132,7 +132,7 @@ export function ReligionBuilder({ onSaved }: ReligionBuilderProps) {
           onChange={(event) => setHierarchy(event.target.value)}
           rows={2}
           className="w-full resize-y rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
-          placeholder="Organizational structure and ranks..."
+          placeholder="Organizational structure and ranks..." title="Organizational structure and ranks..."
         />
       </div>
 

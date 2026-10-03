@@ -104,7 +104,7 @@ export function SettingsForm({
             value={website}
             onChange={(event) => setWebsite(event.target.value)}
             type="url"
-            placeholder="https://"
+            placeholder="https://" title="https://"
             className="mt-1 w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
           />
         </div>
@@ -141,7 +141,7 @@ export function SettingsForm({
             min={0}
             value={writingCap}
             onChange={(event) => setWritingCap(event.target.value)}
-            placeholder="e.g. 2000"
+            placeholder="e.g. 2000" title="e.g. 2000"
             className="mt-1 w-full rounded-md border border-fg/20 bg-bg px-3 py-2 text-sm"
           />
         </div>
