@@ -120,11 +120,17 @@ export default async function EncyclopediaEntryDetailPage({
       )}
 
       {/* Read-aloud (storage-free, browser speech synthesis) */}
-      <ArticleAudioPlayer text={entry.content} title={entry.title} lang={lang} />
+      <ArticleAudioPlayer
+        text={entry.content}
+        title={entry.title}
+        lang={lang}
+        storageKey={entry.id}
+        trackSelector="[data-audio-text-root]"
+      />
 
       {/* Content */}
       <Card className="p-6 mb-6">
-        <div className="whitespace-pre-wrap text-sm leading-relaxed">
+        <div className="whitespace-pre-wrap text-sm leading-relaxed" data-audio-text-root>
           {paragraphs.map((p, i) => (
             <p key={i} className={i > 0 ? "mt-3" : ""}>
               {p}

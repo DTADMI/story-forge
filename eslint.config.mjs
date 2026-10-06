@@ -3,7 +3,7 @@ import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: [".next/**", "node_modules/**", "dist/**"] },
+  { ignores: [".next/**", "node_modules/**", "dist/**", "lib/audio/narration-core.js"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...nextCoreWebVitals,
