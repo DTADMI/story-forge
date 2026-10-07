@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Users",
+  description: "Users: on story forge.",
+};
+
 import { getUser as getSupabaseUser } from "@/lib/supabase/server";
 import { safeUrl } from "@/lib/utils";
 import { apiFetch } from "@/lib/api";

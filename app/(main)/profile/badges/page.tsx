@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Profile - Badges",
+  description: "Private surface (Profile - Badges).",
+  robots: { index: false, follow: false },
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";

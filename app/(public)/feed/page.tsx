@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Feed",
+  description: "Feed: on story forge.",
+};
+
 import { prisma } from "@/lib/prisma";
 import { isEnabled } from "@/lib/flags-server";
 

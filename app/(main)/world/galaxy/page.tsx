@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "World - Galaxy",
+  description: "World - Galaxy: on story forge.",
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";

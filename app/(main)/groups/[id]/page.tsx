@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Groups",
+  description: "Groups: on story forge.",
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";

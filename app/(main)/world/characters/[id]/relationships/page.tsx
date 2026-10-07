@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "World - Characters - Relationships",
+  description: "World - Characters - Relationships: on story forge.",
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";

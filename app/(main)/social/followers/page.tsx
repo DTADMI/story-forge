@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Social - Followers",
+  description: "Private surface (Social - Followers).",
+  robots: { index: false, follow: false },
+};
+
 import { apiFetch } from "@/lib/api";
 
 type Row = {

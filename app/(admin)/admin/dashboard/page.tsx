@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Admin - Dashboard",
+  description: "Private surface (Admin - Dashboard).",
+  robots: { index: false, follow: false },
+};
+
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";

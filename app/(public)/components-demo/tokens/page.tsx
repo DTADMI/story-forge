@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Components Demo - Tokens",
+  description: "Components Demo - Tokens: on story forge.",
+};
+
 export default function TokensDemoPage() {
   const tokens = [
     "--bg",

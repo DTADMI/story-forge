@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Billing - Return",
+  description: "Billing - Return: on story forge.",
+};
+
 import Link from "next/link";
 
 export default async function BillingReturnPage({

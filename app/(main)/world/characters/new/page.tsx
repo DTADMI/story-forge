@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "World - Characters - New",
+  description: "Private surface (World - Characters - New).",
+  robots: { index: false, follow: false },
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { apiFetch } from "@/lib/api";
 import { redirect } from "next/navigation";

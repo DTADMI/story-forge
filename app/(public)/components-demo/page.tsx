@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Components Demo",
+  description: "Components Demo: on story forge.",
+};
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

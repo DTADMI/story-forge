@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Dashboard",
+  description: "Private surface (Dashboard).",
+  robots: { index: false, follow: false },
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";

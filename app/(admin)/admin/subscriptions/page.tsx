@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Admin - Subscriptions",
+  description: "Private surface (Admin - Subscriptions).",
+  robots: { index: false, follow: false },
+};
+
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { SUBSCRIPTION_LIMITS } from "@/lib/permissions";

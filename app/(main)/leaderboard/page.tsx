@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Leaderboard",
+  description: "Leaderboard: on story forge.",
+};
+
 import { Suspense } from "react";
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";

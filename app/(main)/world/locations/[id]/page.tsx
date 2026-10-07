@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "World - Locations",
+  description: "World - Locations: on story forge.",
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { apiFetch } from "@/lib/api";
 import { redirect, notFound } from "next/navigation";

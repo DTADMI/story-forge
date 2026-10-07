@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Admin - Moderation",
+  description: "Private surface (Admin - Moderation).",
+  robots: { index: false, follow: false },
+};
+
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";

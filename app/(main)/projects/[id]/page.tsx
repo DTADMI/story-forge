@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Projects",
+  description: "Projects: on story forge.",
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";

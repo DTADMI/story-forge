@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Admin - Users",
+  description: "Private surface (Admin - Users).",
+  robots: { index: false, follow: false },
+};
+
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { requireAdmin } from "@/lib/admin";

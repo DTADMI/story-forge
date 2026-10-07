@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "World - Timeline - New",
+  description: "Private surface (World - Timeline - New).",
+  robots: { index: false, follow: false },
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { apiFetch } from "@/lib/api";
 import { redirect } from "next/navigation";

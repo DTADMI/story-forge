@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "World - Organizations",
+  description: "World - Organizations: on story forge.",
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { apiFetch } from "@/lib/api";
 import { redirect } from "next/navigation";

@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Stats",
+  description: "Private surface (Stats).",
+  robots: { index: false, follow: false },
+};
+
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
