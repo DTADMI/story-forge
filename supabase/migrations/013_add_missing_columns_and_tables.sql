@@ -8,7 +8,7 @@
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS panel_count INTEGER NOT NULL DEFAULT 0;
 
 -- ============================================================
--- Character / Location / TimelineEvent / Organization / Species — shared content
+-- Character / Location / TimelineEvent / Organization / Species - shared content
 -- ============================================================
 ALTER TABLE public.characters ADD COLUMN IF NOT EXISTS is_shared BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE public.characters ADD COLUMN IF NOT EXISTS shared_from_project_id TEXT;
@@ -28,7 +28,7 @@ ALTER TABLE public.species ADD COLUMN IF NOT EXISTS is_shared BOOLEAN NOT NULL D
 ALTER TABLE public.species ADD COLUMN IF NOT EXISTS shared_from_project_id TEXT;
 
 -- ============================================================
--- Notification — entity_type
+-- Notification - entity_type
 -- ============================================================
 ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS entity_type TEXT;
 

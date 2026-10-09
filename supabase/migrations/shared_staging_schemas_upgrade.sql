@@ -61,7 +61,7 @@ COMMENT ON SCHEMA gamehub IS 'GameHub staging tables';
 CREATE SCHEMA IF NOT EXISTS private;
 REVOKE ALL ON SCHEMA private FROM PUBLIC;
 REVOKE ALL ON SCHEMA private FROM anon, authenticated;
-COMMENT ON SCHEMA private IS 'Admin-only views — not exposed to Data API';
+COMMENT ON SCHEMA private IS 'Admin-only views - not exposed to Data API';
 
 -- ============================================================
 -- App Schemas Summary

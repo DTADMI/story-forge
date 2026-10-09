@@ -27,7 +27,7 @@ BEGIN
 END;
 $$;
 
--- Drop columns added by this migration (optional — commented out for safety)
+-- Drop columns added by this migration (optional - commented out for safety)
 -- ALTER TABLE public.users DROP COLUMN IF EXISTS email;
 -- ALTER TABLE public.users DROP COLUMN IF EXISTS email_verified;
 -- ALTER TABLE public.users DROP COLUMN IF EXISTS password_hash;
